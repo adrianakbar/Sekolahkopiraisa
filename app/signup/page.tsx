@@ -86,7 +86,7 @@ export default function Signup() {
             </p>
             <button
               type="submit"
-              className="w-full p-2 bg-primary text-white rounded"
+              className="w-full p-2 bg-primary text-white rounded hover:-translate-y-1 duration-150 ease-in"
             >
               Buat Akun
             </button>

@@ -75,7 +75,7 @@ export default function Login() {
 
             <button
               type="submit"
-              className="w-full p-2 bg-primary text-white rounded mt-4"
+              className="w-full p-2 bg-primary text-white rounded mt-4 hover:-translate-y-1 duration-150 ease-in"
             >
               Masuk
             </button>
