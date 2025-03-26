@@ -1,83 +1,115 @@
-'use client';
+"use client";
 
-import { useState } from 'react';
-import Link from 'next/link';
+import { useState } from "react";
+import Link from "next/link";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { faEye, faEyeSlash } from "@fortawesome/free-regular-svg-icons";
+import Image from "next/image";
 
-export default function Login() {
-    const [email, setEmail] = useState('');
-    const [password, setPassword] = useState('');
-    const [errors, setErrors] = useState([]);
+export default function Register() {
+  const [showPassword, setShowPassword] = useState(false);
 
-    const handleSubmit = async (e) => {
-        e.preventDefault();
-        setErrors([]);
-        
-        // Simulasi validasi sederhana
-        if (!email || !password) {
-            setErrors(['Email dan password wajib diisi.']);
-            return;
-        }
-        
-        console.log('Login dengan:', { email, password });
-        // Tambahkan logika autentikasi di sini
-    };
-
-    return (
-        <div className="flex items-center justify-center min-h-screen bg-gray-200 px-4">
-            <div className="bg-white shadow-lg rounded-lg flex w-full max-w-4xl overflow-hidden">
-                {/* Side Image */}
-                <div className="hidden md:block w-1/2 bg-cover bg-center" style={{ backgroundImage: "url('/image/backgroundlogin.jpeg')" }}></div>
-                
-                {/* Form Section */}
-                <div className="w-full md:w-1/2 flex flex-col justify-center items-center p-8">
-                    <img src="/assets/logo.png" alt="Logo" className="w-20 mb-6" />
-                    <h2 className="text-2xl font-semibold mb-6">Login</h2>
-                    
-                    {errors.length > 0 && (
-                        <div className="bg-red-100 text-red-700 p-2 rounded-md w-full mb-4 text-sm">
-                            <ul>
-                                {errors.map((error, index) => (
-                                    <li key={index}>{error}</li>
-                                ))}
-                            </ul>
-                        </div>
-                    )}
-
-                    <form onSubmit={handleSubmit} className="w-full">
-                        <div className="mb-4">
-                            <label htmlFor="email" className="block text-sm font-medium text-gray-700">Email</label>
-                            <input
-                                type="email"
-                                id="email"
-                                name="email"
-                                value={email}
-                                onChange={(e) => setEmail(e.target.value)}
-                                className="w-full px-3 py-2 border rounded-md focus:outline-none focus:ring focus:ring-gray-400"
-                                required
-                            />
-                        </div>
-
-                        <div className="mb-4">
-                            <label htmlFor="password" className="block text-sm font-medium text-gray-700">Password</label>
-                            <input
-                                type="password"
-                                id="password"
-                                name="password"
-                                value={password}
-                                onChange={(e) => setPassword(e.target.value)}
-                                className="w-full px-3 py-2 border rounded-md focus:outline-none focus:ring focus:ring-gray-400"
-                                required
-                            />
-                        </div>
-                        
-                        <div className="flex justify-end text-sm text-blue-500 mb-4">
-                            <Link href="/lupapassword">Lupa Password?</Link>
-                        </div>
-
-                        <button type="submit" className="w-full bg-gray-700 text-white py-2 rounded-md hover:bg-gray-900 transition">Login</button>
-                    </form>
-                </div>
-            </div>
+  return (
+    <div className="grid h-screen grid-cols-12">
+      <div className="col-span-6 flex justify-center items-center bg-background relative p-10">
+        {/* Gambar Top Right */}
+        <div className="absolute top-0 -right-18">
+          <Image
+            src="/assets/flower-top.png"
+            width={400}
+            height={400}
+            alt="Flower Top"
+          />
         </div>
-    );
+
+        {/* Gambar Bottom Left */}
+        <div className="absolute bottom-0 left-0">
+          <Image
+            src="/assets/flower-bottom.png"
+            width={300}
+            height={300}
+            alt="Flower Bottom"
+          />
+        </div>
+
+        {/* Konten Form */}
+        <div className="relative z-10 max-w-md w-full">
+          <h1 className="text-3xl font-semibold mb-6">Welcome</h1>
+          <form className="space-y-4">
+            <div>
+              <label className="block text-sm font-medium">Nama</label>
+              <input
+                type="text"
+                className="w-full p-2 border border-gray-300 rounded"
+              />
+            </div>
+            <div>
+              <label className="block text-sm font-medium">Email</label>
+              <input
+                type="email"
+                className="w-full p-2 border border-gray-300 rounded"
+              />
+            </div>
+            <div className="relative">
+              <label className="block text-sm font-medium">Kata Sandi</label>
+              <input
+                type={showPassword ? "text" : "password"}
+                className="w-full p-2 border border-gray-300 rounded"
+              />
+              <button
+                type="button"
+                className="absolute top-7 right-3 text-gray-500"
+                onClick={() => setShowPassword(!showPassword)}
+              >
+                {showPassword ? (
+                  <FontAwesomeIcon icon={faEyeSlash} size="xl" />
+                ) : (
+                  <FontAwesomeIcon icon={faEye} size="xl" />
+                )}
+              </button>
+            </div>
+            <div>
+              <label className="block text-sm font-medium">No. HP</label>
+              <input
+                type="number"
+                className="w-full p-2 border border-gray-300 rounded"
+              />
+            </div>
+            <p className="text-xs text-gray-600">
+              Dengan membuat akun, Anda menyetujui{" "}
+              <span className="text-brown-700 font-medium">Syarat Layanan</span>{" "}
+              dan{" "}
+              <span className="text-brown-700 font-medium">
+                Kebijakan Privasi
+              </span>{" "}
+              kami.
+            </p>
+            <button
+              type="submit"
+              className="w-full p-2 bg-primary text-white rounded"
+            >
+              Buat Akun
+            </button>
+          </form>
+          <p className="text-center mt-4 text-gray-700">
+            Sudah punya akun?
+            <Link
+              href="/login"
+              className="text-blue-500 font-medium hover:underline ml-0.5"
+            >
+              Masuk
+            </Link>
+          </p>
+        </div>
+      </div>
+
+      <div
+        className="col-span-6 flex justify-center items-center z-10"
+        style={{
+          backgroundImage: "url('/assets/kelompok-capstone.jpeg')",
+          backgroundSize: "cover",
+        }}
+      ></div>
+    </div>
+  );
 }
