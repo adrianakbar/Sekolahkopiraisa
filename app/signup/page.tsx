@@ -6,7 +6,7 @@ import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faEye, faEyeSlash } from "@fortawesome/free-regular-svg-icons";
 import Image from "next/image";
 
-export default function Register() {
+export default function Signup() {
   const [showPassword, setShowPassword] = useState(false);
 
   return (
