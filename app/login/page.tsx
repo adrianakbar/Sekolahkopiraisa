@@ -87,7 +87,7 @@ export default function Login() {
           </div>
           <button
             type="button"
-            className="w-full p-2 bg-gray-300 text-white place-items-center rounded border-gray-400 border hover:animate-bounce"
+            className="w-full p-2 bg-gray-300 text-white place-items-center rounded border-gray-400 border hover:-translate-y-1 duration-150 ease-in"
             // hover:bg-gray-400 duration-150 ease-in
           >
             <svg
