@@ -43,6 +43,7 @@ export default function Login() {
               <input
                 type="text"
                 className="w-full p-2 border border-gray-300 rounded"
+                placeholder="Masukkan email atau nomor hp"
               />
             </div>
             <div className="relative">
@@ -59,6 +60,7 @@ export default function Login() {
               <input
                 type={showPassword ? "text" : "password"}
                 className="w-full p-2 border border-gray-300 rounded"
+                placeholder="Masukkan kata sandi"
               />
               <button
                 type="button"

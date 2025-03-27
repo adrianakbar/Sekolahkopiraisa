@@ -41,6 +41,7 @@ export default function Signup() {
               <input
                 type="text"
                 className="w-full p-2 border border-gray-300 rounded"
+                placeholder="Masukkan nama lengkap"
               />
             </div>
             <div>
@@ -48,6 +49,7 @@ export default function Signup() {
               <input
                 type="email"
                 className="w-full p-2 border border-gray-300 rounded"
+                placeholder="Masukkan email"
               />
             </div>
             <div className="relative">
@@ -55,6 +57,7 @@ export default function Signup() {
               <input
                 type={showPassword ? "text" : "password"}
                 className="w-full p-2 border border-gray-300 rounded"
+                placeholder="Masukkan kata sandi"
               />
               <button
                 type="button"
@@ -73,6 +76,7 @@ export default function Signup() {
               <input
                 type="number"
                 className="w-full p-2 border border-gray-300 rounded"
+                placeholder="Masukkan nomor hp"
               />
             </div>
             <p className="text-xs text-gray-600">
