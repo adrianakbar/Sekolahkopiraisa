@@ -5,6 +5,7 @@ import Link from "next/link";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faEye, faEyeSlash } from "@fortawesome/free-regular-svg-icons";
 import Image from "next/image";
+import { Eye, EyeOff } from "lucide-react";
 
 export default function Login() {
   const [showPassword, setShowPassword] = useState(false);
@@ -68,9 +69,9 @@ export default function Login() {
                 onClick={() => setShowPassword(!showPassword)}
               >
                 {showPassword ? (
-                  <FontAwesomeIcon icon={faEyeSlash} size="xl" />
+                  <EyeOff />
                 ) : (
-                  <FontAwesomeIcon icon={faEye} size="xl" />
+                  <Eye/>
                 )}
               </button>
             </div>
@@ -100,7 +101,7 @@ export default function Login() {
               xmlns="http://www.w3.org/2000/svg"
               fill="#000000"
             >
-              <g id="SVGRepo_bgCarrier" stroke-width="0"></g>
+              <g id="SVGRepo_bgCarrier" strokeWidth="0"></g>
               <g
                 id="SVGRepo_tracerCarrier"
                 stroke-linecap="round"
