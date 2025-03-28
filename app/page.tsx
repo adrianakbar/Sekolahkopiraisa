@@ -22,7 +22,7 @@ export default function Home() {
       >
         <div className="container mx-auto h-screen">
           <div className="flex">
-            <div className="mt-60">
+            <div className="mt-80">
               <h1 className="text-white">
                 Membangun Ekosistem Kopi Berkualitas
               </h1>
@@ -35,7 +35,7 @@ export default function Home() {
               alt="Logo"
               width={500}
               height={500}
-              className="ml-auto"
+              className="ml-auto mt-40"
             />
           </div>
         </div>
