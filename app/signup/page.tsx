@@ -40,7 +40,7 @@ export default function Signup() {
               <label className="block text-sm font-medium">Nama</label>
               <input
                 type="text"
-                className="w-full p-2 border border-gray-300 rounded"
+                className="w-full p-2 border border-gray-300 rounded-md"
                 placeholder="Masukkan nama lengkap"
               />
             </div>
@@ -48,7 +48,7 @@ export default function Signup() {
               <label className="block text-sm font-medium">Email</label>
               <input
                 type="email"
-                className="w-full p-2 border border-gray-300 rounded"
+                className="w-full p-2 border border-gray-300 rounded-md"
                 placeholder="Masukkan email"
               />
             </div>
@@ -56,7 +56,7 @@ export default function Signup() {
               <label className="block text-sm font-medium">Kata Sandi</label>
               <input
                 type={showPassword ? "text" : "password"}
-                className="w-full p-2 border border-gray-300 rounded"
+                className="w-full p-2 border border-gray-300 rounded-md"
                 placeholder="Masukkan kata sandi"
               />
               <button
@@ -75,7 +75,7 @@ export default function Signup() {
               <label className="block text-sm font-medium">No. HP</label>
               <input
                 type="number"
-                className="w-full p-2 border border-gray-300 rounded"
+                className="w-full p-2 border border-gray-300 rounded-md"
                 placeholder="Masukkan nomor hp"
               />
             </div>
@@ -90,7 +90,7 @@ export default function Signup() {
             </p>
             <button
               type="submit"
-              className="w-full p-2 bg-primary text-white rounded hover:-translate-y-1 duration-150 ease-in"
+              className="w-full p-2 bg-primary text-white rounded-md hover:-translate-y-1 duration-150 ease-in"
             >
               Buat Akun
             </button>

@@ -121,7 +121,7 @@ export default function TiltedCard({
         <motion.img
           src={imageSrc}
           alt={altText}
-          className="absolute top-0 left-0 object-cover rounded-lg will-change-transform [transform:translateZ(0)] shadow-md"
+          className="absolute top-0 left-0 object-cover rounded-md will-change-transform [transform:translateZ(0)] shadow-md"
           style={{
             width: imageWidth,
             height: imageHeight,
@@ -129,7 +129,7 @@ export default function TiltedCard({
         />
 
         {displayOverlayContent && overlayContent && (
-          <motion.div className="absolute top-5 left-5 z-[2] will-change-transform [transform:translateZ(30px)] px-5 py-2 bg-gradient-to-tr from-primary to-[#F5EDE4] text-white font-semibold rounded-2xl">
+          <motion.div className="absolute top-5 left-5 z-[2] will-change-transform [transform:translateZ(30px)] px-5 py-2 bg-gradient-to-tr from-primary to-[#F5EDE4] text-white font-semibold rounded-md">
             {overlayContent}
           </motion.div>
         )}

@@ -43,7 +43,7 @@ export default function Login() {
               </label>
               <input
                 type="text"
-                className="w-full p-2 border border-gray-300 rounded"
+                className="w-full p-2 border border-gray-300 rounded-md"
                 placeholder="Masukkan email atau nomor hp"
               />
             </div>
@@ -60,7 +60,7 @@ export default function Login() {
 
               <input
                 type={showPassword ? "text" : "password"}
-                className="w-full p-2 border border-gray-300 rounded"
+                className="w-full p-2 border border-gray-300 rounded-md"
                 placeholder="Masukkan kata sandi"
               />
               <button
@@ -78,7 +78,7 @@ export default function Login() {
 
             <button
               type="submit"
-              className="w-full p-2 bg-primary text-white rounded mt-4 hover:-translate-y-1 duration-150 ease-in"
+              className="w-full p-2 bg-primary text-white rounded-md mt-4 hover:-translate-y-1 duration-150 ease-in"
             >
               Masuk
             </button>
@@ -90,7 +90,7 @@ export default function Login() {
           </div>
           <button
             type="button"
-            className="w-full p-2 bg-gray-300 text-white place-items-center rounded border-gray-400 border hover:-translate-y-1 duration-150 ease-in"
+            className="w-full p-2 bg-gray-300 text-white place-items-center rounded-md border-gray-400 border hover:-translate-y-1 duration-150 ease-in"
             // hover:bg-gray-400 duration-150 ease-in
           >
             <svg

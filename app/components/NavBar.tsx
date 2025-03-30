@@ -28,10 +28,10 @@ export default function NavBar({
       </div>
       <div className="space-x-4 mr-10">
         <Link href="/login">
-          <button className="bg-primary px-4 py-2 rounded text-white hover:-translate-y-1 duration-150 ease-in">Masuk</button>
+          <button className="bg-primary px-4 py-2 rounded-md text-white hover:-translate-y-1 duration-150 ease-in">Masuk</button>
         </Link>
         <Link href="/signup">
-          <button className="text-primary px-4 py-2 rounded border border-primary hover:-translate-y-1 duration-150 ease-in">
+          <button className="text-primary px-4 py-2 rounded-md border border-primary hover:-translate-y-1 duration-150 ease-in">
             Daftar
           </button>
         </Link>

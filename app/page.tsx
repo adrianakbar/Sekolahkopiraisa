@@ -2,6 +2,8 @@ import Image from "next/image";
 import Link from "next/link";
 import NavBar from "./components/NavBar";
 import TiltedCard from "./components/TiltedCard/TiltedCard";
+import ProductCard from "./components/ProductCard";
+import ActivityCard from "./components/ActivityCard";
 
 export default function Home() {
   return (
@@ -12,7 +14,7 @@ export default function Home() {
           { title: "Beranda", link: "/" },
           { title: "Tentang", link: "/about" },
           { title: "Produk", link: "/products" },
-          { title: "Berita", link: "/blog" },
+          { title: "Kegiatan", link: "/Kegiatan" },
         ]}
       />
 
@@ -43,7 +45,7 @@ export default function Home() {
         </div>
       </section>
 
-      {/* Tentang Kami */}
+      {/* Tentang */}
       <section className="bg-[#F5EDE4] py-16">
         <div className="container mx-auto grid grid-cols-1 md:grid-cols-2 gap-8 items-center">
           {/* Kolom Gambar */}
@@ -103,7 +105,7 @@ export default function Home() {
 
           {/* Kolom Teks */}
           <div className="">
-            <h2 className="text-4xl font-bold text-gray-900 mb-4">
+            <h2 className="text-2xl font-semibold text-gray-900 mb-4">
               Tentang Kami
             </h2>
             <p className="text-gray-700 leading-relaxed text-justify text-lg">
@@ -118,59 +120,121 @@ export default function Home() {
               tantangan penjaminan mutu dan kualitas kopi di Kabupaten
               Bondowoso.
             </p>
-            <button className="mt-6 px-6 py-3 bg-[#C19A6B] text-white font-semibold rounded-lg hover:bg-[#a07850] transition hover:-translate-y-1 duration-150 ease-in">
+            <button className="mt-6 px-6 py-3 bg-[#C19A6B] text-white font-semibold rounded-md hover:-translate-y-1 duration-150 ease-in">
               Lihat Selengkapnya
             </button>
           </div>
         </div>
       </section>
 
-      {/* Produk Kami */}
-      <section className="p-10">
-        <h2 className="text-3xl font-bold text-center">Produk Kami</h2>
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mt-6">
-          {[1, 2, 3].map((item) => (
-            <div
-              key={item}
-              className="border rounded-lg p-4 text-center shadow-lg"
-            >
-              <Image
-                src="/assets/kopi.jpg"
-                width={200}
-                height={200}
-                alt="Kopi Raisa"
-                className="mx-auto"
-              />
-              <h3 className="font-semibold mt-2">Kopi Raisa - Robusta Gayo</h3>
-              <p className="text-gray-600">Rp. 57,000</p>
-              <button className="mt-4 bg-brown-500 text-white px-6 py-2 rounded">
-                Beli Sekarang
-              </button>
-            </div>
-          ))}
+      {/* Produk */}
+      <section className="relative py-16 bg-white">
+        {/* Gambar Bunga Pojok Kanan Atas */}
+        <div className="absolute top-0 -right-18">
+          <Image
+            src="/assets/flower-top.png"
+            alt="Bunga Hiasan"
+            className=""
+            width={400}
+            height={300}
+          />
+        </div>
+
+        {/* Gambar Bunga Pojok Kiri Bawah */}
+        <div className="absolute bottom-0 left-0">
+          <Image
+            src="/assets/flower-bottom.png"
+            alt="Bunga Hiasan"
+            className=""
+            width={300}
+            height={300}
+          />
+        </div>
+
+        <div className="container mx-auto">
+          {/* Judul Section */}
+          <h2 className="text-2xl font-semibold text-center text-gray-900">
+            Produk Kami
+          </h2>
+          <p className="text-center text-gray-600 mt-2">
+            Kopi dari para petani dan UMKM Bondowoso, hasil panen terbaik dari
+            tanah yang subur
+          </p>
+
+          {/* Auto-Slide Produk */}
+          <div className="mt-10">
+            <ProductCard
+              productItems={[
+                {
+                  id: 1,
+                  name: "KOPI RAISA - ARUTALA KOPI ROBUSTA GAYO",
+                  price: "Rp. 57,000",
+                  image: "/assets/product.png",
+                },
+                {
+                  id: 2,
+                  name: "KOPI RAISA - ARUTALA KOPI ROBUSTA GAYO",
+                  price: "Rp. 57,000",
+                  image: "/assets/product.png",
+                },
+                {
+                  id: 3,
+                  name: "KOPI RAISA - ARUTALA KOPI ROBUSTA GAYO",
+                  price: "Rp. 57,000",
+                  image: "/assets/product.png",
+                },
+                {
+                  id: 4,
+                  name: "KOPI RAISA - ARUTALA KOPI ROBUSTA GAYO",
+                  price: "Rp. 57,000",
+                  image: "/assets/product.png",
+                },
+                {
+                  id: 5,
+                  name: "KOPI RAISA - ARUTALA KOPI ROBUSTA GAYO",
+                  price: "Rp. 57,000",
+                  image: "/assets/product.png",
+                },
+                {
+                  id: 6,
+                  name: "KOPI RAISA - ARUTALA KOPI ROBUSTA GAYO",
+                  price: "Rp. 57,000",
+                  image: "/assets/product.png",
+                },
+                {
+                  id: 7,
+                  name: "KOPI RAISA - ARUTALA KOPI ROBUSTA GAYO",
+                  price: "Rp. 57,000",
+                  image: "/assets/product.png",
+                },
+              ]}
+            />
+          </div>
         </div>
       </section>
 
       {/* Blog */}
-      <section className="p-10 bg-gray-100">
-        <h2 className="text-3xl font-bold text-center">Blog</h2>
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mt-6">
-          {[1, 2, 3].map((item) => (
-            <div
-              key={item}
-              className="border rounded-lg p-4 text-center shadow-lg bg-white"
-            >
-              <Image
-                src="/assets/blog.jpg"
-                width={300}
-                height={200}
-                alt="Blog"
-                className="mx-auto"
-              />
-              <h3 className="font-semibold mt-2">Kunjungan Staf Ahli</h3>
-              <p className="text-gray-600">Kegiatan terbaru dari Kopi Raisa</p>
-            </div>
-          ))}
+      <section className="py-16 bg-[#F5EDE4]">
+        <div className="container mx-auto">
+          {/* Judul Section */}
+          <h2 className="text-2xl font-semibold text-center text-gray-900">
+            Kegiatan Terbaru
+          </h2>
+          <p className="text-center text-gray-600 mt-2">
+          Cari tahu kegiatan dan info terbaru dari Kopi Raisa
+          </p>
+
+          {/* Auto-Slide Produk */}
+          <div className="mt-10">
+            <ActivityCard 
+            title="Kegiatan Pelatihan Petani Kopi"
+            image="/assets/product.png"
+            />
+            <ActivityCard 
+            title="Ke"
+            image="/assets/activity.png"
+            />
+          </div>
         </div>
       </section>
 
