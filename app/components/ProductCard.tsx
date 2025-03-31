@@ -22,7 +22,7 @@ export default function ProductCard({
 }) {
   return (
     <Swiper
-      spaceBetween={0}
+      spaceBetween={24}
       slidesPerView={1}
       breakpoints={{
         640: { slidesPerView: 1 },
@@ -41,14 +41,14 @@ export default function ProductCard({
     >
       {productItems.map((product) => (
         <SwiperSlide key={product.id} className="">
-          <div className="bg-[#F5EDE4] rounded-md shadow-md overflow-hidden w-100">
+          <div className="bg-[#F5EDE4] rounded-md shadow-md overflow-hidden">
             {/* Gambar Produk */}
             <Image
               src={product.image}
               alt={product.name}
               width={300}
               height={200}
-              className="w-full"
+              className="object-cover w-full"
             />
 
             {/* Informasi Produk */}

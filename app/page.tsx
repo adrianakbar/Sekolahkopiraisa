@@ -1,15 +1,16 @@
 import Image from "next/image";
 import Link from "next/link";
-import NavBar from "./components/NavBar";
+import Navbar from "./components/Navbar";
 import TiltedCard from "./components/TiltedCard/TiltedCard";
 import ProductCard from "./components/ProductCard";
 import ActivityCard from "./components/ActivityCard";
+import Footer from "./components/Footer";
 
 export default function Home() {
   return (
     <div>
       {/* Navbar */}
-      <NavBar
+      <Navbar
         navbarItems={[
           { title: "Beranda", link: "/" },
           { title: "Tentang", link: "/about" },
@@ -25,21 +26,21 @@ export default function Home() {
       >
         <div className="absolute inset-0 bg-gradient-to-t from-white to-transparent opacity-80"></div>
         <div className="container relative z-10 mx-auto">
-          <div className="flex">
-            <div className="mt-100">
+          <div className="flex gap-45">
+            <div className="mt-160">
               <h1 className="text-primary text-2xl">
                 Membangun Ekosistem Kopi Berkualitas
               </h1>
               <h1 className="text-8xl font-bold text-primary">
-                Sekolah Kopi Raisa
+                Sekolah Kopi <br />Raisa
               </h1>
             </div>
             <Image
               src="/assets/product1.png"
               alt="Logo"
-              width={600}
-              height={600}
-              className="ml-auto mt-50"
+              width={700}
+              height={200}
+              className=" mt-70"
             />
           </div>
         </div>
@@ -49,15 +50,15 @@ export default function Home() {
       <section className="bg-[#F5EDE4] py-16">
         <div className="container mx-auto grid grid-cols-1 md:grid-cols-2 gap-8 items-center">
           {/* Kolom Gambar */}
-          <div className="grid grid-cols-2 gap-4">
+          <div className="grid grid-cols-2 gap-y-4">
             <TiltedCard
               imageSrc="assets/tk1.png"
               altText="Kendrick Lamar - GNX Album Cover"
               captionText="Biji Kopi"
-              containerHeight="300px"
-              containerWidth="300px"
-              imageHeight="300px"
-              imageWidth="300px"
+              containerHeight="350px"
+              containerWidth="350px"
+              imageHeight="350px"
+              imageWidth="350px"
               rotateAmplitude={12}
               scaleOnHover={1.1}
               showMobileWarning={false}
@@ -71,10 +72,10 @@ export default function Home() {
               imageSrc="assets/tk2.png"
               altText="Kendrick Lamar - GNX Album Cover"
               captionText="Mas Paijo"
-              containerHeight="300px"
-              containerWidth="300px"
-              imageHeight="300px"
-              imageWidth="300px"
+              containerHeight="350px"
+              containerWidth="350px"
+              imageHeight="350px"
+              imageWidth="350px"
               rotateAmplitude={12}
               scaleOnHover={1.1}
               showMobileWarning={false}
@@ -89,9 +90,9 @@ export default function Home() {
               altText="Kendrick Lamar - GNX Album Cover"
               captionText="Bos Saleh"
               containerHeight="300px"
-              containerWidth="620px"
+              containerWidth="725px"
               imageHeight="300px"
-              imageWidth="620px"
+              imageWidth="725px"
               rotateAmplitude={12}
               scaleOnHover={1.1}
               showMobileWarning={false}
@@ -226,22 +227,46 @@ export default function Home() {
 
           {/* Auto-Slide Produk */}
           <div className="mt-10">
-            <ActivityCard 
-            title="Kegiatan Pelatihan Petani Kopi"
-            image="/assets/product.png"
-            />
-            <ActivityCard 
-            title="Ke"
-            image="/assets/activity.png"
+            <ActivityCard
+              activityItems={[
+                {
+                  id: 1,
+                  title: "Kegiatan 1 lorem ipsum dolor sit amet consectetur adipiscing elit sed do eiusmod tempor incididunt ut labore et dolore magna aliqua",
+                  image: "/assets/activity.png",
+                },
+                {
+                  id: 2,
+                  title: "Kegiatan 2",
+                  image: "/assets/activity.png",
+                },
+                {
+                  id: 3,
+                  title: "Kegiatan 3",
+                  image: "/assets/activity.png",
+                },
+                {
+                  id: 4,
+                  title: "Kegiatan 4",
+                  image: "/assets/activity.png",
+                },
+                {
+                  id: 5,
+                  title: "Kegiatan 5",
+                  image: "/assets/activity.png",
+                },
+                {
+                  id: 6,
+                  title: "Kegiatan 6",
+                  image: "/assets/activity.png",
+                },
+              ]}
             />
           </div>
         </div>
       </section>
 
       {/* Footer */}
-      <footer className="p-10 bg-gray-900 text-white text-center">
-        <p>&copy; 2025 Sekolah Kopi Raisa</p>
-      </footer>
+      <Footer />
     </div>
   );
 }
