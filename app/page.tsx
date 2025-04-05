@@ -2,8 +2,8 @@ import Image from "next/image";
 import Link from "next/link";
 import Navbar from "./components/Navbar";
 import TiltedCard from "./components/TiltedCard/TiltedCard";
-import ProductCard from "./components/ProductCard";
-import ActivityCard from "./components/ActivityCard";
+import ProductCard from "./components/ProductCarousel";
+import ActivityCard from "./components/ActivityCarousel";
 import Footer from "./components/Footer";
 
 export default function Home() {
@@ -12,10 +12,10 @@ export default function Home() {
       {/* Navbar */}
       <Navbar
         navbarItems={[
-          { title: "Beranda", link: "/" },
+          { title: "Beranda", link: "/", isActive: true },
           { title: "Tentang", link: "/about" },
-          { title: "Produk", link: "/products" },
-          { title: "Kegiatan", link: "/Kegiatan" },
+          { title: "Produk", link: "/product" },
+          { title: "Kegiatan", link: "/activity" },
         ]}
       />
 

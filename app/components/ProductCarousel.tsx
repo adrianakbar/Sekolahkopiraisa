@@ -8,17 +8,17 @@ import "swiper/css";
 import "swiper/css/navigation";
 import "swiper/css/pagination";
 
-interface ProductProps {
+interface ProductCarouselProps {
   id: number;
   name: string;
   price: string;
   image: string;
 }
 
-export default function ProductCard({
+export default function ProductCarouselCard({
   productItems,
 }: {
-  productItems: ProductProps[];
+  productItems: ProductCarouselProps[];
 }) {
   return (
     <Swiper
