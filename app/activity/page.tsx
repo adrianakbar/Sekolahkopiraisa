@@ -4,7 +4,7 @@ import ActivityCard from "../components/ActivityCard";
 
 export default function Activity() {
   return (
-    <div className="">
+    <>
       <Navbar
         navbarItems={[
           { title: "Beranda", link: "/" },
@@ -14,7 +14,7 @@ export default function Activity() {
         ]}
       />
       <div className="px-4 md:px-8 py-4 max-w-400 mx-auto">
-        <section className="mt-4">
+        <section className="mt-30">
           <ActivitySlider
             sliderItems={[
               {
@@ -81,6 +81,6 @@ export default function Activity() {
           </div>
         </section>
       </div>
-    </div>
+    </>
   );
 }
