@@ -6,6 +6,7 @@ import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faEye, faEyeSlash } from "@fortawesome/free-regular-svg-icons";
 import Image from "next/image";
 import { Eye, EyeOff } from "lucide-react";
+import { loginWithGoogle } from "../utils/auth";
 
 export default function Login() {
   const [showPassword, setShowPassword] = useState(false);
@@ -91,7 +92,7 @@ export default function Login() {
           <button
             type="button"
             className="w-full p-2 bg-gray-300 text-white place-items-center rounded-md border-gray-400 border hover:-translate-y-1 duration-150 ease-in"
-            // hover:bg-gray-400 duration-150 ease-in
+            onClick={loginWithGoogle}
           >
             <svg
               width="20px"

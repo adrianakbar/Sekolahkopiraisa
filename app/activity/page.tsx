@@ -1,6 +1,7 @@
 import Navbar from "../components/Navbar";
 import ActivitySlider from "../components/ActivitySlider";
 import ActivityCard from "../components/ActivityCard";
+import Footer from "../components/Footer";
 
 export default function Activity() {
   return (
@@ -81,6 +82,8 @@ export default function Activity() {
           </div>
         </section>
       </div>
+      {/* Footer */}
+      <Footer />
     </>
   );
 }

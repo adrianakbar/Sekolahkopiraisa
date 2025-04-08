@@ -54,13 +54,13 @@ export default function About() {
 
         {/* Section 2 - Visi Misi */}
         <section className="flex flex-col lg:flex-row gap-8">
-          <div className="lg:w-1/2">
+          <div className="lg:w-1/2 place-items-center">
             <Image
               src="/assets/about-image2.png" // ganti dengan path gambar kamu
               alt="Kegiatan Kebun"
               width={400}
               height={200}
-              className="rounded-xl w-full h-auto object-cover"
+              className="rounded-xl w-full h-auto max-w-100 object-cover"
             />
           </div>
           <div className="lg:w-1/2 bg-[#F5F3F1] p-6 rounded-xl">

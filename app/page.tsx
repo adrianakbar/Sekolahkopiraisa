@@ -8,7 +8,7 @@ import Footer from "./components/Footer";
 
 export default function Home() {
   return (
-    <div>
+    <>
       {/* Navbar */}
       <Navbar
         navbarItems={[
@@ -267,6 +267,6 @@ export default function Home() {
 
       {/* Footer */}
       <Footer />
-    </div>
+    </>
   );
 }
