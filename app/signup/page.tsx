@@ -3,8 +3,6 @@
 import { useState } from "react";
 import Link from "next/link";
 import Image from "next/image";
-import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faEye, faEyeSlash } from "@fortawesome/free-regular-svg-icons";
 import { loginWithGoogle, registerUser } from "../utils/auth";
 import { Eye, EyeOff } from "lucide-react";
 import { useRouter } from "next/navigation";
@@ -20,7 +18,7 @@ export default function Signup() {
   const [showPassword, setShowPassword] = useState(false);
   const [errors, setErrors] = useState<Partial<typeof form>>({});
   const [showPopup, setShowPopup] = useState(false);
-  const [successMessage, setSuccessMessage] = useState("");
+  const [message, setMessage] = useState("");
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const { name, value } = e.target;
@@ -34,17 +32,12 @@ export default function Signup() {
     e.preventDefault();
     try {
       const response = await registerUser(form);
-      console.log("Response:", response);
-console.log("Popup akan muncul dengan pesan:", response.message);
-
       setShowPopup(true); // tampilkan pop up sukses
-      setSuccessMessage(response.message); // ambil pesan sukses dari response
+      setMessage(response.message); // ambil pesan sukses dari response
       setTimeout(() => {
         router.push("/login"); // redirect setelah popup muncul
       }, 3000);
     } catch (error: any) {
-      console.log("Data dikirim ke API:", form);
-
       if (error.response && error.response.data && error.response.data.errors) {
         setErrors(error.response.data.errors); // ✅ Tangkap error backend
       } else {
@@ -78,7 +71,7 @@ console.log("Popup akan muncul dengan pesan:", response.message);
         <div className="relative z-10 max-w-lg w-full px-4 py-8 md:py-12">
           {showPopup && (
             <Popup
-              message={successMessage}
+              message={message}
               onClose={() => setShowPopup(false)}
             />
           )}

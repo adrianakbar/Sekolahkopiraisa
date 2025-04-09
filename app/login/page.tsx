@@ -4,22 +4,37 @@ import { useState } from "react";
 import Link from "next/link";
 import Image from "next/image";
 import { Eye, EyeOff } from "lucide-react";
-import { loginWithGoogle } from "../utils/auth";
+import { loginUser, loginWithGoogle } from "../utils/auth";
+import { useRouter } from "next/navigation";
 
 export default function Login() {
   const [form, setForm] = useState({ emailOrPhone: "", password: "" });
   const [showPassword, setShowPassword] = useState(false);
+  const [errors, setErrors] = useState<Partial<typeof form>>({});
+  const [showPopup, setShowPopup] = useState(false);
+  const [message, setMessage] = useState("");
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const { name, value } = e.target;
     setForm({ ...form, [name]: value });
+    setErrors((prev) => ({ ...prev, [name]: "" })); // Clear error for field
   };
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const router = useRouter();
+
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    // Proses login di sini
-    console.log("Login data:", form);
-  };
+    try {
+      const response = await loginUser(form);
+      router.push("/"); // redirect setelah popup muncul
+  } catch (error: any) {
+      if (error.response && error.response.data && error.response.data.errors) {
+        setErrors(error.response.data.errors); // ✅ Tangkap error backend
+      } else {
+        alert(error.message || "Terjadi kesalahan");
+      }
+    }
+  }
 
   return (
     <div className="min-h-screen flex flex-col md:grid md:grid-cols-12">
@@ -58,8 +73,10 @@ export default function Login() {
                 type="text"
                 className="w-full p-2 border border-gray-300 rounded-md"
                 placeholder="Masukkan email atau nomor hp"
-                required
               />
+              {errors.emailOrPhone && (
+                <p className="text-red-500 text-sm mt-1">{errors.emailOrPhone}</p>
+              )}
             </div>
             <div className="relative">
               <div className="flex justify-between items-center mb-1">
@@ -78,8 +95,8 @@ export default function Login() {
                 type={showPassword ? "text" : "password"}
                 className="w-full p-2 border border-gray-300 rounded-md"
                 placeholder="Masukkan kata sandi"
-                required
               />
+
               <button
                 type="button"
                 className="absolute top-8 right-3 text-gray-500"
@@ -87,6 +104,9 @@ export default function Login() {
               >
                 {showPassword ? <EyeOff size={18} /> : <Eye size={18} />}
               </button>
+              {errors.password && (
+                <p className="text-red-500 text-sm mt-1">{errors.password}</p>
+              )}
             </div>
 
             <button

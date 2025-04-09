@@ -1,42 +1,38 @@
-"use client";
-
-import { useEffect } from "react";
+import React from "react";
 import { motion, AnimatePresence } from "framer-motion";
+import { X } from "lucide-react";
 
-interface PopupProps {
+type PopupProps = {
   message: string;
   onClose: () => void;
-  duration?: number; // dalam ms
-}
+};
 
-export default function Popup({
-  message,
-  onClose,
-  duration = 3000,
-}: PopupProps) {
-  useEffect(() => {
-    const timer = setTimeout(onClose, duration);
-    return () => clearTimeout(timer);
-  }, [onClose, duration]);
-
+export default function Popup({ message, onClose }: PopupProps) {
   return (
     <AnimatePresence>
-      {message && (
+      <motion.div
+        initial={{ opacity: 0 }}
+        animate={{ opacity: 1 }}
+        exit={{ opacity: 0 }}
+        className="fixed inset-0 z-50 flex items-center justify-center bg-black bg-opacity-40 backdrop-blur-sm"
+      >
         <motion.div
-          initial={{ opacity: 0, y: 50 }}
-          animate={{ opacity: 1, y: 0 }}
-          exit={{ opacity: 0, y: 50 }}
-          transition={{ duration: 0.3 }}
-          className="fixed bottom-6 right-6 z-50 bg-green-500 text-white px-4 py-3 rounded-lg shadow-lg"
+          initial={{ scale: 0.9, opacity: 0 }}
+          animate={{ scale: 1, opacity: 1 }}
+          exit={{ scale: 0.9, opacity: 0 }}
+          transition={{ duration: 0.2 }}
+          className="relative bg-white rounded-2xl shadow-xl p-6 w-[90%] max-w-md"
         >
-          <div className="flex justify-between items-center gap-2">
-            <span>{message}</span>
-            <button onClick={onClose} className="ml-2 font-bold">
-              ✕
-            </button>
-          </div>
+          <button
+            className="absolute top-2 right-2 text-gray-500 hover:text-gray-800"
+            onClick={onClose}
+          >
+            <X size={20} />
+          </button>
+          <h2 className="text-lg font-semibold mb-2 text-center">Berhasil!</h2>
+          <p className="text-center text-gray-700">{message}</p>
         </motion.div>
-      )}
+      </motion.div>
     </AnimatePresence>
   );
 }
