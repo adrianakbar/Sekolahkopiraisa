@@ -8,6 +8,7 @@ import { faEye, faEyeSlash } from "@fortawesome/free-regular-svg-icons";
 import { loginWithGoogle, registerUser } from "../utils/auth";
 import { Eye, EyeOff } from "lucide-react";
 import { useRouter } from "next/navigation";
+import Popup from "../components/Popup";
 
 export default function Signup() {
   const [form, setForm] = useState({
@@ -18,7 +19,8 @@ export default function Signup() {
   });
   const [showPassword, setShowPassword] = useState(false);
   const [errors, setErrors] = useState<Partial<typeof form>>({});
-
+  const [showPopup, setShowPopup] = useState(false);
+  const [successMessage, setSuccessMessage] = useState("");
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const { name, value } = e.target;
@@ -32,11 +34,14 @@ export default function Signup() {
     e.preventDefault();
     try {
       const response = await registerUser(form);
-      console.log("Berhasil daftar:", response);
-      router.push("/login");
+      setShowPopup(true); // tampilkan pop up sukses
+      setSuccessMessage(response.message); // ambil pesan sukses dari response
+      setTimeout(() => {
+        router.push("/login"); // redirect setelah popup muncul
+      }, 3000);
     } catch (error: any) {
       console.log("Data dikirim ke API:", form);
-  
+
       if (error.response && error.response.data && error.response.data.errors) {
         setErrors(error.response.data.errors); // ✅ Tangkap error backend
       } else {
@@ -44,7 +49,6 @@ export default function Signup() {
       }
     }
   };
-  
 
   return (
     <div className="min-h-screen flex flex-col md:grid md:grid-cols-12">
@@ -69,6 +73,13 @@ export default function Signup() {
         </div>
 
         <div className="relative z-10 max-w-lg w-full px-4 py-8 md:py-12">
+          {showPopup && (
+            <Popup
+              message={successMessage}
+              onClose={() => setShowPopup(false)}
+            />
+          )}
+
           <h1 className="text-2xl md:text-3xl font-semibold mb-6">Welcome</h1>
           <form onSubmit={handleSubmit} className="space-y-4">
             <div>
@@ -80,7 +91,6 @@ export default function Signup() {
                 type="text"
                 className="w-full p-2 border border-gray-300 rounded-md"
                 placeholder="Masukkan nama lengkap"
-       
               />
               {errors.name && (
                 <p className="text-red-500 text-sm mt-1">{errors.name}</p>
@@ -96,7 +106,6 @@ export default function Signup() {
                 type="email"
                 className="w-full p-2 border border-gray-300 rounded-md"
                 placeholder="Masukkan email"
-
               />
               {errors.email && (
                 <p className="text-red-500 text-sm mt-1">{errors.email}</p>
@@ -112,7 +121,6 @@ export default function Signup() {
                 type={showPassword ? "text" : "password"}
                 className="w-full p-2 border border-gray-300 rounded-md"
                 placeholder="Masukkan kata sandi"
-   
               />
               <button
                 type="button"
