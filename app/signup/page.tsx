@@ -41,14 +41,18 @@ export default function Signup() {
       if (error.response && error.response.data && error.response.data.errors) {
         setErrors(error.response.data.errors); // ✅ Tangkap error backend
       } else {
-        {showPopup && 
+        {
           setMessage(error.message || "Terjadi kesalahan");
           setShowPopup(true); // tutup pop up jika ada error
-
-        }; // tutup pop up jika ada error
+        } // tutup pop up jika ada error
       }
     }
   };
+  {
+    showPopup && (
+      <Popup message={message} onClose={() => setShowPopup(false)} />
+    );
+  }
 
   return (
     <div className="min-h-screen flex flex-col md:grid md:grid-cols-12">
@@ -73,13 +77,6 @@ export default function Signup() {
         </div>
 
         <div className="relative z-10 max-w-lg w-full px-4 py-8 md:py-12">
-          {showPopup && (
-            <Popup
-              message={message}
-              onClose={() => setShowPopup(false)}
-            />
-          )}
-
           <h1 className="text-2xl md:text-3xl font-semibold mb-6">Welcome</h1>
           <form onSubmit={handleSubmit} className="space-y-4">
             <div>
