@@ -17,10 +17,13 @@ export default function Signup() {
     phone_number: "",
   });
   const [showPassword, setShowPassword] = useState(false);
+  const [errors, setErrors] = useState<Partial<typeof form>>({});
+
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const { name, value } = e.target;
     setForm({ ...form, [name]: value });
+    setErrors((prev) => ({ ...prev, [name]: "" })); // Clear error for field
   };
 
   const router = useRouter();
@@ -33,6 +36,13 @@ export default function Signup() {
       // Redirect ke halaman login atau beranda
       router.push("/login");
     } catch (error: any) {
+      console.log("Data dikirim ke API:", {
+        name: form.name,
+        email: form.email,
+        password: form.password,
+        phone_number: form.phone_number,
+      });
+
       console.error("Gagal daftar:", error.message);
       alert(error.message); // atau tampilkan di UI
     }
@@ -72,9 +82,13 @@ export default function Signup() {
                 type="text"
                 className="w-full p-2 border border-gray-300 rounded-md"
                 placeholder="Masukkan nama lengkap"
-                required
+       
               />
+              {errors.name && (
+                <p className="text-red-500 text-sm mt-1">{errors.name}</p>
+              )}
             </div>
+
             <div>
               <label className="block text-sm font-medium">Email</label>
               <input
@@ -84,9 +98,13 @@ export default function Signup() {
                 type="email"
                 className="w-full p-2 border border-gray-300 rounded-md"
                 placeholder="Masukkan email"
-                required
+
               />
+              {errors.email && (
+                <p className="text-red-500 text-sm mt-1">{errors.email}</p>
+              )}
             </div>
+
             <div className="relative">
               <label className="block text-sm font-medium">Kata Sandi</label>
               <input
@@ -96,7 +114,7 @@ export default function Signup() {
                 type={showPassword ? "text" : "password"}
                 className="w-full p-2 border border-gray-300 rounded-md"
                 placeholder="Masukkan kata sandi"
-                required
+   
               />
               <button
                 type="button"
@@ -105,19 +123,29 @@ export default function Signup() {
               >
                 {showPassword ? <EyeOff size={18} /> : <Eye size={18} />}
               </button>
+              {errors.password && (
+                <p className="text-red-500 text-sm mt-1">{errors.password}</p>
+              )}
             </div>
+
             <div>
               <label className="block text-sm font-medium">No. HP</label>
               <input
                 name="phone_number"
                 value={form.phone_number}
                 onChange={handleChange}
-                type="tel"
+                type="number"
                 className="w-full p-2 border border-gray-300 rounded-md"
                 placeholder="Masukkan nomor hp"
                 required
               />
+              {errors.phone_number && (
+                <p className="text-red-500 text-sm mt-1">
+                  {errors.phone_number}
+                </p>
+              )}
             </div>
+
             <p className="text-xs text-gray-600">
               Dengan membuat akun, Anda menyetujui{" "}
               <span className="text-brown-700 font-medium">Syarat Layanan</span>{" "}
