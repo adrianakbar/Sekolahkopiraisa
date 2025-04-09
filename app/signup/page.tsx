@@ -5,15 +5,16 @@ import Link from "next/link";
 import Image from "next/image";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faEye, faEyeSlash } from "@fortawesome/free-regular-svg-icons";
-import { loginWithGoogle } from "../utils/auth";
+import { loginWithGoogle, registerUser } from "../utils/auth";
 import { Eye, EyeOff } from "lucide-react";
+import { useRouter } from "next/navigation";
 
 export default function Signup() {
   const [form, setForm] = useState({
-    nama: "",
+    name: "",
     email: "",
     password: "",
-    phone: "",
+    phone_number: "",
   });
   const [showPassword, setShowPassword] = useState(false);
 
@@ -22,10 +23,19 @@ export default function Signup() {
     setForm({ ...form, [name]: value });
   };
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const router = useRouter();
+
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    // Proses signup di sini
-    console.log("Signup data:", form);
+    try {
+      const response = await registerUser(form);
+      console.log("Berhasil daftar:", response);
+      // Redirect ke halaman login atau beranda
+      router.push("/login");
+    } catch (error: any) {
+      console.error("Gagal daftar:", error.message);
+      alert(error.message); // atau tampilkan di UI
+    }
   };
 
   return (
@@ -56,8 +66,8 @@ export default function Signup() {
             <div>
               <label className="block text-sm font-medium">Nama</label>
               <input
-                name="nama"
-                value={form.nama}
+                name="name"
+                value={form.name}
                 onChange={handleChange}
                 type="text"
                 className="w-full p-2 border border-gray-300 rounded-md"
@@ -99,8 +109,8 @@ export default function Signup() {
             <div>
               <label className="block text-sm font-medium">No. HP</label>
               <input
-                name="phone"
-                value={form.phone}
+                name="phone_number"
+                value={form.phone_number}
                 onChange={handleChange}
                 type="tel"
                 className="w-full p-2 border border-gray-300 rounded-md"
