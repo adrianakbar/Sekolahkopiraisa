@@ -34,6 +34,9 @@ export default function Signup() {
     e.preventDefault();
     try {
       const response = await registerUser(form);
+      console.log("Response:", response);
+console.log("Popup akan muncul dengan pesan:", response.message);
+
       setShowPopup(true); // tampilkan pop up sukses
       setSuccessMessage(response.message); // ambil pesan sukses dari response
       setTimeout(() => {
