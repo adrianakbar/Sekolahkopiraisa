@@ -12,7 +12,7 @@ interface NavbarProps {
 
 interface User {
   name: string;
-  photo: string;
+  image: string;
 }
 
 export default function Navbar({
@@ -85,7 +85,7 @@ export default function Navbar({
           <>
             <span className="text-sm">{user.name}</span>
             <img
-              src={user.photo}
+              src={user.image}
               alt={user.name}
               className="w-8 h-8 rounded-full object-cover"
             />
@@ -153,7 +153,7 @@ export default function Navbar({
             {user ? (
               <div className="flex items-center space-x-3">
                 <img
-                  src={user.photo}
+                  src={user.image}
                   alt={user.name}
                   className="w-10 h-10 rounded-full object-cover"
                 />
