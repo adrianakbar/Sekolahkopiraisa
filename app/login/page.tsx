@@ -6,6 +6,7 @@ import Image from "next/image";
 import { Eye, EyeOff } from "lucide-react";
 import { loginUser, loginWithGoogle } from "../utils/auth";
 import { useRouter } from "next/navigation";
+import Popup from "../components/Popup";
 
 export default function Login() {
   const [form, setForm] = useState({ emailOrPhone: "", password: "" });
@@ -13,6 +14,7 @@ export default function Login() {
   const [errors, setErrors] = useState<Partial<typeof form>>({});
   const [showPopup, setShowPopup] = useState(false);
   const [message, setMessage] = useState("");
+  const [popupType, setPopupType] = useState<"success" | "error">("success");
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const { name, value } = e.target;
@@ -31,13 +33,22 @@ export default function Login() {
       if (error.response && error.response.data && error.response.data.errors) {
         setErrors(error.response.data.errors); // ✅ Tangkap error backend
       } else {
-        alert(error.message || "Terjadi kesalahan");
+        setMessage(error.message || "Terjadi kesalahan");
+        setPopupType("error");
+        setShowPopup(true);
       }
     }
   }
 
   return (
     <div className="min-h-screen flex flex-col md:grid md:grid-cols-12">
+      {showPopup && (
+              <Popup
+                message={message}
+                type={popupType}
+                onClose={() => setShowPopup(false)}
+              />
+            )}
       <div className="md:col-span-12 lg:col-span-6 flex justify-center items-center bg-background relative p-4 md:p-8 lg:p-10 order-2 md:order-1">
         {/* Background decoration */}
         <div className="absolute -top-10 right-0 -z-0 hidden md:block">

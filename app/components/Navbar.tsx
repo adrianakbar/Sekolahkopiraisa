@@ -60,7 +60,7 @@ export default function Navbar({
   }, [isMenuOpen]);
 
   return (
-    <nav className="flex justify-between items-center p-3 md:p-5 shadow-md bg-white/80 backdrop-blur fixed w-full z-50 px-4 md:px-8 lg:px-16">
+    <nav className="flex justify-between items-center p-3 md:p-5 shadow-md bg-white/80 fixed w-full z-50 px-4 md:px-8 lg:px-16">
       <Link href="/" className="flex items-center">
         <Image alt="Logo" src="/assets/logo.png" width={35} height={25} priority />
       </Link>
