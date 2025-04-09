@@ -19,6 +19,7 @@ export default function Signup() {
   const [errors, setErrors] = useState<Partial<typeof form>>({});
   const [showPopup, setShowPopup] = useState(false);
   const [message, setMessage] = useState("");
+  const [popupType, setPopupType] = useState<"success" | "error">("success");
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const { name, value } = e.target;
@@ -32,8 +33,9 @@ export default function Signup() {
     e.preventDefault();
     try {
       const response = await registerUser(form);
-      setShowPopup(true); // tampilkan pop up sukses
-      setMessage(response.message); // ambil pesan sukses dari response
+      setMessage(response.message);
+      setPopupType("success");
+      setShowPopup(true);
       setTimeout(() => {
         router.push("/login"); // redirect setelah popup muncul
       }, 3000);
@@ -43,19 +45,23 @@ export default function Signup() {
       } else {
         {
           setMessage(error.message || "Terjadi kesalahan");
-          setShowPopup(true); // tutup pop up jika ada error
-        } // tutup pop up jika ada error
+          setPopupType("error");
+          setShowPopup(true);
+        }
       }
     }
   };
-  {
-    showPopup && (
-      <Popup message={message} onClose={() => setShowPopup(false)} />
-    );
-  }
 
   return (
     <div className="min-h-screen flex flex-col md:grid md:grid-cols-12">
+      {showPopup && (
+        <Popup
+          message={message}
+          type={popupType}
+          onClose={() => setShowPopup(false)}
+        />
+      )}
+
       <div className="md:col-span-12 lg:col-span-6 flex justify-center items-center bg-background relative p-4 md:p-8 lg:p-10 order-2 md:order-1">
         <div className="absolute -top-10 right-0 -z-0 hidden md:block">
           <Image
