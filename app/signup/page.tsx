@@ -41,7 +41,11 @@ export default function Signup() {
       if (error.response && error.response.data && error.response.data.errors) {
         setErrors(error.response.data.errors); // ✅ Tangkap error backend
       } else {
-        alert(error.message || "Terjadi kesalahan");
+        {showPopup && 
+          setMessage(error.message || "Terjadi kesalahan");
+          setShowPopup(true); // tutup pop up jika ada error
+
+        }; // tutup pop up jika ada error
       }
     }
   };
