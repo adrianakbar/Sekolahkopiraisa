@@ -19,7 +19,7 @@ export default function OAuthSuccess() {
         }
       )
       .then(() => {
-        router.push("/dashboard"); // atau ke halaman utama setelah login
+        router.push("/"); // atau ke halaman utama setelah login
       })
       .catch(() => {
         router.push("/login?error=failed");
