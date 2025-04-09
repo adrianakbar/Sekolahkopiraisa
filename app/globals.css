@@ -4,6 +4,7 @@
 @theme inline {
   --color-background: #FEFDFC;
   --color-primary: #401E12;
+  --color-secondary: #F5EDE4;
 }
 
 @media (prefers-color-scheme: dark) {

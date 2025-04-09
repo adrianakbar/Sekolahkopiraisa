@@ -3,7 +3,7 @@ import Navbar from "../components/Navbar";
 
 export default function About() {
   return (
-    <div>
+    <>
       <Navbar
         navbarItems={[
           { title: "Beranda", link: "/" },
@@ -13,9 +13,10 @@ export default function About() {
         ]}
       />
 
-      <main className="px-4 md:px-12 lg:px-24 py-10 space-y-16">
+      <main className="">
         {/* Section 1 - Tentang Sekolah Kopi Raisa */}
-        <section className="flex flex-col md:flex-row gap-8 items-center">
+        <section className="flex flex-col md:flex-row gap-8 items-center bg-secondary">
+
           <div className="md:w-1/2">
             <h2 className="text-2xl md:text-3xl font-bold mb-3">
               Tentang Sekolah <br /> Kopi Raisa
@@ -83,6 +84,6 @@ export default function About() {
           </div>
         </section>
       </main>
-    </div>
+    </>
   );
 }
