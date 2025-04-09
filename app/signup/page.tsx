@@ -33,20 +33,18 @@ export default function Signup() {
     try {
       const response = await registerUser(form);
       console.log("Berhasil daftar:", response);
-      // Redirect ke halaman login atau beranda
       router.push("/login");
     } catch (error: any) {
-      console.log("Data dikirim ke API:", {
-        name: form.name,
-        email: form.email,
-        password: form.password,
-        phone_number: form.phone_number,
-      });
-
-      console.error("Gagal daftar:", error.message);
-      alert(error.message); // atau tampilkan di UI
+      console.log("Data dikirim ke API:", form);
+  
+      if (error.response && error.response.data && error.response.data.errors) {
+        setErrors(error.response.data.errors); // ✅ Tangkap error backend
+      } else {
+        alert(error.message || "Terjadi kesalahan");
+      }
     }
   };
+  
 
   return (
     <div className="min-h-screen flex flex-col md:grid md:grid-cols-12">
@@ -137,7 +135,6 @@ export default function Signup() {
                 type="number"
                 className="w-full p-2 border border-gray-300 rounded-md"
                 placeholder="Masukkan nomor hp"
-                required
               />
               {errors.phone_number && (
                 <p className="text-red-500 text-sm mt-1">
