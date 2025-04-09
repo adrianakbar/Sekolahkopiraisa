@@ -15,7 +15,7 @@ export default function Activity() {
         ]}
       />
       <div className="px-4 md:px-8 py-4 max-w-400 mx-auto">
-        <section className="mt-30">
+        <section className="mt-20 md:mt-30">
           <ActivitySlider
             sliderItems={[
               {

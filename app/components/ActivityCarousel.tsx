@@ -1,5 +1,4 @@
 "use client";
-
 import Image from "next/image";
 import { Swiper, SwiperSlide } from "swiper/react";
 import { Autoplay, Navigation, Pagination } from "swiper/modules";
@@ -20,12 +19,14 @@ export default function ActivityCarousel({
 }) {
   return (
     <Swiper
-      spaceBetween={24}
+      spaceBetween={16}
       slidesPerView={1}
       breakpoints={{
-        640: { slidesPerView: 1 },
-        1024: { slidesPerView: 2 },
-        1280: { slidesPerView: 3 },
+        480: { slidesPerView: 1.5, spaceBetween: 16 },
+        640: { slidesPerView: 2, spaceBetween: 20 },
+        768: { slidesPerView: 2, spaceBetween: 24 },
+        1024: { slidesPerView: 3, spaceBetween: 24 },
+        1280: { slidesPerView: 3, spaceBetween: 24 },
       }}
       autoplay={{
         delay: 3000,
@@ -33,25 +34,26 @@ export default function ActivityCarousel({
       }}
       loop={true}
       navigation={false}
-      pagination={{ clickable: false, enabled: false }}
+      pagination={false}
       modules={[Autoplay, Navigation, Pagination]}
-      className="w-full"
+      className="w-full pb-12"
     >
       {activityItems.map((activity) => (
-        <SwiperSlide key={activity.id} className="relative rounded-md overflow-hidden shadow-md">
+        <SwiperSlide key={activity.id} className="relative rounded-md overflow-hidden shadow-md aspect-[4/3]">
           {/* Gambar */}
-          <Image
-            src={activity.image}
-            alt={activity.title}
-            width={300}
-            height={200}
-            className="object-cover w-full"
-          />
-
-          {/* Overlay */}
-          <div className="absolute inset-0 bg-gradient-to-t from-black to-transparent opacity-80"></div>
-          <div className="absolute bottom-0 left-0 right-0 p-4 text-white">
-            <p className="">{activity.title}</p>
+          <div className="relative w-full h-full">
+            <Image
+              src={activity.image}
+              alt={activity.title}
+              fill
+              className="object-cover"
+              sizes="(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 33vw"
+            />
+            {/* Overlay */}
+            <div className="absolute inset-0 bg-gradient-to-t from-black to-transparent opacity-80"></div>
+            <div className="absolute bottom-0 left-0 right-0 p-3 md:p-4 text-white">
+              <p className="text-sm md:text-base line-clamp-2 md:line-clamp-3">{activity.title}</p>
+            </div>
           </div>
         </SwiperSlide>
       ))}
