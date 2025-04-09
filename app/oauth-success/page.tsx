@@ -1,9 +1,9 @@
 import { Suspense } from "react";
 import OAuthSuccess from "../components/OAuthSuccess"; // atau sesuai path kamu
 
-export default function Page() {
+export default function OauthSuccess() {
   return (
-    <Suspense fallback={<p>Memuat...</p>}>
+    <Suspense>
       <OAuthSuccess />
     </Suspense>
   );

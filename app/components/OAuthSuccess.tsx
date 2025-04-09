@@ -30,5 +30,5 @@ export default function OAuthSuccess() {
     }
   }, [token, router]);
 
-  return <p>Autentikasi berhasil, mohon tunggu...</p>;
+  return null;
 }
