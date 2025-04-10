@@ -42,7 +42,7 @@ export default function ProductCarouselCard({
     >
       {productItems.map((product) => (
         <SwiperSlide key={product.id} className="h-auto">
-          <div className="bg-[#F5EDE4] rounded-md shadow-md overflow-hidden h-full flex flex-col">
+          <div className="bg-[#F5EDE4] rounded-xl shadow-md overflow-hidden h-full flex flex-col">
             {/* Gambar Produk */}
             <div className="relative aspect-square w-full">
               <Image
@@ -59,10 +59,10 @@ export default function ProductCarouselCard({
               <p className="text-gray-700 font-semibold mt-auto mb-3">{product.price}</p>
               {/* Tombol Beli */}
               <div className="flex gap-2 justify-between mt-auto">
-                <button className="w-full py-2 bg-[#613D2B] text-white text-sm md:text-base font-medium rounded-md hover:-translate-y-1 duration-150 ease-in">
+                <button className="w-full py-2 bg-[#613D2B] text-white text-sm md:text-base font-medium rounded-xl hover:-translate-y-1 duration-150 ease-in">
                   Beli Sekarang
                 </button>
-                <button className="min-w-[44px] py-2 px-2 bg-[#613D2B] text-white font-medium rounded-md hover:-translate-y-1 duration-150 ease-in flex items-center justify-center">
+                <button className="min-w-[44px] py-2 px-2 bg-[#613D2B] text-white font-medium rounded-xl hover:-translate-y-1 duration-150 ease-in flex items-center justify-center">
                   <ShoppingCart size={20} />
                 </button>
               </div>

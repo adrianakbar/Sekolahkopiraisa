@@ -92,7 +92,7 @@ export default function Signup() {
                 value={form.name}
                 onChange={handleChange}
                 type="text"
-                className="w-full p-2 border border-gray-300 rounded-md"
+                className="w-full p-2 border border-gray-300 rounded-xl"
                 placeholder="Masukkan nama lengkap"
               />
               {errors.name && (
@@ -107,7 +107,7 @@ export default function Signup() {
                 value={form.email}
                 onChange={handleChange}
                 type="email"
-                className="w-full p-2 border border-gray-300 rounded-md"
+                className="w-full p-2 border border-gray-300 rounded-xl"
                 placeholder="Masukkan email"
               />
               {errors.email && (
@@ -122,7 +122,7 @@ export default function Signup() {
                 value={form.password}
                 onChange={handleChange}
                 type={showPassword ? "text" : "password"}
-                className="w-full p-2 border border-gray-300 rounded-md"
+                className="w-full p-2 border border-gray-300 rounded-xl"
                 placeholder="Masukkan kata sandi"
               />
               <button
@@ -144,7 +144,7 @@ export default function Signup() {
                 value={form.phone_number}
                 onChange={handleChange}
                 type="number"
-                className="w-full p-2 border border-gray-300 rounded-md"
+                className="w-full p-2 border border-gray-300 rounded-xl"
                 placeholder="Masukkan nomor hp"
               />
               {errors.phone_number && (
@@ -165,7 +165,7 @@ export default function Signup() {
             </p>
             <button
               type="submit"
-              className="w-full p-2 bg-primary text-white rounded-md hover:-translate-y-1 duration-150 ease-in"
+              className="w-full p-2 bg-primary text-white rounded-xl hover:-translate-y-1 duration-150 ease-in"
             >
               Buat Akun
             </button>
@@ -178,7 +178,7 @@ export default function Signup() {
           </div>
           <button
             type="button"
-            className="w-full p-2 bg-gray-300 rounded-md border-gray-400 border hover:-translate-y-1 duration-150 ease-in flex justify-center items-center gap-2"
+            className="w-full p-2 bg-gray-300 rounded-xl border-gray-400 border hover:-translate-y-1 duration-150 ease-in flex justify-center items-center gap-2"
             onClick={loginWithGoogle}
           >
             <Image

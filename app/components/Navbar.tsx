@@ -32,25 +32,6 @@ export default function Navbar({
     fetchUser();
   }, []);
 
-  // Close mobile menu when clicking outside
-  useEffect(() => {
-    const handleClickOutside = (event: MouseEvent) => {
-      const target = event.target as HTMLElement;
-      if (
-        isMenuOpen &&
-        !target.closest("#mobile-menu") &&
-        !target.closest("#menu-button")
-      ) {
-        setIsMenuOpen(false);
-      }
-    };
-
-    document.addEventListener("mousedown", handleClickOutside);
-    return () => {
-      document.removeEventListener("mousedown", handleClickOutside);
-    };
-  }, [isMenuOpen]);
-
   // Prevent scrolling when mobile menu is open
   useEffect(() => {
     if (isMenuOpen) {
@@ -73,6 +54,7 @@ export default function Navbar({
           width={35}
           height={25}
           priority
+          className="w-5 sm:w-7"
         />
       </Link>
 
@@ -108,12 +90,12 @@ export default function Navbar({
         ) : (
           <>
             <Link href="/login">
-              <button className="bg-primary px-4 py-2 rounded-md text-white hover:-translate-y-1 duration-150 ease-in">
+              <button className="bg-primary px-4 py-2 rounded-xl text-white hover:-translate-y-1 duration-150 ease-in">
                 Masuk
               </button>
             </Link>
             <Link href="/signup">
-              <button className="text-primary px-4 py-2 rounded-md border border-primary hover:-translate-y-1 duration-150 ease-in">
+              <button className="text-primary px-4 py-2 rounded-xl border border-primary hover:-translate-y-1 duration-150 ease-in">
                 Daftar
               </button>
             </Link>
@@ -158,10 +140,10 @@ export default function Navbar({
             onClick={() => setIsMenuOpen(false)}
             className=" text-gray-700"
           >
-            <X size={30}/>
+            <X size={30} />
           </button>
         </div>
-        
+
         <div className="flex flex-col items-center space-y-6 p-6">
           {navbarItems.map((item, index) => (
             <Link
@@ -193,7 +175,7 @@ export default function Navbar({
                   onClick={() => setIsMenuOpen(false)}
                   className="w-full"
                 >
-                  <button className="bg-primary w-full py-3 rounded-md text-white">
+                  <button className="bg-primary w-full py-3 rounded-xl text-white">
                     Masuk
                   </button>
                 </Link>
@@ -202,7 +184,7 @@ export default function Navbar({
                   onClick={() => setIsMenuOpen(false)}
                   className="w-full"
                 >
-                  <button className="text-primary w-full py-3 rounded-md border border-primary">
+                  <button className="text-primary w-full py-3 rounded-xl border border-primary">
                     Daftar
                   </button>
                 </Link>

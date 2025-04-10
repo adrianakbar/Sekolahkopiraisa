@@ -1,10 +1,10 @@
 import Image from "next/image";
 import Link from "next/link";
 import Navbar from "./components/Navbar";
-import TiltedCard from "./components/TiltedCard/TiltedCard";
 import ProductCard from "./components/ProductCarousel";
 import ActivityCard from "./components/ActivityCarousel";
 import Footer from "./components/Footer";
+import ImageAboutus from "./components/ImageAboutus";
 
 export default function Home() {
   return (
@@ -32,7 +32,8 @@ export default function Home() {
                 Membangun Ekosistem Kopi Berkualitas
               </h1>
               <h1 className="text-4xl md:text-6xl lg:text-8xl font-bold text-primary">
-                Sekolah Kopi <br className="hidden sm:block" />Raisa
+                Sekolah Kopi <br className="hidden sm:block" />
+                Raisa
               </h1>
             </div>
             <div className="w-full md:w-1/2 flex justify-center">
@@ -51,70 +52,29 @@ export default function Home() {
 
       {/* Tentang */}
       <section className="bg-[#F5EDE4] py-10 md:py-16">
-        <div className="container mx-auto px-4 grid grid-cols-1 md:grid-cols-2 gap-8 items-center">
+        <div className="container mx-auto px-4 flex flex-col md:flex-row items-center">
           {/* Kolom Gambar */}
-          <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-            <div className="w-full h-full">
-              <TiltedCard
-                imageSrc="assets/tk1.png"
-                altText="Biji Kopi"
-                captionText="Biji Kopi"
-                containerHeight="auto"
-                containerWidth="100%"
-                imageHeight="auto"
-                imageWidth="100%"
-                rotateAmplitude={12}
-                scaleOnHover={1.1}
-                showMobileWarning={false}
-                showTooltip={true}
-                displayOverlayContent={true}
-                overlayContent={
-                  <p className="tilted-card-demo-text">Biji Kopi</p>
-                }
-              />
-            </div>
-            <div className="w-full h-full">
-              <TiltedCard
-                imageSrc="assets/tk2.png"
-                altText="Mas Paijo"
-                captionText="Mas Paijo"
-                containerHeight="auto"
-                containerWidth="100%"
-                imageHeight="auto"
-                imageWidth="100%"
-                rotateAmplitude={12}
-                scaleOnHover={1.1}
-                showMobileWarning={false}
-                showTooltip={true}
-                displayOverlayContent={true}
-                overlayContent={
-                  <p className="tilted-card-demo-text">Mas Paijo</p>
-                }
-              />
-            </div>
-            <div className="w-full col-span-1 sm:col-span-2">
-              <TiltedCard
-                imageSrc="assets/tk3.png"
-                altText="Bos Saleh"
-                captionText="Bos Saleh"
-                containerHeight="auto"
-                containerWidth="100%"
-                imageHeight="auto"
-                imageWidth="100%"
-                rotateAmplitude={12}
-                scaleOnHover={1.1}
-                showMobileWarning={false}
-                showTooltip={true}
-                displayOverlayContent={true}
-                overlayContent={
-                  <p className="tilted-card-demo-text">Bos Saleh</p>
-                }
-              />
-            </div>
+          <div className="w-full md:w-1/2">
+            <ImageAboutus 
+              images={[
+                {
+                  src: "/assets/tk1.png",
+                  alt: "Gambar 1",
+                },
+                {
+                  src: "/assets/tk2.png",
+                  alt: "Gambar 2",
+                },
+                {
+                  src: "/assets/tk3.png",
+                  alt: "Gambar 3",
+                },
+              ]}
+            />
           </div>
 
           {/* Kolom Teks */}
-          <div className="mt-8 md:mt-0">
+          <div className="w-full mt-8 md:mt-0 md:ml-2">
             <h2 className="text-xl md:text-2xl font-semibold text-gray-900 mb-4">
               Tentang Kami
             </h2>
@@ -130,7 +90,7 @@ export default function Home() {
               tantangan penjaminan mutu dan kualitas kopi di Kabupaten
               Bondowoso.
             </p>
-            <button className="mt-6 px-4 md:px-6 py-2 md:py-3 bg-[#C19A6B] text-white font-semibold rounded-md hover:-translate-y-1 duration-150 ease-in">
+            <button className="mt-6 px-4 md:px-6 py-2 md:py-3 bg-[#C19A6B] text-white font-semibold rounded-xl hover:-translate-y-1 duration-150 ease-in">
               Lihat Selengkapnya
             </button>
           </div>
@@ -240,7 +200,8 @@ export default function Home() {
               activityItems={[
                 {
                   id: 1,
-                  title: "Kegiatan 1 lorem ipsum dolor sit amet consectetur adipiscing elit sed do eiusmod tempor incididunt ut labore et dolore magna aliqua",
+                  title:
+                    "Kegiatan 1 lorem ipsum dolor sit amet consectetur adipiscing elit sed do eiusmod tempor incididunt ut labore et dolore magna aliqua",
                   image: "/assets/activity.png",
                 },
                 {

@@ -39,20 +39,25 @@ export default function ActivityCarousel({
       className="w-full pb-12"
     >
       {activityItems.map((activity) => (
-        <SwiperSlide key={activity.id} className="relative rounded-md overflow-hidden shadow-md aspect-[4/3]">
-          {/* Gambar */}
+        <SwiperSlide
+          key={activity.id}
+          className="group relative rounded-xl overflow-hidden shadow-md aspect-[4/3] transition-shadow duration-300 hover:shadow-xl"
+        >
           <div className="relative w-full h-full">
             <Image
               src={activity.image}
               alt={activity.title}
               fill
-              className="object-cover"
-              sizes="(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 33vw"
+              className="object-cover transition-transform duration-500 ease-in-out group-hover:scale-105"
             />
+
             {/* Overlay */}
-            <div className="absolute inset-0 bg-gradient-to-t from-black to-transparent opacity-80"></div>
+            <div className="absolute inset-0 bg-gradient-to-t from-black to-transparent opacity-70 group-hover:opacity-80 transition-opacity duration-300 ease-in-out" />
+
             <div className="absolute bottom-0 left-0 right-0 p-3 md:p-4 text-white">
-              <p className="text-sm md:text-base line-clamp-2 md:line-clamp-3">{activity.title}</p>
+              <p className="text-sm md:text-base line-clamp-2 md:line-clamp-3">
+                {activity.title}
+              </p>
             </div>
           </div>
         </SwiperSlide>

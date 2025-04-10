@@ -82,7 +82,7 @@ export default function Login() {
                 value={form.emailOrPhone}
                 onChange={handleChange}
                 type="text"
-                className="w-full p-2 border border-gray-300 rounded-md"
+                className="w-full p-2 border border-gray-300 rounded-xl"
                 placeholder="Masukkan email atau nomor hp"
               />
               {errors.emailOrPhone && (
@@ -104,7 +104,7 @@ export default function Login() {
                 value={form.password}
                 onChange={handleChange}
                 type={showPassword ? "text" : "password"}
-                className="w-full p-2 border border-gray-300 rounded-md"
+                className="w-full p-2 border border-gray-300 rounded-xl"
                 placeholder="Masukkan kata sandi"
               />
 
@@ -122,7 +122,7 @@ export default function Login() {
 
             <button
               type="submit"
-              className="w-full p-2 bg-primary text-white rounded-md mt-4 hover:-translate-y-1 duration-150 ease-in"
+              className="w-full p-2 bg-primary text-white rounded-xl mt-4 hover:-translate-y-1 duration-150 ease-in"
             >
               Masuk
             </button>
@@ -136,7 +136,7 @@ export default function Login() {
 
           <button
             type="button"
-            className="w-full p-2 bg-gray-300 rounded-md border-gray-400 border hover:-translate-y-1 duration-150 ease-in flex justify-center items-center gap-2"
+            className="w-full p-2 bg-gray-300 rounded-xl border-gray-400 border hover:-translate-y-1 duration-150 ease-in flex justify-center items-center gap-2"
             onClick={loginWithGoogle}
           >
             <Image
