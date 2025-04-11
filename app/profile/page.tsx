@@ -58,7 +58,7 @@ export default function Profile() {
       <div className="flex flex-col items-center space-y-3 mb-6">
         <div className="relative w-40 h-40 rounded-full overflow-hidden border">
           <Image
-            src={formData.image} // ganti dengan path gambar valid
+            src={formData.image || "assets/user.png"} // ganti dengan path gambar valid
             alt="Foto Profil"
             fill
             className="object-cover"
