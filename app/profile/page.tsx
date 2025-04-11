@@ -1,6 +1,6 @@
 "use client";
 
-import { use, useEffect, useState } from "react";
+import { useEffect, useState } from "react";
 import Image from "next/image";
 import { getUser } from "../utils/user";
 import { useUserStore } from "../stores/userStore";
@@ -14,6 +14,7 @@ export default function Profile() {
     image: "",
   });
   const user = useUserStore((state) => state.user);
+  const setUser = useUserStore((state) => state.setUser);
 
   const handleChange = (
     e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>
@@ -32,7 +33,7 @@ export default function Profile() {
   };
 
   useEffect(() => {
-    const setUser = useUserStore((state) => state.setUser);
+    
     const fetchAndSetUser = async () => {
       const data = await getUser();
       if (data) setUser(data);

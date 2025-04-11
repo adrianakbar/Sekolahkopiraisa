@@ -26,11 +26,12 @@ export default function Navbar({
 }) {
   const [user, setUser] = useState<User | null>(null);
   const [isMenuOpen, setIsMenuOpen] = useState(false);
+  const router = useRouter();
+    const clearUser = useUserStore((state) => state.clearUser);
 
 
   const handleLogout = () => {
-    const router = useRouter();
-    const clearUser = useUserStore((state) => state.clearUser);
+    
     try {
       logout();
       clearUser();
