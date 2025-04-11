@@ -2,7 +2,7 @@
 import Link from "next/link";
 import Image from "next/image";
 import { useEffect, useState } from "react";
-import { getUser } from "../utils/getUser"; // pastikan path benar
+import { getUser } from "../utils/user"; // pastikan path benar
 import { X } from "lucide-react";
 
 interface NavbarProps {
