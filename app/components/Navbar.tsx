@@ -5,6 +5,7 @@ import { useEffect, useState } from "react";
 import { getUser } from "../utils/user"; // pastikan path benar
 import { X } from "lucide-react";
 import { logout } from "../utils/auth";
+import { useRouter } from "next/navigation";
 
 interface NavbarProps {
   title: string;
@@ -24,6 +25,18 @@ export default function Navbar({
 }) {
   const [user, setUser] = useState<User | null>(null);
   const [isMenuOpen, setIsMenuOpen] = useState(false);
+  const router = useRouter();
+
+
+  const handleLogout = () => {
+    try {
+      logout();
+      router.push("/");
+    }
+    catch (error) {
+      console.error("Logout Gagal:", error);
+    }
+  };
 
   useEffect(() => {
     const fetchUser = async () => {
@@ -91,8 +104,8 @@ export default function Navbar({
             </div>
 
             {/* Dropdown */}
-            <div className="absolute right-0 mt-2 w-48 bg-white shadow-lg rounded-xl py-2 z-50 opacity-0 group-hover:opacity-100 group-hover:translate-y-0 translate-y-2 transition-all duration-200 pointer-events-none group-hover:pointer-events-auto">
-              <div className="px-4 py-2 flex items-center space-x-2 border-b border-gray-200 border-spacing-10">
+            <div className="absolute right-0 mt-2 w-48 bg-white shadow-lg rounded-xl py-2 z-50 opacity-0 group-hover:opacity-100 group-hover:translate-y-0 translate-y-2 transition-all duration-300 pointer-events-none group-hover:pointer-events-auto">
+              <div className="px-4 py-2 flex items-center space-x-2 border-b border-gray-400">
                 <img
                   src={user.image}
                   alt={user.name}
@@ -109,7 +122,7 @@ export default function Navbar({
                 Lihat Profil
               </Link>
               <button
-                onClick={logout}
+                onClick={handleLogout}
                 className="block w-full text-left px-4 py-2 text-sm text-red-600 hover:bg-gray-100"
               >
                 Keluar
