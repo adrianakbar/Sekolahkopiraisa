@@ -2,7 +2,7 @@
 
 import { useEffect } from "react";
 import { motion, AnimatePresence } from "framer-motion";
-import { CheckCheck, TriangleAlert } from "lucide-react";
+import { CheckCheck, CircleX, TriangleAlert } from "lucide-react";
 
 interface PopupProps {
   message: string;
@@ -39,7 +39,7 @@ export default function Popup({
             <span>{Icon}</span>
             <span>{message}</span>
             <button onClick={onClose} className="ml-2 font-bold">
-              ✕
+            <CircleX />
             </button>
           </div>
         </motion.div>
