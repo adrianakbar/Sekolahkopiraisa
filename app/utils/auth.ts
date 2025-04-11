@@ -1,6 +1,6 @@
 import axios from "axios";
 
-const API = axios.create({
+export const API = axios.create({
   baseURL: process.env.NEXT_PUBLIC_API_URL,
   withCredentials: true, // supaya cookie (seperti token login) dikirim
 });
@@ -48,15 +48,3 @@ export const logout = async () => {
   }
 };
 
-// Get User
-export const getUser = async () => {
-  try {
-    const res = await API.get("/api/v1/auth/user", {
-      headers: { "Cache-Control": "no-store" },
-    });
-    return res.data.data; // menyesuaikan dengan response backend
-  } catch (error) {
-    console.error("Gagal fetch user:", error);
-    return null;
-  }
-};
