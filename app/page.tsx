@@ -1,5 +1,3 @@
-"use client";
-
 import Image from "next/image";
 import Link from "next/link";
 import Navbar from "./components/Navbar";
@@ -7,19 +5,9 @@ import ProductCard from "./components/ProductCarousel";
 import ActivityCard from "./components/ActivityCarousel";
 import Footer from "./components/Footer";
 import ImageAboutus from "./components/ImageAboutus";
-import { useUserStore } from "./stores/userStore";
-import { useEffect } from "react";
-import { getUser } from "./utils/user";
 
 export default function Home() {
-  useEffect(() => {
-    const setUser = useUserStore((state) => state.setUser);
-    const fetchAndSetUser = async () => {
-      const data = await getUser();
-      if (data) setUser(data);
-    };
-    fetchAndSetUser();
-  }, []);
+  
   return (
     <>
       {/* Navbar */}

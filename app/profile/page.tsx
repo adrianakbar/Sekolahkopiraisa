@@ -32,6 +32,15 @@ export default function Profile() {
   };
 
   useEffect(() => {
+    const setUser = useUserStore((state) => state.setUser);
+    const fetchAndSetUser = async () => {
+      const data = await getUser();
+      if (data) setUser(data);
+    };
+    fetchAndSetUser();
+  }, []);
+
+  useEffect(() => {
     if (user) {
       setFormData({
         name: user.name,
