@@ -27,7 +27,6 @@ export default function Login() {
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     try {
-      console.log("Form data:", form);
       const response = await loginUser(form);
       router.push("/"); // redirect setelah popup muncul
   } catch (error: any) {

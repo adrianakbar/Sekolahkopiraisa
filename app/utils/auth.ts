@@ -1,9 +1,4 @@
-import axios from "axios";
-
-export const API = axios.create({
-  baseURL: process.env.NEXT_PUBLIC_API_URL,
-  withCredentials: true, // supaya cookie (seperti token login) dikirim
-});
+import api from "./api";
 
 // Google OAuth Login
 export const loginWithGoogle = () => {
@@ -18,7 +13,7 @@ export const registerUser = async (formData: {
   phone_number: string;
 }) => {
   try {
-    const res = await API.post("/api/v1/auth/daftar", formData);
+    const res = await api.post("/api/v1/auth/daftar", formData);
     return res.data;
   } catch (error: any) {
     throw error; // biarkan frontend tangani error.response.data
@@ -31,7 +26,7 @@ export const loginUser = async (formData: {
   password: string;
 }) => {
   try {
-    const res = await API.post("/api/v1/auth/login", formData);
+    const res = await api.post("/api/v1/auth/login", formData);
     return res.data;
   } catch (error: any) {
     throw error; // tangani di frontend
@@ -41,7 +36,7 @@ export const loginUser = async (formData: {
 // Logout
 export const logout = async () => {
   try {
-    const res = await API.post("/api/v1/auth/logout");
+    const res = await api.post("/api/v1/auth/logout");
     return res.data;
   } catch (error: any) {
     throw error;
