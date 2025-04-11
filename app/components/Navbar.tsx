@@ -79,14 +79,45 @@ export default function Navbar({
       {/* Desktop Authentication */}
       <div className="hidden md:flex items-center space-x-4">
         {user ? (
-          <>
-            <span className="text-sm">{user.name}</span>
-            <img
-              src={user.image}
-              alt={user.name}
-              className="w-8 h-8 rounded-full object-cover"
-            />
-          </>
+          <div className="relative group">
+            <div className="flex items-center space-x-2 cursor-pointer">
+              <span className="text-sm">{user.name}</span>
+              <img
+                src={user.image}
+                alt={user.name}
+                className="w-8 h-8 rounded-full object-cover"
+              />
+            </div>
+
+            {/* Dropdown */}
+            <div className="absolute right-0 mt-2 w-48 bg-white shadow-lg rounded-xl py-2 z-50 opacity-0 group-hover:opacity-100 group-hover:translate-y-0 translate-y-2 transition-all duration-200 pointer-events-none group-hover:pointer-events-auto">
+              <div className="px-4 py-2 flex items-center space-x-2 border-b">
+                <img
+                  src={user.image}
+                  alt={user.name}
+                  className="w-10 h-10 rounded-full object-cover"
+                />
+                <div>
+                  <p className="text-sm font-medium">{user.name}</p>
+                </div>
+              </div>
+              <Link
+                href="/profile"
+                className="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100"
+              >
+                Lihat Profil
+              </Link>
+              <button
+                onClick={() => {
+                  // logika logout di sini, misalnya clear token atau redirect
+                  console.log("Logout clicked");
+                }}
+                className="block w-full text-left px-4 py-2 text-sm text-red-600 hover:bg-gray-100"
+              >
+                Keluar
+              </button>
+            </div>
+          </div>
         ) : (
           <>
             <Link href="/login">
