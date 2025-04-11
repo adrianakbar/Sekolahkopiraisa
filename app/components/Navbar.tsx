@@ -27,17 +27,13 @@ export default function Navbar({
   const [user, setUser] = useState<User | null>(null);
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const router = useRouter();
-    const clearUser = useUserStore((state) => state.clearUser);
-
+  const clearUser = useUserStore((state) => state.clearUser);
 
   const handleLogout = () => {
-    
     try {
       logout();
       clearUser();
-      router.push("/");
-    }
-    catch (error) {
+    } catch (error) {
       console.error("Logout Gagal:", error);
     }
   };
