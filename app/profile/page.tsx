@@ -1,5 +1,7 @@
 "use client";
+
 import { useState } from "react";
+import Image from "next/image";
 
 export default function Profile() {
   const [isEditing, setIsEditing] = useState(false);
@@ -11,7 +13,9 @@ export default function Profile() {
       "Jl. Kalimantan Tegalboto No.37, Krajan Timur, Sumbersari, Kec. Sumbersari, Kabupaten Jember, Jawa Timur 68121",
   });
 
-  const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
+  const handleChange = (
+    e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>
+  ) => {
     setFormData({ ...formData, [e.target.name]: e.target.value });
   };
 
@@ -21,7 +25,6 @@ export default function Profile() {
   };
 
   const handleSave = () => {
-    // Simpan data ke backend di sini
     setIsEditing(false);
     console.log("Data disimpan:", formData);
   };
@@ -31,12 +34,15 @@ export default function Profile() {
       <h1 className="text-center text-2xl font-bold mb-6">Profil Saya</h1>
 
       <div className="flex flex-col items-center space-y-3 mb-6">
-        <img
-          src="/path/to/user-image.jpg"
-          alt="Foto Profil"
-          className="w-40 h-40 rounded-full object-cover border"
-        />
-        <label className="inline-flex items-center px-4 py-2 bg-white border border-gray-300 text-sm rounded-lg shadow-sm cursor-pointer hover:bg-gray-100 transition">
+        <div className="relative w-40 h-40 rounded-full overflow-hidden border">
+          <Image
+            src="/path/to/user-image.jpg" // ganti dengan path gambar valid
+            alt="Foto Profil"
+            fill
+            className="object-cover"
+          />
+        </div>
+        <label className="inline-flex items-center px-4 py-2 bg-white border border-gray-300 text-sm rounded-xl shadow-sm cursor-pointer hover:bg-gray-100 transition">
           <input type="file" className="hidden" />
           📸 Ubah Foto
         </label>
@@ -51,7 +57,7 @@ export default function Profile() {
             value={formData.name}
             onChange={handleChange}
             disabled={!isEditing}
-            className={`w-full border rounded-lg p-2 mt-1 ${
+            className={`w-full border rounded-xl p-2 mt-1 ${
               isEditing ? "bg-white" : "bg-gray-100"
             }`}
           />
@@ -65,7 +71,7 @@ export default function Profile() {
             value={formData.email}
             onChange={handleChange}
             disabled={!isEditing}
-            className={`w-full border rounded-lg p-2 mt-1 ${
+            className={`w-full border rounded-xl p-2 mt-1 ${
               isEditing ? "bg-white" : "bg-gray-100"
             }`}
           />
@@ -79,7 +85,7 @@ export default function Profile() {
             value={formData.phone}
             onChange={handleChange}
             disabled={!isEditing}
-            className={`w-full border rounded-lg p-2 mt-1 ${
+            className={`w-full border rounded-xl p-2 mt-1 ${
               isEditing ? "bg-white" : "bg-gray-100"
             }`}
           />
@@ -92,13 +98,12 @@ export default function Profile() {
             value={formData.address}
             onChange={handleChange}
             disabled={!isEditing}
-            className={`w-full border rounded-lg p-2 mt-1 resize-none ${
+            className={`w-full border rounded-xl p-2 mt-1 resize-none ${
               isEditing ? "bg-white" : "bg-gray-100"
             }`}
           />
         </div>
 
-        {/* Tombol Aksi */}
         {!isEditing ? (
           <button
             type="button"

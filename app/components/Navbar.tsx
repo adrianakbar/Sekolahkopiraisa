@@ -4,6 +4,7 @@ import Image from "next/image";
 import { useEffect, useState } from "react";
 import { getUser } from "../utils/user"; // pastikan path benar
 import { X } from "lucide-react";
+import { logout } from "../utils/auth";
 
 interface NavbarProps {
   title: string;
@@ -91,7 +92,7 @@ export default function Navbar({
 
             {/* Dropdown */}
             <div className="absolute right-0 mt-2 w-48 bg-white shadow-lg rounded-xl py-2 z-50 opacity-0 group-hover:opacity-100 group-hover:translate-y-0 translate-y-2 transition-all duration-200 pointer-events-none group-hover:pointer-events-auto">
-              <div className="px-4 py-2 flex items-center space-x-2 border-b">
+              <div className="px-4 py-2 flex items-center space-x-2 border-b border-gray-200 border-spacing-10">
                 <img
                   src={user.image}
                   alt={user.name}
@@ -108,10 +109,7 @@ export default function Navbar({
                 Lihat Profil
               </Link>
               <button
-                onClick={() => {
-                  // logika logout di sini, misalnya clear token atau redirect
-                  console.log("Logout clicked");
-                }}
+                onClick={logout}
                 className="block w-full text-left px-4 py-2 text-sm text-red-600 hover:bg-gray-100"
               >
                 Keluar
@@ -191,14 +189,16 @@ export default function Navbar({
 
           <div className="pt-6 border-t w-full flex flex-col items-center space-y-4">
             {user ? (
-              <div className="flex items-center space-x-3">
-                <img
-                  src={user.image}
-                  alt={user.name}
-                  className="w-10 h-10 rounded-full object-cover"
-                />
-                <span className="text-base font-medium">{user.name}</span>
-              </div>
+              <Link href="/profile">
+                <div className="flex items-center space-x-3">
+                  <img
+                    src={user.image}
+                    alt={user.name}
+                    className="w-10 h-10 rounded-full object-cover"
+                  />
+                  <span className="text-base font-medium">{user.name}</span>
+                </div>
+              </Link>
             ) : (
               <>
                 <Link
