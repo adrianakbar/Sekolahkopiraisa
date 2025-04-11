@@ -1,17 +1,19 @@
 "use client";
 
-import { useState } from "react";
+import { use, useEffect, useState } from "react";
 import Image from "next/image";
+import { getUser } from "../utils/user";
+import { useUserStore } from "../stores/userStore";
 
 export default function Profile() {
   const [isEditing, setIsEditing] = useState(false);
   const [formData, setFormData] = useState({
-    name: "Aulia Putri Rachmawati",
-    email: "email@gmail.com",
-    phone: "0812345679",
-    address:
-      "Jl. Kalimantan Tegalboto No.37, Krajan Timur, Sumbersari, Kec. Sumbersari, Kabupaten Jember, Jawa Timur 68121",
+    name: "",
+    email: "",
+    phone_number: "",
+    image: "",
   });
+  const user = useUserStore((state) => state.user);
 
   const handleChange = (
     e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>
@@ -29,6 +31,17 @@ export default function Profile() {
     console.log("Data disimpan:", formData);
   };
 
+  useEffect(() => {
+    if (user) {
+      setFormData({
+        name: user.name,
+        email: user.email,
+        phone_number: user.phone_number,
+        image: user.image,
+      });
+    }
+  }, [user]);
+
   return (
     <div className="max-w-2xl mx-auto px-4 py-10">
       <h1 className="text-center text-2xl font-bold mb-6">Profil Saya</h1>
@@ -36,7 +49,7 @@ export default function Profile() {
       <div className="flex flex-col items-center space-y-3 mb-6">
         <div className="relative w-40 h-40 rounded-full overflow-hidden border">
           <Image
-            src="/path/to/user-image.jpg" // ganti dengan path gambar valid
+            src={formData.image} // ganti dengan path gambar valid
             alt="Foto Profil"
             fill
             className="object-cover"
@@ -82,23 +95,10 @@ export default function Profile() {
           <input
             name="phone"
             type="text"
-            value={formData.phone}
+            value={formData.phone_number}
             onChange={handleChange}
             disabled={!isEditing}
             className={`w-full border rounded-xl p-2 mt-1 ${
-              isEditing ? "bg-white" : "bg-gray-100"
-            }`}
-          />
-        </div>
-
-        <div>
-          <label className="block font-medium">Alamat</label>
-          <textarea
-            name="address"
-            value={formData.address}
-            onChange={handleChange}
-            disabled={!isEditing}
-            className={`w-full border rounded-xl p-2 mt-1 resize-none ${
               isEditing ? "bg-white" : "bg-gray-100"
             }`}
           />

@@ -6,6 +6,7 @@ import { getUser } from "../utils/user"; // pastikan path benar
 import { X } from "lucide-react";
 import { logout } from "../utils/auth";
 import { useRouter } from "next/navigation";
+import { useUserStore } from "../stores/userStore";
 
 interface NavbarProps {
   title: string;
@@ -25,12 +26,14 @@ export default function Navbar({
 }) {
   const [user, setUser] = useState<User | null>(null);
   const [isMenuOpen, setIsMenuOpen] = useState(false);
-  const router = useRouter();
 
 
   const handleLogout = () => {
+    const router = useRouter();
+    const clearUser = useUserStore((state) => state.clearUser);
     try {
       logout();
+      clearUser();
       router.push("/");
     }
     catch (error) {

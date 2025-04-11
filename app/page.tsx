@@ -5,8 +5,19 @@ import ProductCard from "./components/ProductCarousel";
 import ActivityCard from "./components/ActivityCarousel";
 import Footer from "./components/Footer";
 import ImageAboutus from "./components/ImageAboutus";
+import { useUserStore } from "./stores/userStore";
+import { useEffect } from "react";
+import { getUser } from "./utils/user";
 
 export default function Home() {
+  useEffect(() => {
+    const setUser = useUserStore((state) => state.setUser);
+    const fetchAndSetUser = async () => {
+      const data = await getUser();
+      if (data) setUser(data);
+    };
+    fetchAndSetUser();
+  }, []);
   return (
     <>
       {/* Navbar */}
@@ -55,7 +66,7 @@ export default function Home() {
         <div className="container mx-auto px-4 flex flex-col md:flex-row items-center">
           {/* Kolom Gambar */}
           <div className="w-full md:w-1/2">
-            <ImageAboutus 
+            <ImageAboutus
               images={[
                 {
                   src: "/assets/tk1.png",
