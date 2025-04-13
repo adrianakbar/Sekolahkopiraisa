@@ -29,7 +29,7 @@ export const loginUser = async (formData: {
     const res = await api.post("/api/v1/auth/login", formData);
     return res.data;
   } catch (error: any) {
-    throw error; // tangani di frontend
+    throw error;
   }
 };
 

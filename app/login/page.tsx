@@ -3,7 +3,7 @@
 import { useState } from "react";
 import Link from "next/link";
 import Image from "next/image";
-import { Eye, EyeOff } from "lucide-react";
+import { ChevronLeft, Eye, EyeOff, X } from "lucide-react";
 import { loginUser, loginWithGoogle } from "../utils/auth";
 import { useRouter } from "next/navigation";
 import Popup from "../components/Popup";
@@ -29,7 +29,7 @@ export default function Login() {
     try {
       const response = await loginUser(form);
       router.push("/"); // redirect setelah popup muncul
-  } catch (error: any) {
+    } catch (error: any) {
       if (error.response && error.response.data && error.response.data.errors) {
         setErrors(error.response.data.errors); // ✅ Tangkap error backend
       } else {
@@ -38,17 +38,17 @@ export default function Login() {
         setShowPopup(true);
       }
     }
-  }
+  };
 
   return (
     <div className="min-h-screen flex flex-col md:grid md:grid-cols-12">
       {showPopup && (
-              <Popup
-                message={message}
-                type={popupType}
-                onClose={() => setShowPopup(false)}
-              />
-            )}
+        <Popup
+          message={message}
+          type={popupType}
+          onClose={() => setShowPopup(false)}
+        />
+      )}
       <div className="md:col-span-12 lg:col-span-6 flex justify-center items-center bg-background relative p-4 md:p-8 lg:p-10 order-2 md:order-1">
         {/* Background decoration */}
         <div className="absolute -top-10 right-0 -z-0 hidden md:block">
@@ -71,6 +71,12 @@ export default function Login() {
         </div>
 
         <div className="relative z-10 max-w-lg w-full px-4 py-8 md:py-12">
+          <Link
+            href="/"
+            className="text-sm text-gray-500 hover:text-black transition-all inline-flex items-center"
+          >
+            <ChevronLeft /> Kembali ke Homepage
+          </Link>
           <h1 className="text-2xl md:text-3xl font-semibold mb-6">Welcome</h1>
           <form onSubmit={handleSubmit} className="space-y-4">
             <div>
@@ -86,7 +92,9 @@ export default function Login() {
                 placeholder="Masukkan email atau nomor hp"
               />
               {errors.emailOrPhone && (
-                <p className="text-red-500 text-sm mt-1">{errors.emailOrPhone}</p>
+                <p className="text-red-500 text-sm mt-1">
+                  {errors.emailOrPhone}
+                </p>
               )}
             </div>
             <div className="relative">
@@ -110,7 +118,7 @@ export default function Login() {
 
               <button
                 type="button"
-                className="absolute top-8 right-3 text-gray-500"
+                className="absolute top-9 right-3 text-gray-500"
                 onClick={() => setShowPassword(!showPassword)}
               >
                 {showPassword ? <EyeOff size={18} /> : <Eye size={18} />}

@@ -4,7 +4,7 @@ import { useState } from "react";
 import Link from "next/link";
 import Image from "next/image";
 import { loginWithGoogle, registerUser } from "../utils/auth";
-import { Eye, EyeOff } from "lucide-react";
+import { ChevronLeft, Eye, EyeOff } from "lucide-react";
 import { useRouter } from "next/navigation";
 import Popup from "../components/Popup";
 
@@ -27,8 +27,6 @@ export default function Signup() {
     setForm({ ...form, [name]: value });
     setErrors((prev) => ({ ...prev, [name]: "" })); // Clear error for field
   };
-
-  
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -84,6 +82,12 @@ export default function Signup() {
         </div>
 
         <div className="relative z-10 max-w-lg w-full px-4 py-8 md:py-12">
+          <Link
+            href="/"
+            className="text-sm text-gray-500 hover:text-black transition-all inline-flex items-center"
+          >
+            <ChevronLeft /> Kembali ke Homepage
+          </Link>
           <h1 className="text-2xl md:text-3xl font-semibold mb-6">Welcome</h1>
           <form onSubmit={handleSubmit} className="space-y-4">
             <div>

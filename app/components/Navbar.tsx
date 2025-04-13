@@ -2,7 +2,7 @@
 import Link from "next/link";
 import Image from "next/image";
 import { useEffect, useState } from "react";
-import { getUser } from "../utils/user"; // pastikan path benar
+import { getUser } from "../utils/user";
 import { X } from "lucide-react";
 import { logout } from "../utils/auth";
 import { useRouter } from "next/navigation";
@@ -28,6 +28,7 @@ export default function Navbar({
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const router = useRouter();
   const clearUser = useUserStore((state) => state.clearUser);
+  console.log("user", user);
 
   const handleLogout = () => {
     try {
