@@ -1,33 +1,16 @@
-// app/layout.tsx
+"use client";
+
+import { usePathname } from "next/navigation";
 import "./globals.css";
 import Navbar from "./components/Navbar";
-import { useEffect } from "react";
-import { getUser } from "./utils/user";
-import { useUserStore } from "./stores/userStore";
+import ClientProvider from "./components/ClientProvider";
 
-export const metadata = {
-  title: "Website Title",
-  description: "Deskripsi website",
-};
 
-export default function RootLayout({
-  children,
-}: {
-  children: React.ReactNode;
-}) {
-  const setUser = useUserStore((state) => state.setUser);
-
-  useEffect(() => {
-    const fetchUser = async () => {
-      try {
-        const user = await getUser(); // Panggil API yang validasi cookie
-        if (user) setUser(user);
-      } catch (err) {
-        console.error("User not logged in.");
-      }
-    };
-    fetchUser();
-  }, [setUser]);
+export default function RootLayout({ children }: { children: React.ReactNode }) {
+  const pathname = usePathname();
+  
+  // Tentukan apakah kita di halaman login atau daftar
+  const isAuthPage = pathname === "/login" || pathname === "/signup";
 
   const navbarItems = [
     { title: "Beranda", link: "/" },
@@ -39,8 +22,10 @@ export default function RootLayout({
   return (
     <html lang="id">
       <body>
-        <Navbar navbarItems={navbarItems} />
-        <main>{children}</main>
+        <ClientProvider>
+          {!isAuthPage && <Navbar navbarItems={navbarItems} />} {/* Navbar hanya ditampilkan jika bukan login atau daftar */}
+          <main>{children}</main>
+        </ClientProvider>
       </body>
     </html>
   );
