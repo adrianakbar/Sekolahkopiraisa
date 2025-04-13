@@ -10,15 +10,6 @@ export default function Home() {
   
   return (
     <>
-      {/* Navbar */}
-      <Navbar
-        navbarItems={[
-          { title: "Beranda", link: "/", isActive: true },
-          { title: "Tentang", link: "/about" },
-          { title: "Produk", link: "/product" },
-          { title: "Kegiatan", link: "/activity" },
-        ]}
-      />
 
       {/* Hero Section */}
       <section

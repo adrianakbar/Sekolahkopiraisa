@@ -1,17 +1,17 @@
 "use client";
+
 import Link from "next/link";
 import Image from "next/image";
 import { useEffect, useState } from "react";
 import { getUser } from "../utils/user";
 import { X } from "lucide-react";
 import { logout } from "../utils/auth";
-import { useRouter } from "next/navigation";
+import { useRouter, usePathname } from "next/navigation";
 import { useUserStore } from "../stores/userStore";
 
-interface NavbarProps {
+interface NavbarItem {
   title: string;
   link: string;
-  isActive?: boolean;
 }
 
 interface User {
@@ -19,16 +19,12 @@ interface User {
   image: string;
 }
 
-export default function Navbar({
-  navbarItems,
-}: {
-  navbarItems: NavbarProps[];
-}) {
+export default function Navbar({ navbarItems }: { navbarItems: NavbarItem[] }) {
   const [user, setUser] = useState<User | null>(null);
   const [isMenuOpen, setIsMenuOpen] = useState(false);
+  const pathname = usePathname();
   const router = useRouter();
   const clearUser = useUserStore((state) => state.clearUser);
-  console.log("user", user);
 
   const handleLogout = () => {
     try {
@@ -47,14 +43,8 @@ export default function Navbar({
     fetchUser();
   }, []);
 
-  // Prevent scrolling when mobile menu is open
   useEffect(() => {
-    if (isMenuOpen) {
-      document.body.style.overflow = "hidden";
-    } else {
-      document.body.style.overflow = "auto";
-    }
-
+    document.body.style.overflow = isMenuOpen ? "hidden" : "auto";
     return () => {
       document.body.style.overflow = "auto";
     };
@@ -75,23 +65,22 @@ export default function Navbar({
 
       {/* Desktop Navigation */}
       <div className="hidden md:flex space-x-6 lg:space-x-10 text-primary">
-        {navbarItems.map((item, index) => (
-          <Link key={index} href={item.link} className="relative group">
-            <span
-              className={`relative after:content-[''] after:absolute after:left-0 after:-bottom-1/4 after:h-[2px] after:bg-primary after:transition-all after:duration-300
-              ${
-                item.isActive
-                  ? "after:w-full"
-                  : "after:w-0 group-hover:after:w-full"
-              }`}
-            >
-              {item.title}
-            </span>
-          </Link>
-        ))}
+        {navbarItems.map((item, index) => {
+          const isActive = pathname === item.link;
+          return (
+            <Link key={index} href={item.link} className="relative group">
+              <span
+                className={`relative after:content-[''] after:absolute after:left-0 after:-bottom-1/4 after:h-[2px] after:bg-primary after:transition-all after:duration-300
+                ${isActive ? "after:w-full" : "after:w-0 group-hover:after:w-full"}`}
+              >
+                {item.title}
+              </span>
+            </Link>
+          );
+        })}
       </div>
 
-      {/* Desktop Authentication */}
+      {/* Desktop Auth */}
       <div className="hidden md:flex items-center space-x-4">
         {user ? (
           <div className="relative group">
@@ -103,8 +92,6 @@ export default function Navbar({
                 className="w-8 h-8 rounded-full object-cover"
               />
             </div>
-
-            {/* Dropdown */}
             <div className="absolute right-0 mt-2 w-48 bg-white shadow-lg rounded-xl py-2 z-50 opacity-0 group-hover:opacity-100 group-hover:translate-y-0 translate-y-2 transition-all duration-300 pointer-events-none group-hover:pointer-events-auto">
               <div className="px-4 py-2 flex items-center space-x-2 border-b border-gray-400">
                 <img
@@ -148,59 +135,36 @@ export default function Navbar({
 
       {/* Mobile Menu Button */}
       <button
-        id="menu-button"
         className="md:hidden flex flex-col space-y-1.5 p-2"
         onClick={() => setIsMenuOpen(!isMenuOpen)}
         aria-label="Toggle menu"
       >
-        <span
-          className={`block w-6 h-0.5 bg-primary transition-transform duration-300 ${
-            isMenuOpen ? "rotate-45 translate-y-2" : ""
-          }`}
-        />
-        <span
-          className={`block w-6 h-0.5 bg-primary transition-opacity duration-300 ${
-            isMenuOpen ? "opacity-0" : "opacity-100"
-          }`}
-        />
-        <span
-          className={`block w-6 h-0.5 bg-primary transition-transform duration-300 ${
-            isMenuOpen ? "-rotate-45 -translate-y-2" : ""
-          }`}
-        />
+        <span className={`block w-6 h-0.5 bg-primary transition-transform duration-300 ${isMenuOpen ? "rotate-45 translate-y-2" : ""}`} />
+        <span className={`block w-6 h-0.5 bg-primary transition-opacity duration-300 ${isMenuOpen ? "opacity-0" : "opacity-100"}`} />
+        <span className={`block w-6 h-0.5 bg-primary transition-transform duration-300 ${isMenuOpen ? "-rotate-45 -translate-y-2" : ""}`} />
       </button>
 
-      {/* Mobile Menu Overlay */}
-      <div
-        id="mobile-menu"
-        className={`md:hidden fixed inset-0 bg-white z-40 transition-transform duration-300 ease-in-out ${
-          isMenuOpen ? "translate-x-0" : "translate-x-full"
-        }`}
-      >
-        {/* Tombol close di pojok kanan atas */}
+      {/* Mobile Menu */}
+      <div className={`md:hidden fixed inset-0 bg-white z-40 transition-transform duration-300 ease-in-out ${isMenuOpen ? "translate-x-0" : "translate-x-full"}`}>
         <div className="flex justify-end p-4">
-          <button
-            onClick={() => setIsMenuOpen(false)}
-            className=" text-gray-700"
-          >
+          <button onClick={() => setIsMenuOpen(false)} className="text-gray-700">
             <X size={30} />
           </button>
         </div>
-
         <div className="flex flex-col items-center space-y-6 p-6">
-          {navbarItems.map((item, index) => (
-            <Link
-              key={index}
-              href={item.link}
-              onClick={() => setIsMenuOpen(false)}
-              className={`text-lg font-medium ${
-                item.isActive ? "text-primary" : "text-gray-700"
-              }`}
-            >
-              {item.title}
-            </Link>
-          ))}
-
+          {navbarItems.map((item, index) => {
+            const isActive = pathname === item.link;
+            return (
+              <Link
+                key={index}
+                href={item.link}
+                onClick={() => setIsMenuOpen(false)}
+                className={`text-lg font-medium ${isActive ? "text-primary" : "text-gray-700"}`}
+              >
+                {item.title}
+              </Link>
+            );
+          })}
           <div className="pt-6 border-t w-full flex flex-col items-center space-y-4">
             {user ? (
               <Link href="/profile">
@@ -215,23 +179,11 @@ export default function Navbar({
               </Link>
             ) : (
               <>
-                <Link
-                  href="/login"
-                  onClick={() => setIsMenuOpen(false)}
-                  className="w-full"
-                >
-                  <button className="bg-primary w-full py-3 rounded-xl text-white">
-                    Masuk
-                  </button>
+                <Link href="/login" onClick={() => setIsMenuOpen(false)} className="w-full">
+                  <button className="bg-primary w-full py-3 rounded-xl text-white">Masuk</button>
                 </Link>
-                <Link
-                  href="/signup"
-                  onClick={() => setIsMenuOpen(false)}
-                  className="w-full"
-                >
-                  <button className="text-primary w-full py-3 rounded-xl border border-primary">
-                    Daftar
-                  </button>
+                <Link href="/signup" onClick={() => setIsMenuOpen(false)} className="w-full">
+                  <button className="text-primary w-full py-3 rounded-xl border border-primary">Daftar</button>
                 </Link>
               </>
             )}

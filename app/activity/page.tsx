@@ -6,14 +6,6 @@ import Footer from "../components/Footer";
 export default function Activity() {
   return (
     <>
-      <Navbar
-        navbarItems={[
-          { title: "Beranda", link: "/" },
-          { title: "Tentang", link: "/about" },
-          { title: "Produk", link: "/product" },
-          { title: "Kegiatan", link: "/activity", isActive: true },
-        ]}
-      />
       <div className="px-4 md:px-8 py-4 max-w-400 mx-auto">
         <section className="mt-20 md:mt-30">
           <ActivitySlider
