@@ -11,6 +11,7 @@ import { useUserStore } from "../stores/userStore";
 import { Dropdown } from "./Dropdown";
 import { DropdownItem } from "./DropdownItem";
 
+
 interface NavbarItem {
   title: string;
   link: string;
@@ -24,7 +25,8 @@ interface User {
 
 export default function Navbar({ navbarItems }: { navbarItems: NavbarItem[] }) {
   const [user, setUser] = useState<User | null>(null);
-  const [isMenuOpen, setIsMenuOpen] = useState(false);
+  const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
+const [isDropdownOpen, setIsDropdownOpen] = useState(false);
   const pathname = usePathname();
   const router = useRouter();
   const clearUser = useUserStore((state) => state.clearUser);
@@ -51,18 +53,19 @@ export default function Navbar({ navbarItems }: { navbarItems: NavbarItem[] }) {
   }, []);
 
   useEffect(() => {
-    document.body.style.overflow = isMenuOpen ? "hidden" : "auto";
-    return () => {
-      document.body.style.overflow = "auto";
-    };
-  }, [isMenuOpen]);
+  document.body.style.overflow = isMobileMenuOpen ? "hidden" : "auto";
+  return () => {
+    document.body.style.overflow = "auto";
+  };
+}, [isMobileMenuOpen]);
+
 
   const toggleDropdown = () => {
-    setIsMenuOpen((prev) => !prev);
+    setIsDropdownOpen((prev) => !prev);
   };
 
   const closeDropdown = () => {
-    setIsMenuOpen(false);
+    setIsDropdownOpen(false);
   };
 
   return (
@@ -122,7 +125,7 @@ export default function Navbar({ navbarItems }: { navbarItems: NavbarItem[] }) {
 
               <svg
                 className={`stroke-gray-500 dark:stroke-gray-400 transition-transform duration-200 ${
-                  isMenuOpen ? "rotate-180" : ""
+                  isDropdownOpen ? "rotate-180" : ""
                 }`}
                 width="18"
                 height="20"
@@ -141,7 +144,7 @@ export default function Navbar({ navbarItems }: { navbarItems: NavbarItem[] }) {
             </button>
 
             <Dropdown
-              isOpen={isMenuOpen}
+              isOpen={isDropdownOpen}
               onClose={closeDropdown}
               className="absolute right-0 mt-[17px] flex w-[260px] flex-col rounded-2xl border border-gray-200 bg-white p-3 shadow-theme-lg dark:border-gray-800 dark:bg-gray-dark"
             >
@@ -224,22 +227,22 @@ export default function Navbar({ navbarItems }: { navbarItems: NavbarItem[] }) {
       {/* Mobile Menu Button */}
       <button
         className="md:hidden flex flex-col space-y-1.5 p-2"
-        onClick={() => setIsMenuOpen(!isMenuOpen)}
+        onClick={() => setIsDropdownOpen(!isDropdownOpen)}
         aria-label="Toggle menu"
       >
         <span
           className={`block w-6 h-0.5 bg-primary transition-transform duration-300 ${
-            isMenuOpen ? "rotate-45 translate-y-2" : ""
+            isDropdownOpen ? "rotate-45 translate-y-2" : ""
           }`}
         />
         <span
           className={`block w-6 h-0.5 bg-primary transition-opacity duration-300 ${
-            isMenuOpen ? "opacity-0" : "opacity-100"
+            isDropdownOpen ? "opacity-0" : "opacity-100"
           }`}
         />
         <span
           className={`block w-6 h-0.5 bg-primary transition-transform duration-300 ${
-            isMenuOpen ? "-rotate-45 -translate-y-2" : ""
+            isDropdownOpen ? "-rotate-45 -translate-y-2" : ""
           }`}
         />
       </button>
@@ -247,12 +250,12 @@ export default function Navbar({ navbarItems }: { navbarItems: NavbarItem[] }) {
       {/* Mobile Menu */}
       <div
         className={`md:hidden fixed inset-0 bg-white z-40 transition-transform duration-300 ease-in-out ${
-          isMenuOpen ? "translate-x-0" : "translate-x-full"
+          isDropdownOpen ? "translate-x-0" : "translate-x-full"
         }`}
       >
         <div className="flex justify-end p-4">
           <button
-            onClick={() => setIsMenuOpen(false)}
+            onClick={() => setIsDropdownOpen(false)}
             className="text-gray-700"
           >
             <X size={30} />
@@ -265,7 +268,7 @@ export default function Navbar({ navbarItems }: { navbarItems: NavbarItem[] }) {
               <Link
                 key={index}
                 href={item.link}
-                onClick={() => setIsMenuOpen(false)}
+                onClick={() => setIsDropdownOpen(false)}
                 className={`text-lg font-medium ${
                   isActive ? "text-primary" : "text-gray-700"
                 }`}
@@ -276,7 +279,7 @@ export default function Navbar({ navbarItems }: { navbarItems: NavbarItem[] }) {
           })}
           <div className="pt-6 border-t w-full flex flex-col items-center space-y-4">
             {user ? (
-              <Link href="/profile" onClick={() => setIsMenuOpen(false)}>
+              <Link href="/profile" onClick={() => setIsDropdownOpen(false)}>
                 <div className="flex items-center space-x-3">
                   <img
                     src={user.image || "/assets/user.png"}
@@ -290,7 +293,7 @@ export default function Navbar({ navbarItems }: { navbarItems: NavbarItem[] }) {
               <>
                 <Link
                   href="/login"
-                  onClick={() => setIsMenuOpen(false)}
+                  onClick={() => setIsDropdownOpen(false)}
                   className="w-full"
                 >
                   <button className="bg-primary w-full py-3 rounded-xl text-white">
@@ -299,7 +302,7 @@ export default function Navbar({ navbarItems }: { navbarItems: NavbarItem[] }) {
                 </Link>
                 <Link
                   href="/signup"
-                  onClick={() => setIsMenuOpen(false)}
+                  onClick={() => setIsDropdownOpen(false)}
                   className="w-full"
                 >
                   <button className="w-full border border-primary py-3 rounded-xl text-primary">
