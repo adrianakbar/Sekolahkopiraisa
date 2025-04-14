@@ -54,12 +54,25 @@ export default function Activity() {
     const getNews = async () => {
       try {
         setLoading(true);
-        const newsData = await fetchAllNews();
-        // Only show published news
-        const publishedNews = Array.isArray(newsData) 
-          ? newsData.filter(item => item.published)
-          : [];
-        setNews(publishedNews);
+        const response = await fetchAllNews();
+        console.log("API Response:", response); // Debug the response
+        
+        // Handle different possible response formats
+        let newsData;
+        if (Array.isArray(response)) {
+          newsData = response;
+        } else if (response && typeof response === 'object') {
+          // Check if response has a data property or other containing property
+          newsData = response.data || response.news || response.items || response;
+        } else {
+          newsData = [];
+        }
+        
+        // Ensure we have an array
+        const newsArray = Array.isArray(newsData) ? newsData : [];
+        console.log("Processed news array:", newsArray); // Debug the processed data
+        
+        setNews(newsArray);
         setError(null);
       } catch (err) {
         console.error("Failed to fetch news:", err);
@@ -72,20 +85,27 @@ export default function Activity() {
     getNews();
   }, []);
 
+  // Debug the state
+  console.log("Current news state:", news);
+  console.log("News length:", news.length);
+
   // Map news data to the format expected by ActivitySlider
   const sliderItems = news.slice(0, 5).map(item => ({
     id: item.id,
-    image: item.newsMedia?.[0]?.media_url || "/assets/placeholder.png",
+    image: item.newsMedia && item.newsMedia[0] ? item.newsMedia[0].media_url : "/assets/placeholder.png",
     title: item.title
   }));
 
   // Map news data to the format expected by ActivityCard
   const cardItems = news.map(item => ({
     id: item.id,
-    image: item.newsMedia?.[0]?.media_url || "/assets/placeholder.png",
+    image: item.newsMedia && item.newsMedia[0] ? item.newsMedia[0].media_url : "/assets/placeholder.png",
     title: item.title,
     time: formatRelativeTime(item.created_at)
   }));
+
+  console.log("Slider items:", sliderItems); // Debug slider items
+  console.log("Card items:", cardItems); // Debug card items
 
   if (loading) {
     return (
@@ -115,7 +135,7 @@ export default function Activity() {
     <>
       <div className="px-4 md:px-8 py-4 max-w-400 mx-auto">
         <section className="mt-20 md:mt-30">
-          {news.length > 0 ? (
+          {sliderItems.length > 0 ? (
             <ActivitySlider sliderItems={sliderItems} />
           ) : (
             <div className="text-center py-8">No news available for slider.</div>
@@ -125,7 +145,7 @@ export default function Activity() {
           <h2 className="text-lg md:text-xl font-semibold mb-4">
             Berita Terbaru
           </h2>
-          {news.length > 0 ? (
+          {cardItems.length > 0 ? (
             <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-8">
               <ActivityCard cardItems={cardItems} />
             </div>
