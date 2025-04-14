@@ -93,7 +93,7 @@ export default function Navbar({ navbarItems }: { navbarItems: NavbarItem[] }) {
             <div className="flex items-center space-x-2 cursor-pointer">
               <span className="text-sm">{user.name}</span>
               <img
-                src={user.image}
+                src={user.image || "/assets/user.png"}
                 alt={user.name}
                 className="w-8 h-8 rounded-full object-cover"
               />
@@ -101,7 +101,7 @@ export default function Navbar({ navbarItems }: { navbarItems: NavbarItem[] }) {
             <div className="absolute right-0 mt-2 w-48 bg-white shadow-lg rounded-xl py-2 z-50 opacity-0 group-hover:opacity-100 group-hover:translate-y-0 translate-y-2 transition-all duration-300 pointer-events-none group-hover:pointer-events-auto">
               <div className="px-4 py-2 flex items-center space-x-2 border-b border-gray-400">
                 <img
-                  src={user.image}
+                  src={user.image || "/assets/user.png"}
                   alt={user.name}
                   className="w-10 h-10 rounded-full object-cover"
                 />
@@ -176,7 +176,7 @@ export default function Navbar({ navbarItems }: { navbarItems: NavbarItem[] }) {
               <Link href="/profile" onClick={() => setIsMenuOpen(false)}>
                 <div className="flex items-center space-x-3">
                   <img
-                    src={user.image}
+                    src={user.image || "/assets/user.png"}
                     alt={user.name}
                     className="w-10 h-10 rounded-full object-cover"
                   />
