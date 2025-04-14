@@ -24,6 +24,11 @@ interface NewsItem {
   newsMedia: NewsMedia[];
 }
 
+interface ApiResponse {
+  message: string;
+  data: NewsItem[];
+}
+
 // Format time for relative time display
 const formatRelativeTime = (dateString: string) => {
   const now = new Date();
@@ -45,6 +50,22 @@ const formatRelativeTime = (dateString: string) => {
   }
 };
 
+// Get the first image media URL from a news item
+const getFirstImageUrl = (newsItem: NewsItem): string => {
+  if (!newsItem.newsMedia || newsItem.newsMedia.length === 0) {
+    return "/assets/placeholder.png";
+  }
+  
+  // Filter for image media types only
+  const imageMedia = newsItem.newsMedia.filter(
+    media => media.media_type.startsWith('image/')
+  );
+  
+  return imageMedia.length > 0 
+    ? imageMedia[0].media_url 
+    : "/assets/placeholder.png";
+};
+
 export default function Activity() {
   const [news, setNews] = useState<NewsItem[]>([]);
   const [loading, setLoading] = useState<boolean>(true);
@@ -55,24 +76,19 @@ export default function Activity() {
       try {
         setLoading(true);
         const response = await fetchAllNews();
-        console.log("API Response:", response); // Debug the response
         
-        // Handle different possible response formats
-        let newsData;
-        if (Array.isArray(response)) {
+        // Extract the data array from the response
+        let newsData: NewsItem[] = [];
+        if (response && response.data && Array.isArray(response.data)) {
+          newsData = response.data;
+        } else if (Array.isArray(response)) {
           newsData = response;
-        } else if (response && typeof response === 'object') {
-          // Check if response has a data property or other containing property
-          newsData = response.data || response.news || response.items || response;
-        } else {
-          newsData = [];
         }
         
-        // Ensure we have an array
-        const newsArray = Array.isArray(newsData) ? newsData : [];
-        console.log("Processed news array:", newsArray); // Debug the processed data
+        // Filter for published news only
+        const publishedNews = newsData.filter(item => item.published);
         
-        setNews(newsArray);
+        setNews(publishedNews);
         setError(null);
       } catch (err) {
         console.error("Failed to fetch news:", err);
@@ -85,27 +101,20 @@ export default function Activity() {
     getNews();
   }, []);
 
-  // Debug the state
-  console.log("Current news state:", news);
-  console.log("News length:", news.length);
-
   // Map news data to the format expected by ActivitySlider
   const sliderItems = news.slice(0, 5).map(item => ({
     id: item.id,
-    image: item.newsMedia && item.newsMedia[0] ? item.newsMedia[0].media_url : "/assets/placeholder.png",
+    image: getFirstImageUrl(item),
     title: item.title
   }));
 
   // Map news data to the format expected by ActivityCard
   const cardItems = news.map(item => ({
     id: item.id,
-    image: item.newsMedia && item.newsMedia[0] ? item.newsMedia[0].media_url : "/assets/placeholder.png",
+    image: getFirstImageUrl(item),
     title: item.title,
     time: formatRelativeTime(item.created_at)
   }));
-
-  console.log("Slider items:", sliderItems); // Debug slider items
-  console.log("Card items:", cardItems); // Debug card items
 
   if (loading) {
     return (
