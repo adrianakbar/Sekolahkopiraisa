@@ -30,6 +30,7 @@ export default function Navbar({ navbarItems }: { navbarItems: NavbarItem[] }) {
     try {
       logout();
       clearUser();
+      router.push("/login");
     } catch (error) {
       console.error("Logout Gagal:", error);
     }
@@ -37,11 +38,16 @@ export default function Navbar({ navbarItems }: { navbarItems: NavbarItem[] }) {
 
   useEffect(() => {
     const fetchUser = async () => {
-      const data = await getUser();
-      if (data) setUser(data);
+      try {
+        const data = await getUser();
+        if (data) setUser(data);
+      } catch (error) {
+        console.error("Gagal mendapatkan user:", error);
+      }
     };
     fetchUser();
   }, []);
+  
 
   useEffect(() => {
     document.body.style.overflow = isMenuOpen ? "hidden" : "auto";
@@ -167,7 +173,7 @@ export default function Navbar({ navbarItems }: { navbarItems: NavbarItem[] }) {
           })}
           <div className="pt-6 border-t w-full flex flex-col items-center space-y-4">
             {user ? (
-              <Link href="/profile">
+              <Link href="/profile" onClick={() => setIsMenuOpen(false)}>
                 <div className="flex items-center space-x-3">
                   <img
                     src={user.image}

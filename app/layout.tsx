@@ -5,12 +5,14 @@ import "./globals.css";
 import Navbar from "./components/Navbar";
 import ClientProvider from "./components/ClientProvider";
 
-
 export default function RootLayout({ children }: { children: React.ReactNode }) {
   const pathname = usePathname();
-  
+
   // Tentukan apakah kita di halaman login atau daftar
   const isAuthPage = pathname === "/login" || pathname === "/signup";
+
+  // Tentukan apakah kita berada di halaman admin
+  const isAdminPage = pathname.startsWith("/admin");
 
   const navbarItems = [
     { title: "Beranda", link: "/" },
@@ -23,7 +25,8 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
     <html lang="id">
       <body>
         <ClientProvider>
-          {!isAuthPage && <Navbar navbarItems={navbarItems} />} {/* Navbar hanya ditampilkan jika bukan login atau daftar */}
+          {/* Navbar hanya ditampilkan jika bukan halaman login/daftar atau admin */}
+          {!isAuthPage && !isAdminPage && <Navbar navbarItems={navbarItems} />}
           <main>{children}</main>
         </ClientProvider>
       </body>
