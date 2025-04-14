@@ -54,13 +54,13 @@ export default function About() {
             />
           </div>
           <div className="lg:w-2/3 w-full p-6">
-            <h3 className="text-3xl font-bold text-gray-800 mb-2">VISI</h3>
+            <h3 className="text-2xl md:text-3xl font-bold text-gray-800 mb-2">VISI</h3>
             <p className="text-gray-700 italic mb-6">
               “Terwujudnya Kemandirian Petani dan UMKM Kopi Bondowoso secara
               berkelanjutan serta penguatan branding Bondowoso Republik Kopi
               (BRK).”
             </p>
-            <h3 className="text-3xl font-bold text-gray-800 mb-2">MISI</h3>
+            <h3 className="text-2xl md:text-3xl font-bold text-gray-800 mb-2">MISI</h3>
             <ul className="list-disc list-inside text-gray-700 space-y-1">
               <li>Meningkatkan iklim perkopian yang sehat</li>
               <li>Menumbuhkembangkan kuantitas dan kualitas perkopian</li>
@@ -77,7 +77,7 @@ export default function About() {
 
       {/* Section 3 - Struktur Kelembagaan */}
       <section className="container mx-auto py-10 md:py-16 px-4">
-        <h3 className="text-3xl text-center font-bold text-gray-800 mb-10">
+        <h3 className="text-2xl md:text-3xl text-center font-bold text-gray-800 mb-10">
           Struktur Kelembagaan
         </h3>
         <Image
