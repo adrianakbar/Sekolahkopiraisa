@@ -2,7 +2,7 @@
 
 import { useEffect } from "react";
 import { useRouter, useSearchParams } from "next/navigation";
-import api from "../utils/api"; // pastikan path-nya sesuai
+import api from "../utils/api";
 
 export default function OAuthSuccess() {
   const router = useRouter();

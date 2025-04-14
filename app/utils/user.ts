@@ -6,7 +6,7 @@ export const getUser = async () => {
     const res = await api.get("/api/v1/auth/user", {
       headers: { "Cache-Control": "no-store" },
     });
-    return res.data;
+    return res.data.data;
   } catch (error) {
     console.error("Gagal fetch user:", error);
     return null;
