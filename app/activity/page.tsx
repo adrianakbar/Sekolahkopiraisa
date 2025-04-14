@@ -4,6 +4,7 @@ import ActivitySlider from "../components/ActivitySlider";
 import ActivityCard from "../components/ActivityCard";
 import Footer from "../components/Footer";
 import { fetchAllNews } from "../utils/activity";
+import Image from "next/image"; // Import Next.js Image component if you're using Next.js
 
 // Define types based on the provided JSON structure
 interface NewsMedia {
@@ -24,16 +25,21 @@ interface NewsItem {
   newsMedia: NewsMedia[];
 }
 
+interface ApiResponse {
+  message: string;
+  data: NewsItem[];
+}
+
 // Format time for relative time display
 const formatRelativeTime = (dateString: string) => {
   const now = new Date();
   const date = new Date(dateString);
   const diffMs = now.getTime() - date.getTime();
-
+  
   const diffMins = Math.floor(diffMs / 60000);
   const diffHrs = Math.floor(diffMins / 60);
   const diffDays = Math.floor(diffHrs / 24);
-
+  
   if (diffMins < 60) {
     return `${diffMins}m`;
   } else if (diffHrs < 24) {
@@ -50,15 +56,18 @@ const getFirstImageUrl = (newsItem: NewsItem): string => {
   if (!newsItem.newsMedia || newsItem.newsMedia.length === 0) {
     return "/assets/user.png";
   }
-
+  
   // Filter for image media types only
-  const imageMedia = newsItem.newsMedia.filter((media) =>
-    media.media_type.startsWith("image/")
+  const imageMedia = newsItem.newsMedia.filter(
+    media => media.media_type.startsWith('image/')
   );
-
-  return imageMedia.length > 0
-    ? imageMedia[0].media_url
-    : "/assets/user.png";
+  
+  if (imageMedia.length > 0) {
+    console.log("Using image URL:", imageMedia[0].media_url); // Debug log
+    return imageMedia[0].media_url;
+  } else {
+    return "/assets/user.png";
+  }
 };
 
 export default function Activity() {
@@ -71,7 +80,8 @@ export default function Activity() {
       try {
         setLoading(true);
         const response = await fetchAllNews();
-
+        console.log("Full API response:", response); // Debug log
+        
         // Extract the data array from the response
         let newsData: NewsItem[] = [];
         if (response && response.data && Array.isArray(response.data)) {
@@ -79,10 +89,13 @@ export default function Activity() {
         } else if (Array.isArray(response)) {
           newsData = response;
         }
-
-        // Filter for published news only
-        const publishedNews = newsData.filter((item) => item.published);
-
+        
+        console.log("Extracted news data:", newsData); // Debug log
+        
+        // Filter for published news only 
+        // Comment this out if you want to show all news items for testing
+        const publishedNews = newsData.filter(item => item.published);
+        
         setNews(publishedNews);
         setError(null);
       } catch (err) {
@@ -96,20 +109,38 @@ export default function Activity() {
     getNews();
   }, []);
 
+  // Debug the image URLs
+  useEffect(() => {
+    if (news.length > 0) {
+      console.log("First news item:", news[0]);
+      const imageUrl = getFirstImageUrl(news[0]);
+      console.log("First image URL:", imageUrl);
+      
+      // Test if the image is accessible
+      const img = new window.Image();
+      img.onload = () => console.log("✅ Image loaded successfully");
+      img.onerror = () => console.error("❌ Image failed to load");
+      img.src = imageUrl;
+    }
+  }, [news]);
+
   // Map news data to the format expected by ActivitySlider
-  const sliderItems = news.slice(0, 5).map((item) => ({
+  const sliderItems = news.map(item => ({
     id: item.id,
     image: getFirstImageUrl(item),
-    title: item.title,
-  }));
+    title: item.title || "Untitled" // Provide fallback for empty titles
+  })).slice(0, 5);
 
   // Map news data to the format expected by ActivityCard
-  const cardItems = news.map((item) => ({
+  const cardItems = news.map(item => ({
     id: item.id,
     image: getFirstImageUrl(item),
-    title: item.title,
-    time: formatRelativeTime(item.created_at),
+    title: item.title || "Untitled", // Provide fallback for empty titles
+    time: formatRelativeTime(item.created_at)
   }));
+
+  console.log("Slider items:", sliderItems); // Debug log
+  console.log("Card items:", cardItems); // Debug log
 
   if (loading) {
     return (
@@ -124,7 +155,7 @@ export default function Activity() {
       <div className="px-4 md:px-8 py-4 max-w-400 mx-auto">
         <div className="mt-20 text-center text-red-500">
           <p>{error}</p>
-          <button
+          <button 
             className="mt-4 px-4 py-2 bg-blue-500 text-white rounded hover:bg-blue-600"
             onClick={() => window.location.reload()}
           >
@@ -140,11 +171,23 @@ export default function Activity() {
       <div className="px-4 md:px-8 py-4 max-w-400 mx-auto">
         <section className="mt-20 md:mt-30">
           {sliderItems.length > 0 ? (
-            <ActivitySlider sliderItems={sliderItems} />
+            <>
+              {/* Debug image display */}
+              <div className="hidden">
+                {sliderItems.map(item => (
+                  <img 
+                    key={`debug-${item.id}`}
+                    src={item.image} 
+                    alt="Debug"
+                    onLoad={() => console.log(`Image ${item.id} loaded`)}
+                    onError={() => console.error(`Image ${item.id} failed to load`)}
+                  />
+                ))}
+              </div>
+              <ActivitySlider sliderItems={sliderItems} />
+            </>
           ) : (
-            <div className="text-center py-8">
-              No news available for slider.
-            </div>
+            <div className="text-center py-8">No news available for slider.</div>
           )}
         </section>
         <section className="mt-8">
