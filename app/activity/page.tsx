@@ -24,21 +24,16 @@ interface NewsItem {
   newsMedia: NewsMedia[];
 }
 
-interface ApiResponse {
-  message: string;
-  data: NewsItem[];
-}
-
 // Format time for relative time display
 const formatRelativeTime = (dateString: string) => {
   const now = new Date();
   const date = new Date(dateString);
   const diffMs = now.getTime() - date.getTime();
-  
+
   const diffMins = Math.floor(diffMs / 60000);
   const diffHrs = Math.floor(diffMins / 60);
   const diffDays = Math.floor(diffHrs / 24);
-  
+
   if (diffMins < 60) {
     return `${diffMins}m`;
   } else if (diffHrs < 24) {
@@ -53,17 +48,17 @@ const formatRelativeTime = (dateString: string) => {
 // Get the first image media URL from a news item
 const getFirstImageUrl = (newsItem: NewsItem): string => {
   if (!newsItem.newsMedia || newsItem.newsMedia.length === 0) {
-    return "/assets/placeholder.png";
+    return "/assets/user.png";
   }
-  
+
   // Filter for image media types only
-  const imageMedia = newsItem.newsMedia.filter(
-    media => media.media_type.startsWith('image/')
+  const imageMedia = newsItem.newsMedia.filter((media) =>
+    media.media_type.startsWith("image/")
   );
-  
-  return imageMedia.length > 0 
-    ? imageMedia[0].media_url 
-    : "/assets/placeholder.png";
+
+  return imageMedia.length > 0
+    ? imageMedia[0].media_url
+    : "/assets/user.png";
 };
 
 export default function Activity() {
@@ -76,7 +71,7 @@ export default function Activity() {
       try {
         setLoading(true);
         const response = await fetchAllNews();
-        
+
         // Extract the data array from the response
         let newsData: NewsItem[] = [];
         if (response && response.data && Array.isArray(response.data)) {
@@ -84,10 +79,10 @@ export default function Activity() {
         } else if (Array.isArray(response)) {
           newsData = response;
         }
-        
+
         // Filter for published news only
-        const publishedNews = newsData.filter(item => item.published);
-        
+        const publishedNews = newsData.filter((item) => item.published);
+
         setNews(publishedNews);
         setError(null);
       } catch (err) {
@@ -102,18 +97,18 @@ export default function Activity() {
   }, []);
 
   // Map news data to the format expected by ActivitySlider
-  const sliderItems = news.slice(0, 5).map(item => ({
-    id: item.id,
-    image: getFirstImageUrl(item),
-    title: item.title
-  }));
-
-  // Map news data to the format expected by ActivityCard
-  const cardItems = news.map(item => ({
+  const sliderItems = news.slice(0, 5).map((item) => ({
     id: item.id,
     image: getFirstImageUrl(item),
     title: item.title,
-    time: formatRelativeTime(item.created_at)
+  }));
+
+  // Map news data to the format expected by ActivityCard
+  const cardItems = news.map((item) => ({
+    id: item.id,
+    image: getFirstImageUrl(item),
+    title: item.title,
+    time: formatRelativeTime(item.created_at),
   }));
 
   if (loading) {
@@ -129,7 +124,7 @@ export default function Activity() {
       <div className="px-4 md:px-8 py-4 max-w-400 mx-auto">
         <div className="mt-20 text-center text-red-500">
           <p>{error}</p>
-          <button 
+          <button
             className="mt-4 px-4 py-2 bg-blue-500 text-white rounded hover:bg-blue-600"
             onClick={() => window.location.reload()}
           >
@@ -147,7 +142,9 @@ export default function Activity() {
           {sliderItems.length > 0 ? (
             <ActivitySlider sliderItems={sliderItems} />
           ) : (
-            <div className="text-center py-8">No news available for slider.</div>
+            <div className="text-center py-8">
+              No news available for slider.
+            </div>
           )}
         </section>
         <section className="mt-8">
