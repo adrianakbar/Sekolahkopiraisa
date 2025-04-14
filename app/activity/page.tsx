@@ -4,7 +4,6 @@ import ActivitySlider from "../components/ActivitySlider";
 import ActivityCard from "../components/ActivityCard";
 import Footer from "../components/Footer";
 import { fetchAllNews } from "../utils/activity";
-import Image from "next/image"; // Import Next.js Image component if you're using Next.js
 
 // Define types based on the provided JSON structure
 interface NewsMedia {
@@ -63,7 +62,6 @@ const getFirstImageUrl = (newsItem: NewsItem): string => {
   );
   
   if (imageMedia.length > 0) {
-    console.log("Using image URL:", imageMedia[0].media_url); // Debug log
     return imageMedia[0].media_url;
   } else {
     return "/assets/user.png";
@@ -80,7 +78,6 @@ export default function Activity() {
       try {
         setLoading(true);
         const response = await fetchAllNews();
-        console.log("Full API response:", response); // Debug log
         
         // Extract the data array from the response
         let newsData: NewsItem[] = [];
@@ -90,11 +87,8 @@ export default function Activity() {
           newsData = response;
         }
         
-        console.log("Extracted news data:", newsData); // Debug log
-        
-        // Filter for published news only 
-        // Comment this out if you want to show all news items for testing
-        const publishedNews = newsData.filter(item => item.published);
+        // Filter for published news only
+        const publishedNews = newsData.filter(item => item.published === true);
         
         setNews(publishedNews);
         setError(null);
@@ -109,38 +103,31 @@ export default function Activity() {
     getNews();
   }, []);
 
-  // Debug the image URLs
-  useEffect(() => {
-    if (news.length > 0) {
-      console.log("First news item:", news[0]);
-      const imageUrl = getFirstImageUrl(news[0]);
-      console.log("First image URL:", imageUrl);
-      
-      // Test if the image is accessible
-      const img = new window.Image();
-      img.onload = () => console.log("✅ Image loaded successfully");
-      img.onerror = () => console.error("❌ Image failed to load");
-      img.src = imageUrl;
-    }
-  }, [news]);
-
   // Map news data to the format expected by ActivitySlider
-  const sliderItems = news.map(item => ({
-    id: item.id,
-    image: getFirstImageUrl(item),
-    title: item.title || "Untitled" // Provide fallback for empty titles
-  })).slice(0, 5);
+  const sliderItems = news
+    .filter(item => {
+      // Make sure the item has a title and at least one image
+      return item.title && item.newsMedia?.some(media => media.media_type.startsWith('image/'));
+    })
+    .map(item => ({
+      id: item.id,
+      image: getFirstImageUrl(item),
+      title: item.title
+    }))
+    .slice(0, 5);
 
   // Map news data to the format expected by ActivityCard
-  const cardItems = news.map(item => ({
-    id: item.id,
-    image: getFirstImageUrl(item),
-    title: item.title || "Untitled", // Provide fallback for empty titles
-    time: formatRelativeTime(item.created_at)
-  }));
-
-  console.log("Slider items:", sliderItems); // Debug log
-  console.log("Card items:", cardItems); // Debug log
+  const cardItems = news
+    .filter(item => {
+      // Make sure the item has a title and at least one image
+      return item.title && item.newsMedia?.some(media => media.media_type.startsWith('image/'));
+    })
+    .map(item => ({
+      id: item.id,
+      image: getFirstImageUrl(item),
+      title: item.title,
+      time: formatRelativeTime(item.created_at)
+    }));
 
   if (loading) {
     return (
@@ -171,21 +158,7 @@ export default function Activity() {
       <div className="px-4 md:px-8 py-4 max-w-400 mx-auto">
         <section className="mt-20 md:mt-30">
           {sliderItems.length > 0 ? (
-            <>
-              {/* Debug image display */}
-              <div className="hidden">
-                {sliderItems.map(item => (
-                  <img 
-                    key={`debug-${item.id}`}
-                    src={item.image} 
-                    alt="Debug"
-                    onLoad={() => console.log(`Image ${item.id} loaded`)}
-                    onError={() => console.error(`Image ${item.id} failed to load`)}
-                  />
-                ))}
-              </div>
-              <ActivitySlider sliderItems={sliderItems} />
-            </>
+            <ActivitySlider sliderItems={sliderItems} />
           ) : (
             <div className="text-center py-8">No news available for slider.</div>
           )}
