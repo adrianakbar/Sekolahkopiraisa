@@ -192,7 +192,7 @@ export default function Signup() {
               width={20}
               height={20}
             />
-            <span>Login dengan Google</span>
+            <span>Lanjutkan Dengan Google</span>
           </button>
           <p className="text-center mt-4 text-gray-700 text-sm">
             Sudah punya akun?

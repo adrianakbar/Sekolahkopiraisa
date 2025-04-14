@@ -153,7 +153,7 @@ export default function Login() {
               width={20}
               height={20}
             />
-            <span>Login with Google</span>
+            <span>Lanjutkan Dengan Google</span>
           </button>
 
           <p className="text-center mt-4 text-gray-700 text-sm">

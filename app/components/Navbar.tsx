@@ -8,6 +8,8 @@ import { X } from "lucide-react";
 import { logout } from "../utils/auth";
 import { useRouter, usePathname } from "next/navigation";
 import { useUserStore } from "../stores/userStore";
+import { Dropdown } from "./Dropdown";
+import { DropdownItem } from "./DropdownItem";
 
 interface NavbarItem {
   title: string;
@@ -17,6 +19,7 @@ interface NavbarItem {
 interface User {
   name: string;
   image: string;
+  email: string;
 }
 
 export default function Navbar({ navbarItems }: { navbarItems: NavbarItem[] }) {
@@ -47,7 +50,6 @@ export default function Navbar({ navbarItems }: { navbarItems: NavbarItem[] }) {
     };
     fetchUser();
   }, []);
-  
 
   useEffect(() => {
     document.body.style.overflow = isMenuOpen ? "hidden" : "auto";
@@ -55,6 +57,14 @@ export default function Navbar({ navbarItems }: { navbarItems: NavbarItem[] }) {
       document.body.style.overflow = "auto";
     };
   }, [isMenuOpen]);
+
+  const toggleDropdown = () => {
+    setIsMenuOpen((prev) => !prev);
+  };
+
+  const closeDropdown = () => {
+    setIsMenuOpen(false);
+  };
 
   return (
     <nav className="flex justify-between items-center p-3 md:p-5 shadow-md bg-white/80 fixed w-full z-50 px-4 md:px-8 lg:px-16">
@@ -89,39 +99,79 @@ export default function Navbar({ navbarItems }: { navbarItems: NavbarItem[] }) {
       {/* Desktop Auth */}
       <div className="hidden md:flex items-center space-x-4">
         {user ? (
-          <div className="relative group">
-            <div className="flex items-center space-x-2 cursor-pointer">
-              <span className="text-sm">{user.name}</span>
-              <img
-                src={user.image || "/assets/user.png"}
-                alt={user.name}
-                className="w-8 h-8 rounded-full object-cover"
-              />
-            </div>
-            <div className="absolute right-0 mt-2 w-48 bg-white shadow-lg rounded-xl py-2 z-50 opacity-0 group-hover:opacity-100 group-hover:translate-y-0 translate-y-2 transition-all duration-300 pointer-events-none group-hover:pointer-events-auto">
-              <div className="px-4 py-2 flex items-center space-x-2 border-b border-gray-400">
-                <img
+          <div className="relative">
+            <button
+              onClick={toggleDropdown}
+              className="flex items-center text-gray-700 dark:text-gray-400"
+            >
+              <span className="mr-3 overflow-hidden rounded-full h-11 w-11">
+                <Image
+                  width={44}
+                  height={44}
                   src={user.image || "/assets/user.png"}
                   alt={user.name}
-                  className="w-10 h-10 rounded-full object-cover"
                 />
-                <div>
-                  <p className="text-sm font-medium">{user.name}</p>
-                </div>
+              </span>
+
+              <span className="block mr-1 font-medium text-theme-sm">{user.name}</span>
+
+              <svg
+                className={`stroke-gray-500 dark:stroke-gray-400 transition-transform duration-200 ${
+                  isMenuOpen ? "rotate-180" : ""
+                }`}
+                width="18"
+                height="20"
+                viewBox="0 0 18 20"
+                fill="none"
+                xmlns="http://www.w3.org/2000/svg"
+              >
+                <path
+                  d="M4.3125 8.65625L9 13.3437L13.6875 8.65625"
+                  stroke="currentColor"
+                  strokeWidth="1.5"
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                />
+              </svg>
+            </button>
+
+            <Dropdown
+              isOpen={isMenuOpen}
+              onClose={closeDropdown}
+              className="absolute right-0 mt-[17px] flex w-[260px] flex-col rounded-2xl border border-gray-200 bg-white p-3 shadow-theme-lg dark:border-gray-800 dark:bg-gray-dark"
+            >
+              <div>
+                <span className="block font-medium text-gray-700 text-theme-sm dark:text-gray-400">
+                  {user.name}
+                </span>
+                <span className="mt-0.5 block text-theme-xs text-gray-500 dark:text-gray-400">
+                  {user.email || "user@example.com"}
+                </span>
               </div>
-              <Link
-                href="/profile"
-                className="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100"
-              >
-                Lihat Profil
-              </Link>
-              <button
-                onClick={handleLogout}
-                className="block w-full text-left px-4 py-2 text-sm text-red-600 hover:bg-gray-100"
-              >
-                Keluar
-              </button>
-            </div>
+
+              <ul className="flex flex-col gap-1 pt-4 pb-3 border-b border-gray-200 dark:border-gray-800">
+                <li>
+                  <DropdownItem
+                    onItemClick={closeDropdown}
+                    tag="a"
+                    href="/profile"
+                    className="flex items-center gap-3 px-3 py-2 font-medium text-gray-700 rounded-lg group text-theme-sm hover:bg-gray-100 hover:text-gray-700 dark:text-gray-400 dark:hover:bg-white/5 dark:hover:text-gray-300"
+                  >
+                    Edit profile
+                  </DropdownItem>
+                </li>
+                <li>
+                  <DropdownItem
+                    onItemClick={closeDropdown}
+                    tag="button"
+                    onClick={handleLogout}
+                    className="flex items-center gap-3 px-3 py-2 font-medium text-gray-700 rounded-lg group text-theme-sm hover:bg-gray-100 hover:text-gray-700 dark:text-gray-400 dark:hover:bg-white/5 dark:hover:text-gray-300"
+                  >
+                    Keluar
+                  </DropdownItem>
+                </li>
+              </ul>
+            </Dropdown>
           </div>
         ) : (
           <>
@@ -189,7 +239,7 @@ export default function Navbar({ navbarItems }: { navbarItems: NavbarItem[] }) {
                   <button className="bg-primary w-full py-3 rounded-xl text-white">Masuk</button>
                 </Link>
                 <Link href="/signup" onClick={() => setIsMenuOpen(false)} className="w-full">
-                  <button className="text-primary w-full py-3 rounded-xl border border-primary">Daftar</button>
+                  <button className="w-full border border-primary py-3 rounded-xl text-primary">Daftar</button>
                 </Link>
               </>
             )}
