@@ -11,7 +11,6 @@ import { useUserStore } from "../stores/userStore";
 import { Dropdown } from "./Dropdown";
 import { DropdownItem } from "./DropdownItem";
 
-
 interface NavbarItem {
   title: string;
   link: string;
@@ -25,8 +24,7 @@ interface User {
 
 export default function Navbar({ navbarItems }: { navbarItems: NavbarItem[] }) {
   const [user, setUser] = useState<User | null>(null);
-  const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
-const [isDropdownOpen, setIsDropdownOpen] = useState(false);
+  const [isDropdownOpen, setIsDropdownOpen] = useState(false);
   const pathname = usePathname();
   const router = useRouter();
   const clearUser = useUserStore((state) => state.clearUser);
@@ -52,17 +50,11 @@ const [isDropdownOpen, setIsDropdownOpen] = useState(false);
     fetchUser();
   }, []);
 
-  useEffect(() => {
-  document.body.style.overflow = isMobileMenuOpen ? "hidden" : "auto";
-  return () => {
-    document.body.style.overflow = "auto";
-  };
-}, [isMobileMenuOpen]);
 
-
-  const toggleDropdown = () => {
+  const toggleDropdown = (e: React.MouseEvent<HTMLButtonElement, MouseEvent>) => {
+    e.stopPropagation();
     setIsDropdownOpen((prev) => !prev);
-  };
+  }
 
   const closeDropdown = () => {
     setIsDropdownOpen(false);
