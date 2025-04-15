@@ -8,10 +8,6 @@ export default function SkeletonActivity() {
         <div className="relative w-full h-[300px] md:h-[400px] lg:h-[500px] bg-gray-200 animate-pulse rounded-xl overflow-hidden shadow-md">
           {/* Placeholder untuk gambar */}
           <div className="absolute inset-0 bg-gray-300"></div>
-          {/* Placeholder untuk overlay dan teks */}
-          <div className="absolute inset-0 bg-black bg-opacity-40 flex items-end p-6">
-            <div className="h-8 w-3/4 bg-gray-400 rounded"></div>
-          </div>
           {/* Placeholder untuk dots */}
           <div className="absolute bottom-4 left-1/2 transform -translate-x-1/2 flex space-x-2">
             {[...Array(5)].map((_, index) => (

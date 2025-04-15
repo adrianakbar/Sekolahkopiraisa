@@ -172,7 +172,7 @@ export default function Navbar({ navbarItems }: { navbarItems: NavbarItem[] }) {
                         fill=""
                       />
                     </svg>
-                    Edit profile
+                    Edit profil
                   </DropdownItem>
                 </li>
               </ul>
