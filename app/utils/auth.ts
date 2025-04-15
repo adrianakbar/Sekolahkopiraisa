@@ -52,8 +52,10 @@ export const resetPasswordRequest = async (email: string) => {
     return res.data;
   } catch (error: any) {
     if (error.response) {
+      // Gunakan error.response.data.error jika ada, jika tidak gunakan message
       throw new Error(
-        error.response.data.message
+        error.response.data.error ||
+          error.response.data.message
       );
     }
     throw new Error("Tidak dapat terhubung ke server. Coba lagi nanti.");

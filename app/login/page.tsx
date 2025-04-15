@@ -35,6 +35,9 @@ export default function Login() {
     e.preventDefault();
     try {
       const response = await loginUser(form);
+      setMessage(response.message);
+      setPopupType("error");
+      setShowPopup(true);
       router.replace("/"); // redirect setelah popup muncul
     } catch (error: any) {
       if (error.response && error.response.data && error.response.data.errors) {
