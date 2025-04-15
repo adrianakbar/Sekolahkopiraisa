@@ -4,7 +4,11 @@ import { useState } from "react";
 import Link from "next/link";
 import Image from "next/image";
 import { ChevronLeft, Eye, EyeOff, X } from "lucide-react";
-import { loginUser, loginWithGoogle, resetPasswordRequest } from "../utils/auth";
+import {
+  loginUser,
+  loginWithGoogle,
+  resetPasswordRequest,
+} from "../utils/auth";
 import { useRouter } from "next/navigation";
 import Popup from "../components/Popup";
 
@@ -47,17 +51,17 @@ export default function Login() {
     e.preventDefault();
     // Validasi email sederhana
     if (!forgotPasswordEmail) {
-      setEmailError("Email harus diisi");
+      setEmailError("*Email harus diisi");
       return;
     }
     if (!/\S+@\S+\.\S+/.test(forgotPasswordEmail)) {
-      setEmailError("Email tidak valid");
+      setEmailError("*Email tidak valid");
       return;
     }
 
     try {
-      await resetPasswordRequest(forgotPasswordEmail);
-      setMessage(message);
+      const response = await resetPasswordRequest(forgotPasswordEmail); // Simpan respons
+      setMessage(response.message);
       setPopupType("success");
       setShowPopup(true);
       setShowForgotPasswordModal(false);
