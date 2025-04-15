@@ -43,3 +43,14 @@ export const logout = async () => {
   }
 };
 
+// Reset Password
+export const resetPasswordRequest = async (email: string) => {
+  try {
+    const res = await api.post("/api/v1/auth/reset-password-request", {
+      email,
+    });
+    return res.data;
+  } catch (error: any) {
+    throw error;
+  }
+};

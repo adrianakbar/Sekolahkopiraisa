@@ -4,7 +4,7 @@ import { useState } from "react";
 import Link from "next/link";
 import Image from "next/image";
 import { ChevronLeft, Eye, EyeOff, X } from "lucide-react";
-import { loginUser, loginWithGoogle } from "../utils/auth";
+import { loginUser, loginWithGoogle, resetPasswordRequest } from "../utils/auth";
 import { useRouter } from "next/navigation";
 import Popup from "../components/Popup";
 
@@ -15,6 +15,9 @@ export default function Login() {
   const [showPopup, setShowPopup] = useState(false);
   const [message, setMessage] = useState("");
   const [popupType, setPopupType] = useState<"success" | "error">("success");
+  const [showForgotPasswordModal, setShowForgotPasswordModal] = useState(false);
+  const [forgotPasswordEmail, setForgotPasswordEmail] = useState("");
+  const [emailError, setEmailError] = useState("");
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const { name, value } = e.target;
@@ -40,6 +43,33 @@ export default function Login() {
     }
   };
 
+  const handleForgotPasswordSubmit = async (e: React.FormEvent) => {
+    e.preventDefault();
+    // Validasi email sederhana
+    if (!forgotPasswordEmail) {
+      setEmailError("Email harus diisi");
+      return;
+    }
+    if (!/\S+@\S+\.\S+/.test(forgotPasswordEmail)) {
+      setEmailError("Email tidak valid");
+      return;
+    }
+
+    try {
+      await resetPasswordRequest(forgotPasswordEmail);
+      setMessage(message);
+      setPopupType("success");
+      setShowPopup(true);
+      setShowForgotPasswordModal(false);
+      setForgotPasswordEmail("");
+      setEmailError("");
+    } catch (error: any) {
+      setMessage(error.message || "Terjadi kesalahan saat mengirim email");
+      setPopupType("error");
+      setShowPopup(true);
+    }
+  };
+
   return (
     <div className="min-h-screen flex flex-col md:grid md:grid-cols-12">
       {showPopup && (
@@ -48,6 +78,57 @@ export default function Login() {
           type={popupType}
           onClose={() => setShowPopup(false)}
         />
+      )}
+      {/* Modal Forgot Password */}
+      {showForgotPasswordModal && (
+        <div className="fixed inset-0 backdrop-blur-lg flex items-center justify-center z-40">
+          <div className="bg-white rounded-xl p-6 w-full max-w-md mx-4">
+            <div className="flex justify-between items-center mb-4">
+              <h2 className="text-xl font-semibold">Reset Password</h2>
+              <button
+                onClick={() => setShowForgotPasswordModal(false)}
+                className="text-gray-500 hover:text-gray-700"
+              >
+                <X />
+              </button>
+            </div>
+            <form onSubmit={handleForgotPasswordSubmit} className="space-y-4">
+              <div>
+                <label className="block text-sm font-medium mb-1">
+                  Masukkan Email
+                </label>
+                <input
+                  type="email"
+                  value={forgotPasswordEmail}
+                  onChange={(e) => {
+                    setForgotPasswordEmail(e.target.value);
+                    setEmailError("");
+                  }}
+                  className="w-full p-2 border border-gray-300 rounded-xl"
+                  placeholder="Masukkan alamat email"
+                />
+                {emailError && (
+                  <p className="text-red-500 text-sm mt-1">{emailError}</p>
+                )}
+              </div>
+              <div className="flex gap-2">
+                <button
+                  type="button"
+                  onClick={() => setShowForgotPasswordModal(false)}
+                  className="flex-1 p-2 border border-gray-300 rounded-xl hover:-translate-y-1 duration-150 ease-in"
+                >
+                  Batal
+                </button>
+                <button
+                  type="submit"
+                  className="flex-1 p-2 bg-primary text-white rounded-xl hover:-translate-y-1 duration-150 ease-in"
+                >
+                  Kirim
+                </button>
+              </div>
+            </form>
+          </div>
+        </div>
       )}
       <div className="md:col-span-12 lg:col-span-6 flex justify-center items-center bg-background relative p-4 md:p-8 lg:p-10 order-2 md:order-1">
         {/* Background decoration */}
@@ -100,12 +181,13 @@ export default function Login() {
             <div className="relative">
               <div className="flex justify-between items-center mb-1">
                 <label className="block text-sm font-medium">Kata Sandi</label>
-                <Link
-                  href="/forgot-password"
+                <button
+                  type="button"
+                  onClick={() => setShowForgotPasswordModal(true)}
                   className="text-xs md:text-sm text-blue-500 hover:underline"
                 >
                   Lupa Password?
-                </Link>
+                </button>
               </div>
               <input
                 name="password"
