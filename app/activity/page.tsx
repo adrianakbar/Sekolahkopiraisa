@@ -4,6 +4,7 @@ import ActivitySlider from "../components/ActivitySlider";
 import ActivityCard from "../components/ActivityCard";
 import Footer from "../components/Footer";
 import { fetchAllNews } from "../utils/activity";
+import SkeletonActivity from "../components/SkeletonActivity"; // Import skeleton
 
 // Define types based on the provided JSON structure
 interface NewsMedia {
@@ -34,11 +35,11 @@ const formatRelativeTime = (dateString: string) => {
   const now = new Date();
   const date = new Date(dateString);
   const diffMs = now.getTime() - date.getTime();
-  
+
   const diffMins = Math.floor(diffMs / 60000);
   const diffHrs = Math.floor(diffMins / 60);
   const diffDays = Math.floor(diffHrs / 24);
-  
+
   if (diffMins < 60) {
     return `${diffMins}m`;
   } else if (diffHrs < 24) {
@@ -55,12 +56,12 @@ const getFirstImageUrl = (newsItem: NewsItem): string => {
   if (!newsItem.newsMedia || newsItem.newsMedia.length === 0) {
     return "/assets/user.png";
   }
-  
+
   // Filter for image media types only
-  const imageMedia = newsItem.newsMedia.filter(
-    media => media.media_type.startsWith('image/')
+  const imageMedia = newsItem.newsMedia.filter((media) =>
+    media.media_type.startsWith("image/")
   );
-  
+
   if (imageMedia.length > 0) {
     return imageMedia[0].media_url;
   } else {
@@ -78,7 +79,7 @@ export default function Activity() {
       try {
         setLoading(true);
         const response = await fetchAllNews();
-        
+
         // Extract the data array from the response
         let newsData: NewsItem[] = [];
         if (response && response.data && Array.isArray(response.data)) {
@@ -86,10 +87,12 @@ export default function Activity() {
         } else if (Array.isArray(response)) {
           newsData = response;
         }
-        
+
         // Filter for published news only
-        const publishedNews = newsData.filter(item => item.published === true);
-        
+        const publishedNews = newsData.filter(
+          (item) => item.published === true
+        );
+
         setNews(publishedNews);
         setError(null);
       } catch (err) {
@@ -105,36 +108,36 @@ export default function Activity() {
 
   // Map news data to the format expected by ActivitySlider
   const sliderItems = news
-    .filter(item => {
-      // Make sure the item has a title and at least one image
-      return item.title && item.newsMedia?.some(media => media.media_type.startsWith('image/'));
+    .filter((item) => {
+      return (
+        item.title &&
+        item.newsMedia?.some((media) => media.media_type.startsWith("image/"))
+      );
     })
-    .map(item => ({
+    .map((item) => ({
       id: item.id,
       image: getFirstImageUrl(item),
-      title: item.title
+      title: item.title,
     }))
     .slice(0, 5);
 
   // Map news data to the format expected by ActivityCard
   const cardItems = news
-    .filter(item => {
-      // Make sure the item has a title and at least one image
-      return item.title && item.newsMedia?.some(media => media.media_type.startsWith('image/'));
+    .filter((item) => {
+      return (
+        item.title &&
+        item.newsMedia?.some((media) => media.media_type.startsWith("image/"))
+      );
     })
-    .map(item => ({
+    .map((item) => ({
       id: item.id,
       image: getFirstImageUrl(item),
       title: item.title,
-      time: formatRelativeTime(item.created_at)
+      time: formatRelativeTime(item.created_at),
     }));
 
   if (loading) {
-    return (
-      <div className="flex justify-center items-center h-screen">
-        <div className="animate-spin rounded-full h-12 w-12 border-t-2 border-b-2 border-gray-900"></div>
-      </div>
-    );
+    return <SkeletonActivity />;
   }
 
   if (error) {
@@ -142,7 +145,7 @@ export default function Activity() {
       <div className="px-4 md:px-8 py-4 max-w-400 mx-auto">
         <div className="mt-20 text-center text-red-500">
           <p>{error}</p>
-          <button 
+          <button
             className="mt-4 px-4 py-2 bg-blue-500 text-white rounded hover:bg-blue-600"
             onClick={() => window.location.reload()}
           >
@@ -160,7 +163,9 @@ export default function Activity() {
           {sliderItems.length > 0 ? (
             <ActivitySlider sliderItems={sliderItems} />
           ) : (
-            <div className="text-center py-8">No news available for slider.</div>
+            <div className="text-center py-8">
+              No news available for slider.
+            </div>
           )}
         </section>
         <section className="mt-8">

@@ -1,6 +1,4 @@
 import Image from "next/image";
-import Link from "next/link";
-import Navbar from "./components/Navbar";
 import ProductCard from "./components/ProductCarousel";
 import ActivityCard from "./components/ActivityCarousel";
 import Footer from "./components/Footer";
