@@ -15,7 +15,7 @@ export default function Popup({
   message,
   onClose,
   duration = 3000,
-  type = "success", // default success
+  type = "success",
 }: PopupProps) {
   useEffect(() => {
     const timer = setTimeout(onClose, duration);
@@ -23,23 +23,28 @@ export default function Popup({
   }, [onClose, duration]);
 
   const bgColor = type === "error" ? "bg-red-500" : "bg-green-500";
-  const Icon = type === "error" ? <TriangleAlert /> : <CheckCheck />;
+  const Icon = type === "error" ? <TriangleAlert size={20} /> : <CheckCheck size={20} />;
 
   return (
     <AnimatePresence>
       {message && (
         <motion.div
-          initial={{ opacity: 0, y: -50 }} // muncul dari atas
-          animate={{ opacity: 1, y: 0 }} // turun ke posisi tetap
-          exit={{ opacity: 0, y: -50 }} // menghilang ke atas lagi
+          initial={{ opacity: 0, y: -50 }}
+          animate={{ opacity: 1, y: 0 }}
+          exit={{ opacity: 0, y: -50 }}
           transition={{ duration: 0.3 }}
-          className={`fixed top-6 right-6 z-50 ${bgColor} text-white px-4 py-3 rounded-lg shadow-lg text-xl`}
+          className={`fixed z-50 ${bgColor} text-white px-4 py-3 rounded-lg shadow-lg 
+            max-w-[90vw] sm:max-w-md w-full 
+            top-6 left-1/2 -translate-x-1/2 
+            sm:top-6 sm:right-6 sm:left-auto sm:translate-x-0`}
         >
-          <div className="flex justify-between items-center gap-2">
+          <div className="flex items-center gap-3">
             <span>{Icon}</span>
-            <span>{message}</span>
-            <button onClick={onClose} className="ml-2 font-bold">
-            <X  />
+            <span className="flex-1 text-sm sm:text-base break-words">
+              {message}
+            </span>
+            <button onClick={onClose} className="ml-2">
+              <X size={20} />
             </button>
           </div>
         </motion.div>
