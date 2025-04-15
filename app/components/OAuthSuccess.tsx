@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect } from "react";
+import { useEffect, useRef } from "react";
 import { useRouter, useSearchParams } from "next/navigation";
 import api from "../utils/api";
 import { useUserStore } from "../stores/userStore";
@@ -11,17 +11,21 @@ export default function OAuthSuccess() {
   const searchParams = useSearchParams();
   const token = searchParams.get("token");
   const setUser = useUserStore((state) => state.setUser);
+  const hasRun = useRef(false); // Cegah useEffect berjalan ulang
 
   useEffect(() => {
+    if (hasRun.current) return; // Hanya jalankan sekali
+    hasRun.current = true;
+
     const handleOAuthSuccess = async () => {
       if (!token) {
         console.error("No token found in URL");
-        router.push("/login?error=no_token");
+        router.replace("/login?error=no_token");
         return;
       }
 
       try {
-        console.log("Saving token:", token); // Debugging
+        console.log("Saving token:", token);
         // Simpan token ke cookie
         const saveTokenResponse = await api.post(
           "/api/v1/auth/save-token",
@@ -32,26 +36,31 @@ export default function OAuthSuccess() {
             },
           }
         );
-        console.log("Save token response:", saveTokenResponse.data); // Debugging
+        console.log("Save token response:", saveTokenResponse.data);
 
-        // Tunggu sebentar untuk memastikan cookie tersimpan
+        // Tunggu cookie tersimpan
         await new Promise((resolve) => setTimeout(resolve, 500));
 
-        // Ambil data pengguna
-        const userData = await getUser();
-        console.log("User data:", userData); // Debugging
+        // Coba ambil data pengguna, dengan retry
+        let userData = await getUser();
+        if (!userData?.data) {
+          console.warn("Retrying getUser...");
+          await new Promise((resolve) => setTimeout(resolve, 1000));
+          userData = await getUser();
+        }
 
         if (userData?.data) {
+          console.log("Setting user:", userData.data);
           setUser(userData.data);
-          // Tunggu state diperbarui
+          // Tunggu state dirender
           await new Promise((resolve) => setTimeout(resolve, 100));
-          router.replace("/"); // Gunakan replace untuk menghindari history
+          router.replace("/"); // Gunakan replace untuk navigasi bersih
         } else {
-          throw new Error("Gagal mengambil data pengguna");
+          throw new Error("Gagal mengambil data pengguna setelah retry");
         }
       } catch (error) {
         console.error("OAuth error:", error);
-        router.push("/login?error=failed");
+        router.replace("/login?error=failed");
       }
     };
 
