@@ -7,7 +7,7 @@ import ClientProvider from "./ClientProvider";
 export default function LayoutWrapper({ children }: { children: React.ReactNode }) {
   const pathname = usePathname();
 
-  const isAuthPage = pathname === "/login" || pathname === "/signup";
+  const isAuthPage = pathname === "/login" || pathname === "/signup" || pathname === "/reset-password";
   const isAdminPage = pathname.startsWith("/admin");
 
   const navbarItems = [

@@ -39,15 +39,9 @@ export default function Signup() {
         router.push("/login"); // redirect setelah popup muncul
       }, 3000);
     } catch (error: any) {
-      if (error.response && error.response.data && error.response.data.errors) {
-        setErrors(error.response.data.errors); // ✅ Tangkap error backend
-      } else {
-        {
-          setMessage(error.message || "Terjadi kesalahan");
-          setPopupType("error");
-          setShowPopup(true);
-        }
-      }
+      setMessage(error.message || "Terjadi kesalahan saat mengirim email");
+      setPopupType("error");
+      setShowPopup(true);
     }
   };
 
