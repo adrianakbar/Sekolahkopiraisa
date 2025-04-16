@@ -81,7 +81,7 @@ export default function Activity() {
 
   // Map activities for slider (first 5 items)
   const sliderItems = activities
-    .slice(0, 5)
+    .slice(0, 4)
     .map(item => ({
       id: item.id,
       image: item.image,

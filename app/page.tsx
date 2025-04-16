@@ -22,30 +22,37 @@ export default function Home() {
       try {
         const response = await fetchAllNews();
         const rawData = response.data;
-
-        const filtered = rawData
+        
+        // Sort by created_at date in descending order (newest first)
+        const sortedData = [...rawData].sort((a, b) => 
+          new Date(b.created_at).getTime() - new Date(a.created_at).getTime()
+        );
+        
+        // Map and filter, then take only the first 5 items
+        const filtered: ActivityItemApi[] = sortedData
           .map((item: any) => {
             // Ambil media yang tipe-nya image
             const imageMedia = item.newsMedia?.find((media: any) =>
               media.media_type?.startsWith("image/")
             );
-
+            
             if (!imageMedia) return null;
-
+            
             return {
               id: item.id,
               title: item.title,
               image: imageMedia.media_url,
             };
           })
-          .filter(Boolean); // buang null
-
+          .filter((item): item is ActivityItemApi => item !== null) // buang null
+          .slice(0, 5);    // batasi 5 data
+          
         setActivities(filtered);
       } catch (error) {
         console.error("Failed to fetch activities:", error);
       }
     };
-
+    
     getActivities();
   }, []);
 
