@@ -1,37 +1,18 @@
 "use client";
 import { useEffect, useState } from "react";
-import ActivitySlider from "../components/ActivitySlider";
-import ActivityCard from "../components/ActivityCard";
-import Footer from "../components/Footer";
 import { fetchAllNews } from "../utils/activity";
-import SkeletonActivity from "../components/SkeletonActivity"; // Import skeleton
 
-// Define types based on the provided JSON structure
-interface NewsMedia {
-  id: number;
-  news_id: number;
-  media_url: string;
-  media_type: string;
-}
-
-interface NewsItem {
+// Interface for our filtered news items
+interface ActivityItemApi {
   id: number;
   title: string;
   content: string;
-  image_url: string | null;
-  published: boolean;
-  created_at: string;
-  updated_at: string;
-  newsMedia: NewsMedia[];
-}
-
-interface ApiResponse {
-  message: string;
-  data: NewsItem[];
+  image: string;
+  time: string;
 }
 
 // Format time for relative time display
-const formatRelativeTime = (dateString: string) => {
+const formatRelativeTime = (dateString: string): string => {
   const now = new Date();
   const date = new Date(dateString);
   const diffMs = now.getTime() - date.getTime();
@@ -51,137 +32,83 @@ const formatRelativeTime = (dateString: string) => {
   }
 };
 
-// Get the first image media URL from a news item
-const getFirstImageUrl = (newsItem: NewsItem): string => {
-  if (!newsItem.newsMedia || newsItem.newsMedia.length === 0) {
-    return "/assets/user.png";
-  }
-
-  // Filter for image media types only
-  const imageMedia = newsItem.newsMedia.filter((media) =>
-    media.media_type.startsWith("image/")
-  );
-
-  if (imageMedia.length > 0) {
-    return imageMedia[0].media_url;
-  } else {
-    return "/assets/user.png";
-  }
-};
-
 export default function Activity() {
-  const [news, setNews] = useState<NewsItem[]>([]);
+  const [activities, setActivities] = useState<ActivityItemApi[]>([]);
   const [loading, setLoading] = useState<boolean>(true);
   const [error, setError] = useState<string | null>(null);
 
   useEffect(() => {
-    const getNews = async () => {
+    const getActivities = async () => {
       try {
         setLoading(true);
         const response = await fetchAllNews();
-
-        // Extract the data array from the response
-        let newsData: NewsItem[] = [];
-        if (response && response.data && Array.isArray(response.data)) {
-          newsData = response.data;
-        } else if (Array.isArray(response)) {
-          newsData = response;
-        }
-
-        // Filter for published news only
-        const publishedNews = newsData.filter(
-          (item) => item.published === true
-        );
-
-        setNews(publishedNews);
+        const rawData = response.data;
+        
+        const filtered = rawData
+          .map((item: any) => {
+            // Ambil media yang tipe-nya image
+            const imageMedia = item.newsMedia?.find((media: any) =>
+              media.media_type?.startsWith("image/")
+            );
+            
+            if (!imageMedia) return null;
+            
+            return {
+              id: item.id,
+              title: item.title,
+              content: item.content,
+              image: imageMedia.media_url,
+              time: formatRelativeTime(item.created_at)
+            };
+          })
+          .filter(Boolean); // buang null
+          
+        setActivities(filtered);
         setError(null);
       } catch (err) {
-        console.error("Failed to fetch news:", err);
-        setError("Failed to load news. Please try again later.");
+        console.error("Failed to fetch activities:", err);
+        setError("Failed to load activities. Please try again later.");
       } finally {
         setLoading(false);
       }
     };
-
-    getNews();
+    
+    getActivities();
   }, []);
 
-  // Map news data to the format expected by ActivitySlider
-  const sliderItems = news
-    .filter((item) => {
-      return (
-        item.title &&
-        item.newsMedia?.some((media) => media.media_type.startsWith("image/"))
-      );
-    })
-    .map((item) => ({
-      id: item.id,
-      image: getFirstImageUrl(item),
-      title: item.title,
-    }))
-    .slice(0, 5);
-
-  // Map news data to the format expected by ActivityCard
-  const cardItems = news
-    .filter((item) => {
-      return (
-        item.title &&
-        item.newsMedia?.some((media) => media.media_type.startsWith("image/"))
-      );
-    })
-    .map((item) => ({
-      id: item.id,
-      image: getFirstImageUrl(item),
-      title: item.title,
-      time: formatRelativeTime(item.created_at),
-    }));
-
   if (loading) {
-    return <SkeletonActivity />;
+    return <div>Loading activities...</div>;
   }
 
   if (error) {
-    return (
-      <div className="px-4 md:px-8 py-4 max-w-400 mx-auto">
-        <div className="mt-20 text-center text-red-500">
-          <p>{error}</p>
-          <button
-            className="mt-4 px-4 py-2 bg-blue-500 text-white rounded hover:bg-blue-600"
-            onClick={() => window.location.reload()}
-          >
-            Try Again
-          </button>
-        </div>
-      </div>
-    );
+    return <div>{error}</div>;
   }
 
   return (
-    <>
-      <div className="px-4 md:px-8 py-4 max-w-400 mx-auto">
-        <section className="mt-20 md:mt-30">
-          {sliderItems.length > 0 ? (
-            <ActivitySlider sliderItems={sliderItems} />
-          ) : (
-            <div className="text-center py-8">
-              No news available for slider.
+    <div className="container mx-auto px-4 py-8">
+      <h1 className="text-2xl font-bold mb-6">Activities</h1>
+      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+        {activities.length > 0 ? (
+          activities.map((activity) => (
+            <div key={activity.id} className="border rounded-lg overflow-hidden shadow-md">
+              <img 
+                src={activity.image} 
+                alt={activity.title}
+                className="w-full h-48 object-cover"
+              />
+              <div className="p-4">
+                <h2 className="text-xl font-semibold mb-2">{activity.title}</h2>
+                <p className="text-gray-700 mb-3">{activity.content}</p>
+                <p className="text-sm text-gray-500">{activity.time}</p>
+              </div>
             </div>
-          )}
-        </section>
-        <section className="mt-8">
-          <h2 className="text-lg md:text-xl font-semibold mb-4">
-            Berita Terbaru
-          </h2>
-          {cardItems.length > 0 ? (
-            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-8">
-              <ActivityCard cardItems={cardItems} />
-            </div>
-          ) : (
-            <div className="text-center py-8">No news available.</div>
-          )}
-        </section>
+          ))
+        ) : (
+          <div className="col-span-full text-center py-12">
+            No activities found
+          </div>
+        )}
       </div>
-      <Footer />
-    </>
+    </div>
   );
 }

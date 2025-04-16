@@ -8,8 +8,14 @@ import ImageAboutus from "./components/ImageAboutus";
 import { useEffect, useState } from "react";
 import { fetchAllNews } from "./utils/activity";
 
+interface ActivityItemApi {
+  id: number;
+  title: string;
+  image: string;
+}
+
 export default function Home() {
-  const [activities, setActivities] = useState([]);
+  const [activities, setActivities] = useState<ActivityItemApi[]>([]);
 
   useEffect(() => {
     const getActivities = async () => {
@@ -222,9 +228,7 @@ export default function Home() {
 
           {/* Auto-Slide Aktivitas */}
           <div className="mt-8 md:mt-10">
-            <ActivityCard
-              activityItems={activities}
-            />
+            <ActivityCard activityItems={activities} />
           </div>
         </div>
       </section>
