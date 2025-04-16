@@ -25,6 +25,8 @@ interface User {
 export default function Navbar({ navbarItems }: { navbarItems: NavbarItem[] }) {
   const [user, setUser] = useState<User | null>(null);
   const [isDropdownOpen, setIsDropdownOpen] = useState(false);
+  const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
+
   const pathname = usePathname();
   const router = useRouter();
   const clearUser = useUserStore((state) => state.clearUser);
@@ -50,15 +52,15 @@ export default function Navbar({ navbarItems }: { navbarItems: NavbarItem[] }) {
     fetchUser();
   }, []);
 
-
-  const toggleDropdown = (e: React.MouseEvent<HTMLButtonElement, MouseEvent>) => {
+  const toggleUserDropdown = (
+    e: React.MouseEvent<HTMLButtonElement, MouseEvent>
+  ) => {
     e.stopPropagation();
     setIsDropdownOpen((prev) => !prev);
-  }
-
-  const closeDropdown = () => {
-    setIsDropdownOpen(false);
   };
+
+  const closeUserDropdown = () => setIsDropdownOpen(false);
+  const toggleMobileMenu = () => setIsMobileMenuOpen((prev) => !prev);
 
   return (
     <nav className="flex justify-between items-center p-3 md:p-5 shadow-md bg-white/80 fixed w-full z-50 px-4 md:px-8 lg:px-16">
@@ -99,7 +101,7 @@ export default function Navbar({ navbarItems }: { navbarItems: NavbarItem[] }) {
         {user ? (
           <div className="relative">
             <button
-              onClick={toggleDropdown}
+              onClick={toggleUserDropdown}
               className="flex items-center text-gray-700 dark:text-gray-400"
             >
               <span className="mr-3 overflow-hidden rounded-full h-11 w-11">
@@ -137,7 +139,7 @@ export default function Navbar({ navbarItems }: { navbarItems: NavbarItem[] }) {
 
             <Dropdown
               isOpen={isDropdownOpen}
-              onClose={closeDropdown}
+              onClose={closeUserDropdown}
               className="absolute right-0 mt-[17px] flex w-[260px] flex-col rounded-2xl border border-gray-200 bg-white p-3 shadow-theme-lg dark:border-gray-800 dark:bg-gray-dark"
             >
               <div>
@@ -152,7 +154,7 @@ export default function Navbar({ navbarItems }: { navbarItems: NavbarItem[] }) {
               <ul className="flex flex-col gap-1 pt-4 pb-3 border-b border-gray-200 dark:border-gray-800">
                 <li>
                   <DropdownItem
-                    onItemClick={closeDropdown}
+                    onItemClick={closeUserDropdown}
                     tag="a"
                     href="/profile"
                     className="flex items-center gap-3 px-3 py-2 font-medium text-gray-700 rounded-lg group text-theme-sm hover:bg-gray-100 hover:text-gray-700 dark:text-gray-400 dark:hover:bg-white/5 dark:hover:text-gray-300"
@@ -219,7 +221,7 @@ export default function Navbar({ navbarItems }: { navbarItems: NavbarItem[] }) {
       {/* Mobile Menu Button */}
       <button
         className="md:hidden flex flex-col space-y-1.5 p-2"
-        onClick={() => setIsDropdownOpen(!isDropdownOpen)}
+        onClick={toggleMobileMenu}
         aria-label="Toggle menu"
       >
         <span
@@ -242,12 +244,12 @@ export default function Navbar({ navbarItems }: { navbarItems: NavbarItem[] }) {
       {/* Mobile Menu */}
       <div
         className={`md:hidden fixed inset-0 bg-white z-40 transition-transform duration-300 ease-in-out ${
-          isDropdownOpen ? "translate-x-0" : "translate-x-full"
+          isMobileMenuOpen ? "translate-x-0" : "translate-x-full"
         }`}
       >
         <div className="flex justify-end p-4">
           <button
-            onClick={() => setIsDropdownOpen(false)}
+            onClick={() => setIsMobileMenuOpen(false)}
             className="text-gray-700"
           >
             <X size={30} />
@@ -260,7 +262,7 @@ export default function Navbar({ navbarItems }: { navbarItems: NavbarItem[] }) {
               <Link
                 key={index}
                 href={item.link}
-                onClick={() => setIsDropdownOpen(false)}
+                onClick={() => setIsMobileMenuOpen(false)}
                 className={`text-lg font-medium ${
                   isActive ? "text-primary" : "text-gray-700"
                 }`}
@@ -271,7 +273,7 @@ export default function Navbar({ navbarItems }: { navbarItems: NavbarItem[] }) {
           })}
           <div className="pt-6 border-t w-full flex flex-col items-center space-y-4">
             {user ? (
-              <Link href="/profile" onClick={() => setIsDropdownOpen(false)}>
+              <Link href="/profile" onClick={() => setIsMobileMenuOpen(false)}>
                 <div className="flex items-center space-x-3">
                   <img
                     src={user.image || "/assets/user.png"}
@@ -285,7 +287,7 @@ export default function Navbar({ navbarItems }: { navbarItems: NavbarItem[] }) {
               <>
                 <Link
                   href="/login"
-                  onClick={() => setIsDropdownOpen(false)}
+                  onClick={() => setIsMobileMenuOpen(false)}
                   className="w-full"
                 >
                   <button className="bg-primary w-full py-3 rounded-xl text-white">
@@ -294,7 +296,7 @@ export default function Navbar({ navbarItems }: { navbarItems: NavbarItem[] }) {
                 </Link>
                 <Link
                   href="/signup"
-                  onClick={() => setIsDropdownOpen(false)}
+                  onClick={() => setIsMobileMenuOpen(false)}
                   className="w-full"
                 >
                   <button className="w-full border border-primary py-3 rounded-xl text-primary">
