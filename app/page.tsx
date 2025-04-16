@@ -7,6 +7,7 @@ import Footer from "./components/Footer";
 import ImageAboutus from "./components/ImageAboutus";
 import { useEffect, useState } from "react";
 import { fetchAllNews } from "./utils/activity";
+import Link from "next/link";
 
 interface ActivityItemApi {
   id: number;
@@ -129,9 +130,11 @@ export default function Home() {
               tantangan penjaminan mutu dan kualitas kopi di Kabupaten
               Bondowoso.
             </p>
+            <Link href="/about">
             <button className="mt-6 px-4 md:px-6 py-2 md:py-3 bg-[#C19A6B] text-white font-semibold rounded-xl hover:-translate-y-1 duration-150 ease-in">
               Lihat Selengkapnya
             </button>
+            </Link>
           </div>
         </div>
       </section>
