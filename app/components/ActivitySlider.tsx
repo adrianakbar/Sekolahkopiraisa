@@ -18,6 +18,7 @@ export default function ActivitySlider({
   const [current, setCurrent] = useState(0)
 
   useEffect(() => {
+    console.log(sliderItems[current].image)
     const timer = setInterval(() => {
       setCurrent((prev) => (prev + 1) % sliderItems.length)
     }, 5000)
