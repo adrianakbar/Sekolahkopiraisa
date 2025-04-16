@@ -29,27 +29,22 @@ export default function ActivitySlider({
   return (
     <div className="relative w-full h-[300px] md:h-[400px] lg:h-[500px] overflow-hidden rounded-xl shadow-md">
       <AnimatePresence mode="wait">
-        <motion.div
-          key={current}
-          initial={{ opacity: 0 }}
-          animate={{ opacity: 1 }}
-          exit={{ opacity: 0 }}
-          transition={{ duration: 0.8 }}
-          className="absolute inset-0"
-        >
-          <Image
-            src={sliderItems[current].image}
-            alt={sliderItems[current].title}
-            layout="fill"
-            className="object-cover rounded-xl"
-            priority={current === 0} // Prioritizing the first image
-          />
+
+      <div className="absolute inset-0">
+  <Image
+    src={sliderItems[current].image}
+    alt={sliderItems[current].title}
+    layout="fill"
+    className="object-cover rounded-xl"
+    unoptimized
+  />
+</div>
           <div className="absolute inset-0 bg-black bg-opacity-40 flex items-end p-6">
             <h2 className="text-white text-lg md:text-2xl font-semibold max-w-3xl leading-snug mb-5">
               {sliderItems[current].title}
             </h2>
           </div>
-        </motion.div>
+
       </AnimatePresence>
 
       {/* Dots */}
