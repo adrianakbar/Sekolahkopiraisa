@@ -2,10 +2,11 @@
 
 import { useState } from "react";
 import { Eye, EyeOff, ChevronLeft } from "lucide-react";
-import { useRouter } from "next/navigation";
+import { useRouter, useSearchParams } from "next/navigation";
 import Popup from "../components/Popup";
 import Link from "next/link";
 import Image from "next/image";
+import { resetPassword } from "../utils/auth";
 
 export default function ResetPassword() {
   const [form, setForm] = useState({ password: "", confirmPassword: "" });
@@ -15,6 +16,8 @@ export default function ResetPassword() {
   const [message, setMessage] = useState("");
   const [popupType, setPopupType] = useState<"success" | "error">("success");
   const [showPopup, setShowPopup] = useState(false);
+  const searchParams = useSearchParams();
+  const token = searchParams.get("token");
 
   const router = useRouter();
 
@@ -31,7 +34,8 @@ export default function ResetPassword() {
     const newErrors: Partial<typeof form> = {};
 
     if (!password) newErrors.password = "*Password harus diisi";
-    if (!confirmPassword) newErrors.confirmPassword = "*Konfirmasi password harus diisi";
+    if (!confirmPassword)
+      newErrors.confirmPassword = "*Konfirmasi password harus diisi";
     if (password && confirmPassword && password !== confirmPassword)
       newErrors.confirmPassword = "*Password tidak cocok";
 
@@ -40,8 +44,15 @@ export default function ResetPassword() {
       return;
     }
 
+    if (!token) {
+      setMessage("Token tidak valid atau tidak ditemukan.");
+      setPopupType("error");
+      setShowPopup(true);
+      return;
+    }
+
     try {
-      // Simulasi update password
+      await resetPassword(token, password, confirmPassword);
       setMessage("Password berhasil direset");
       setPopupType("success");
       setShowPopup(true);
@@ -98,7 +109,9 @@ export default function ResetPassword() {
           <h2 className="text-2xl font-semibold mb-6">Reset Password</h2>
           <form onSubmit={handleSubmit} className="space-y-4">
             <div className="relative">
-              <label className="block text-sm font-medium mb-1">Password Baru</label>
+              <label className="block text-sm font-medium mb-1">
+                Password Baru
+              </label>
               <input
                 type={showPassword ? "text" : "password"}
                 name="password"
@@ -120,7 +133,9 @@ export default function ResetPassword() {
             </div>
 
             <div className="relative">
-              <label className="block text-sm font-medium mb-1">Konfirmasi Password</label>
+              <label className="block text-sm font-medium mb-1">
+                Konfirmasi Password
+              </label>
               <input
                 type={showConfirmPassword ? "text" : "password"}
                 name="confirmPassword"
@@ -137,7 +152,9 @@ export default function ResetPassword() {
                 {showConfirmPassword ? <EyeOff size={18} /> : <Eye size={18} />}
               </button>
               {errors.confirmPassword && (
-                <p className="text-red-500 text-sm mt-1">{errors.confirmPassword}</p>
+                <p className="text-red-500 text-sm mt-1">
+                  {errors.confirmPassword}
+                </p>
               )}
             </div>
 
