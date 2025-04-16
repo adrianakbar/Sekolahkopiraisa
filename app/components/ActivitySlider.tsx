@@ -43,7 +43,7 @@ export default function ActivitySlider({
             className="object-cover rounded-xl"
             priority={current === 0} // Prioritizing the first image
           />
-          <div className="absolute inset-0 bg-black bg-opacity-40 flex items-end p-6">
+          <div className="absolute inset-0 bg-opacity-40 flex items-end p-6">
             <h2 className="text-white text-lg md:text-2xl font-semibold max-w-3xl leading-snug mb-5">
               {sliderItems[current].title}
             </h2>
