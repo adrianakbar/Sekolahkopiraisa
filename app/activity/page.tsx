@@ -43,25 +43,28 @@ export default function Activity() {
   useEffect(() => {
     const getActivities = async () => {
       try {
+        console.log("Slider items:", sliderItems);
         setLoading(true);
         const response = await fetchAllNews();
         const rawData = response.data;
 
         const filtered = rawData
+          .filter((item: any) =>
+            item.newsMedia?.some((media: any) =>
+              media.media_type?.startsWith("image/")
+            )
+          )
           .map((item: any) => {
-            // Ambil media yang tipe-nya image
-            const imageMedia = item.newsMedia?.find((media: any) =>
+            const imageMedia = item.newsMedia.find((media: any) =>
               media.media_type?.startsWith("image/")
             );
-
-            if (!imageMedia) return null;
 
             return {
               id: item.id,
               title: item.title,
               content: item.content,
               image: imageMedia.media_url,
-              time: formatRelativeTime(item.created_at)
+              time: formatRelativeTime(item.created_at),
             };
           })
           .filter(Boolean); // buang null
@@ -80,21 +83,19 @@ export default function Activity() {
   }, []);
 
   // Map activities for slider (first 5 items)
-  const sliderItems = activities
-    .slice(0, 4)
-    .map(item => ({
-      id: item.id,
-      image: item.image,
-      title: item.title
-    }));
+  const sliderItems = activities.slice(0, 4).map((item) => ({
+    id: item.id,
+    image: item.image,
+    title: item.title,
+  }));
 
   // Map activities for cards (all items)
-  const cardItems = activities.map(item => ({
-      id: item.id,
-      image: item.image,
-      title: item.title,
-      time: item.time
-    }));
+  const cardItems = activities.map((item) => ({
+    id: item.id,
+    image: item.image,
+    title: item.title,
+    time: item.time,
+  }));
 
   if (loading) {
     return <SkeletonActivity />;
