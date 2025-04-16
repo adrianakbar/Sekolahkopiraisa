@@ -1,35 +1,37 @@
-'use client'
+"use client";
 
-import { useState, useEffect } from 'react'
-import Image from 'next/image'
-import { motion, AnimatePresence } from 'framer-motion'
+import { useState, useEffect } from "react";
+import Image from "next/image";
+import { motion, AnimatePresence } from "framer-motion";
 
 interface ActivitySliderProps {
-  id: number
-  image: string
-  title: string
+  id: number;
+  image: string;
+  title: string;
 }
 
 export default function ActivitySlider({
   sliderItems,
 }: {
-  sliderItems: ActivitySliderProps[]
+  sliderItems: ActivitySliderProps[];
 }) {
-  const [current, setCurrent] = useState(0)
+  console.log("Slider Items received:", sliderItems); // Log data sliderItems
+
+  const [current, setCurrent] = useState(0);
 
   useEffect(() => {
     const timer = setInterval(() => {
-      setCurrent((prev) => (prev + 1) % sliderItems.length)
-    }, 5000)
+      setCurrent((prev) => (prev + 1) % sliderItems.length);
+    }, 5000);
 
-    return () => clearInterval(timer)
-  }, [sliderItems.length])
+    return () => clearInterval(timer);
+  }, [sliderItems.length]);
 
   return (
     <div className="relative w-full h-[300px] md:h-[400px] lg:h-[500px] overflow-hidden rounded-xl shadow-md">
       <AnimatePresence mode="wait">
         <motion.div
-          key={sliderItems[current].id}
+          key={sliderItems[current]?.id}
           initial={{ opacity: 0 }}
           animate={{ opacity: 1 }}
           exit={{ opacity: 0 }}
@@ -37,15 +39,15 @@ export default function ActivitySlider({
           className="absolute inset-0"
         >
           <Image
-            src={sliderItems[current].image}
-            alt={sliderItems[current].title}
+            src={sliderItems[current]?.image}
+            alt={sliderItems[current]?.title}
             fill
             className="object-cover rounded-xl"
             priority={current === 0} // Prioritizing the first image
           />
           <div className="absolute inset-0 bg-black bg-opacity-40 flex items-end p-6">
             <h2 className="text-white text-lg md:text-2xl font-semibold max-w-3xl leading-snug mb-5">
-              {sliderItems[current].title}
+              {sliderItems[current]?.title}
             </h2>
           </div>
         </motion.div>
@@ -58,11 +60,11 @@ export default function ActivitySlider({
             key={item.id}
             onClick={() => setCurrent(index)}
             className={`w-3 h-3 rounded-full transition-all duration-300 ${
-              index === current ? 'bg-white scale-110' : 'bg-gray-400'
+              index === current ? "bg-white scale-110" : "bg-gray-400"
             }`}
           />
         ))}
       </div>
     </div>
-  )
+  );
 }

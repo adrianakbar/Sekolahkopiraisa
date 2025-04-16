@@ -46,29 +46,28 @@ export default function Activity() {
         setLoading(true);
         const response = await fetchAllNews();
         const rawData = response.data;
-  
-        console.log("Raw data from API:", rawData); // Cek data mentah
-  
+
         const filtered = rawData
+          .filter((item: any) =>
+            item.newsMedia?.some((media: any) =>
+              media.media_type?.startsWith("image/")
+            )
+          )
           .map((item: any) => {
-            const imageMedia = item.newsMedia?.find((media: any) =>
+            const imageMedia = item.newsMedia.find((media: any) =>
               media.media_type?.startsWith("image/")
             );
-  
-            if (!imageMedia) return null;
-  
+
             return {
               id: item.id,
               title: item.title,
               content: item.content,
               image: imageMedia.media_url,
-              time: formatRelativeTime(item.created_at)
+              time: formatRelativeTime(item.created_at),
             };
           })
-          .filter(Boolean);
-  
-        console.log("Filtered data:", filtered); // Cek data setelah filter
-  
+          .filter(Boolean); // buang null
+
         setActivities(filtered);
         setError(null);
       } catch (err) {
@@ -78,10 +77,9 @@ export default function Activity() {
         setLoading(false);
       }
     };
-  
+
     getActivities();
   }, []);
-  
 
   // Map activities for slider (first 5 items)
   const sliderItems = activities.slice(0, 4).map((item) => ({
