@@ -62,7 +62,7 @@ export default function Activity() {
               id: item.id,
               title: item.title,
               content: item.content,
-              image: imageMedia.media_url,
+              image: imageMedia?.media_url || '/assets/user.png',  // Gambar default
               time: formatRelativeTime(item.created_at),
             };
           })
