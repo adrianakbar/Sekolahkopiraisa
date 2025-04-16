@@ -2,7 +2,7 @@
 
 import Link from "next/link";
 import Image from "next/image";
-import { useEffect, useState } from "react";
+import { useEffect, useState, useRef } from "react";
 import { getUser } from "../utils/user";
 import { X } from "lucide-react";
 import { logout } from "../utils/auth";
@@ -27,9 +27,12 @@ export default function Navbar({ navbarItems }: { navbarItems: NavbarItem[] }) {
   const [isDropdownOpen, setIsDropdownOpen] = useState(false);
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
 
+
+
   const pathname = usePathname();
   const router = useRouter();
   const clearUser = useUserStore((state) => state.clearUser);
+
 
   const handleLogout = () => {
     try {
@@ -110,7 +113,7 @@ export default function Navbar({ navbarItems }: { navbarItems: NavbarItem[] }) {
           <div className="relative">
             <button
               onClick={toggleUserDropdown}
-              className="flex items-center text-gray-700 dark:text-gray-400"
+              className="dropdown-toggle flex items-center text-gray-700 dark:text-gray-400"
             >
               <span className="mr-3 overflow-hidden rounded-full h-11 w-11">
                 <Image
