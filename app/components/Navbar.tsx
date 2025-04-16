@@ -2,7 +2,7 @@
 
 import Link from "next/link";
 import Image from "next/image";
-import { useEffect, useState, useRef } from "react";
+import { useEffect, useState } from "react";
 import { getUser } from "../utils/user";
 import { X } from "lucide-react";
 import { logout } from "../utils/auth";
@@ -115,7 +115,7 @@ export default function Navbar({ navbarItems }: { navbarItems: NavbarItem[] }) {
               onClick={toggleUserDropdown}
               className="dropdown-toggle flex items-center text-gray-700 dark:text-gray-400"
             >
-              <span className="mr-3 overflow-hidden rounded-full h-11 w-11">
+              <span className="mr-3 overflow-hidden rounded-full h-9 w-9">
                 <Image
                   width={44}
                   height={44}
