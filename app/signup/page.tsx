@@ -31,17 +31,16 @@ export default function Signup() {
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     try {
-      const response = await registerUser(form);
-      setMessage(response.message);
-      setPopupType("success");
-      setShowPopup(true);
-      setTimeout(() => {
-        router.push("/login"); // redirect setelah popup muncul
-      }, 3000);
+      await registerUser(form);
+      router.push("/login");
     } catch (error: any) {
-      setMessage(error.message || "Terjadi kesalahan saat mengirim email");
-      setPopupType("error");
-      setShowPopup(true);
+      if (error.type === "validation") {
+        setErrors(error.errors); // munculkan pesan error di bawah input
+      } else {
+        setMessage(error.message || "Terjadi kesalahan");
+        setPopupType("error");
+        setShowPopup(true); // munculkan popup
+      }
     }
   };
 
