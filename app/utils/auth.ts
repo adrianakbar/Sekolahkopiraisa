@@ -122,23 +122,24 @@ export const resetPasswordRequest = async (email: string) => {
 };
 
 // Reset Password
-export const resetPassword = async (
-  token: string,
-  password: string,
-  confirmPassword: string
-) => {
+export const resetPassword = async ({
+  token,
+  newPassword,
+}: {
+  token: string;
+  newPassword: string;
+}) => {
   try {
     const res = await api.put("/api/v1/auth/reset-password", {
       token,
-      password,
-      confirmPassword,
+      newPassword,
     });
     return res.data;
   } catch (error: any) {
     if (error.response) {
-      // Gunakan error.response.data.error jika ada, jika tidak gunakan message
       throw new Error(error.response.data.error || error.response.data.message);
     }
     throw new Error("Tidak dapat terhubung ke server. Coba lagi nanti.");
   }
 };
+
