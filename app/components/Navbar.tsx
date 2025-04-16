@@ -56,7 +56,7 @@ export default function Navbar({ navbarItems }: { navbarItems: NavbarItem[] }) {
     e: React.MouseEvent<HTMLButtonElement, MouseEvent>
   ) => {
     e.stopPropagation();
-    setIsDropdownOpen((prev) => !prev);
+    setIsDropdownOpen(!isDropdownOpen);
   };
 
   const closeUserDropdown = () => setIsDropdownOpen(false);
