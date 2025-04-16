@@ -14,7 +14,7 @@ interface PopupProps {
 export default function Popup({
   message,
   onClose,
-  duration = 3000,
+  duration = 10000,
   type = "success",
 }: PopupProps) {
   useEffect(() => {

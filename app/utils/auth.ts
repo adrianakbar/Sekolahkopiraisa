@@ -30,12 +30,29 @@ export const loginUser = async (formData: {
     return res.data;
   } catch (error: any) {
     if (error.response) {
-      // Gunakan error.response.data.error jika ada, jika tidak gunakan message
-      throw new Error(error.response.data.error || error.response.data.message);
+      const { data } = error.response;
+
+      // Jika `errors` adalah object (validasi per field)
+      if (typeof data.errors === "object") {
+        throw {
+          message: data.message || "Validasi gagal!",
+          errors: data.errors,
+        };
+      }
+
+      // Jika `errors` adalah string umum (misal: email/password salah)
+      if (typeof data.errors === "string") {
+        throw new Error(data.errors);
+      }
+
+      // Fallback lain
+      throw new Error(data.message || "Terjadi kesalahan");
     }
+
     throw new Error("Tidak dapat terhubung ke server. Coba lagi nanti.");
   }
 };
+
 
 // Logout
 export const logout = async () => {
