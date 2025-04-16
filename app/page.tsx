@@ -1,14 +1,50 @@
+"use client";
+
 import Image from "next/image";
 import ProductCard from "./components/ProductCarousel";
 import ActivityCard from "./components/ActivityCarousel";
 import Footer from "./components/Footer";
 import ImageAboutus from "./components/ImageAboutus";
+import { useEffect, useState } from "react";
+import { fetchAllNews } from "./utils/activity";
 
 export default function Home() {
-  
+  const [activities, setActivities] = useState([]);
+
+  useEffect(() => {
+    const getActivities = async () => {
+      try {
+        const response = await fetchAllNews();
+        const rawData = response.data;
+
+        const filtered = rawData
+          .map((item: any) => {
+            // Ambil media yang tipe-nya image
+            const imageMedia = item.newsMedia?.find((media: any) =>
+              media.media_type?.startsWith("image/")
+            );
+
+            if (!imageMedia) return null;
+
+            return {
+              id: item.id,
+              title: item.title,
+              image: imageMedia.media_url,
+            };
+          })
+          .filter(Boolean); // buang null
+
+        setActivities(filtered);
+      } catch (error) {
+        console.error("Failed to fetch activities:", error);
+      }
+    };
+
+    getActivities();
+  }, []);
+
   return (
     <>
-
       {/* Hero Section */}
       <section
         className="relative min-h-[500px] h-screen bg-cover bg-center"
@@ -187,39 +223,7 @@ export default function Home() {
           {/* Auto-Slide Aktivitas */}
           <div className="mt-8 md:mt-10">
             <ActivityCard
-              activityItems={[
-                {
-                  id: 1,
-                  title:
-                    "Kegiatan 1 lorem ipsum dolor sit amet consectetur adipiscing elit sed do eiusmod tempor incididunt ut labore et dolore magna aliqua",
-                  image: "/assets/activity.png",
-                },
-                {
-                  id: 2,
-                  title: "Kegiatan 2",
-                  image: "/assets/activity.png",
-                },
-                {
-                  id: 3,
-                  title: "Kegiatan 3",
-                  image: "/assets/activity.png",
-                },
-                {
-                  id: 4,
-                  title: "Kegiatan 4",
-                  image: "/assets/activity.png",
-                },
-                {
-                  id: 5,
-                  title: "Kegiatan 5",
-                  image: "/assets/activity.png",
-                },
-                {
-                  id: 6,
-                  title: "Kegiatan 6",
-                  image: "/assets/activity.png",
-                },
-              ]}
+              activityItems={activities}
             />
           </div>
         </div>

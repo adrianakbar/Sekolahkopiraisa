@@ -37,9 +37,13 @@ export default function Login() {
       await loginUser(form);
       router.replace("/"); // redirect setelah popup muncul
     } catch (error: any) {
-      setMessage(error.message || "Terjadi kesalahan saat masuk");
-      setPopupType("error");
-      setShowPopup(true);
+      if (error.response && error.response.data && error.response.data.errors) {
+        setErrors(error.response.data.errors); // ✅ Tangkap error backend
+      } else {
+        setMessage(error.message || "Terjadi kesalahan");
+        setPopupType("error");
+        setShowPopup(true);
+      }
     }
   };
 
