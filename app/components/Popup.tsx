@@ -34,7 +34,7 @@ export default function Popup({
           exit={{ opacity: 0, y: -50 }}
           transition={{ duration: 0.3 }}
           className={`fixed z-50 ${bgColor} text-white px-4 py-3 rounded-lg shadow-lg 
-            max-w-[90vw] sm:max-w-md w-full 
+            max-w-[90vw] md:max-w-fit w-full 
             top-6 left-1/2 -translate-x-1/2 
             sm:top-6 sm:right-6 sm:left-auto sm:translate-x-0`}
         >

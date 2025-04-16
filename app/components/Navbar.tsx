@@ -50,11 +50,10 @@ export default function Navbar({ navbarItems }: { navbarItems: NavbarItem[] }) {
     fetchUser();
   }, []);
 
-
-  const toggleDropdown = (e: React.MouseEvent<HTMLButtonElement, MouseEvent>) => {
-    e.stopPropagation();
+  const toggleDropdown = (e: React.MouseEvent<HTMLButtonElement>) => {
+    e.preventDefault();
     setIsDropdownOpen((prev) => !prev);
-  }
+  };
 
   const closeDropdown = () => {
     setIsDropdownOpen(false);
