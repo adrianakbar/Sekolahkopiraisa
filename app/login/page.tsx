@@ -35,16 +35,14 @@ export default function Login() {
     e.preventDefault();
     try {
       await loginUser(form);
-      router.replace("/"); // redirect
+      router.replace("/");
     } catch (error: any) {
-      // Jika error validasi per-field
-      if (error.errors) {
-        setErrors(error.errors);
+      if (error.type === "validation") {
+        setErrors(error.errors); // munculkan pesan error di bawah input
       } else {
-        // Jika error umum
         setMessage(error.message || "Terjadi kesalahan");
         setPopupType("error");
-        setShowPopup(true);
+        setShowPopup(true); // munculkan popup
       }
     }
   };

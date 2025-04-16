@@ -32,26 +32,38 @@ export const loginUser = async (formData: {
     if (error.response) {
       const { data } = error.response;
 
-      // Jika `errors` adalah object (validasi per field)
-      if (typeof data.errors === "object") {
+      // Validasi field (errors berbentuk object)
+      if (data.errors && typeof data.errors === "object") {
         throw {
+          type: "validation",
           message: data.message || "Validasi gagal!",
           errors: data.errors,
         };
       }
 
-      // Jika `errors` adalah string umum (misal: email/password salah)
-      if (typeof data.errors === "string") {
-        throw new Error(data.errors);
+      // Error umum (errors berbentuk string)
+      if (data.errors && typeof data.errors === "string") {
+        throw {
+          type: "general",
+          message: data.errors,
+        };
       }
 
-      // Fallback lain
-      throw new Error(data.message || "Terjadi kesalahan");
+      // Error fallback
+      throw {
+        type: "general",
+        message: data.message || "Terjadi kesalahan!",
+      };
     }
 
-    throw new Error("Tidak dapat terhubung ke server. Coba lagi nanti.");
+    // Error koneksi/server down
+    throw {
+      type: "network",
+      message: "Tidak dapat terhubung ke server. Coba lagi nanti.",
+    };
   }
 };
+
 
 
 // Logout
