@@ -29,10 +29,13 @@ export const loginUser = async (formData: {
     const res = await api.post("/api/v1/auth/login", formData);
     return res.data;
   } catch (error: any) {
-    throw error; // biarkan frontend tangani error.response.data
+    if (error.response) {
+      // Gunakan error.response.data.error jika ada, jika tidak gunakan message
+      throw new Error(error.response.data.error || error.response.data.message);
+    }
+    throw new Error("Tidak dapat terhubung ke server. Coba lagi nanti.");
   }
 };
-
 
 // Logout
 export const logout = async () => {
