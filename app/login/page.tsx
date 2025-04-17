@@ -34,18 +34,26 @@ export default function Login() {
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     try {
-      await loginUser(form);
-      router.replace("/");
+      const user = await loginUser(form);
+  
+      if (user?.admin) {
+        router.replace("/admin");
+      } else {
+        router.replace("/");
+      }
     } catch (error: any) {
       if (error.type === "validation") {
-        setErrors(error.errors); // munculkan pesan error di bawah input
+        setErrors(error.errors);
       } else {
         setMessage(error.message || "Terjadi kesalahan");
         setPopupType("error");
-        setShowPopup(true); // munculkan popup
+        setShowPopup(true);
       }
     }
   };
+  
+  
+  
 
   const handleForgotPasswordSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -142,7 +150,7 @@ export default function Login() {
             width={300}
             height={300}
             alt="Flower Top"
-            className="w-20 sm:w-24 md:w-32 lg:w-auto"
+            className="w-20 sm:w-24 md:w-100"
           />
         </div>
         <div className="absolute bottom-0 left-0 -z-0 hidden md:block">
@@ -151,7 +159,7 @@ export default function Login() {
             width={300}
             height={300}
             alt="Flower Bottom"
-            className="w-20 sm:w-24 md:w-32 lg:w-auto"
+            className="w-20 sm:w-24 md:w-90"
           />
         </div>
 

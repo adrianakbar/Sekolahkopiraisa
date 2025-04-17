@@ -58,12 +58,11 @@ export const loginUser = async (formData: {
 }) => {
   try {
     const res = await api.post("/api/v1/auth/login", formData);
-    return res.data;
+    return res.data.data.user;
   } catch (error: any) {
     if (error.response) {
       const { data } = error.response;
 
-      // Validasi field (errors berbentuk object)
       if (data.errors && typeof data.errors === "object") {
         throw {
           type: "validation",
@@ -72,7 +71,6 @@ export const loginUser = async (formData: {
         };
       }
 
-      // Error umum (errors berbentuk string)
       if (data.errors && typeof data.errors === "string") {
         throw {
           type: "general",
@@ -80,20 +78,19 @@ export const loginUser = async (formData: {
         };
       }
 
-      // Error fallback
       throw {
         type: "general",
         message: data.message || "Terjadi kesalahan!",
       };
     }
 
-    // Error koneksi/server down
     throw {
       type: "network",
       message: "Tidak dapat terhubung ke server. Coba lagi nanti.",
     };
   }
 };
+
 
 // Logout
 export const logout = async () => {

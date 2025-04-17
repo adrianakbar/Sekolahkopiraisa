@@ -61,7 +61,7 @@ export default function Signup() {
             width={300}
             height={300}
             alt="Flower Top"
-            className="w-20 sm:w-24 md:w-32 lg:w-auto"
+            className="w-20 sm:w-24 md:w-100"
           />
         </div>
         <div className="absolute bottom-0 left-0 -z-0 hidden md:block">
@@ -70,7 +70,7 @@ export default function Signup() {
             width={350}
             height={300}
             alt="Flower Bottom"
-            className="w-20 sm:w-24 md:w-32 lg:w-auto"
+            className="w-20 sm:w-24 md:w-90"
           />
         </div>
 
