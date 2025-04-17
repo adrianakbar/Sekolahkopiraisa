@@ -1,13 +1,14 @@
 "use client";
 
 import type { ReactNode } from "react";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import Link from "next/link";
 import { usePathname, useRouter } from "next/navigation";
 import Image from "next/image";
 import { ChevronRight, ChevronDown, LogOut, Menu, Store } from "lucide-react";
 import { useUserStore } from "../stores/userStore";
 import { logout } from "../utils/auth";
+import { getUser } from "../utils/user";
 
 interface SidebarItemType {
   icon: ReactNode;
@@ -15,10 +16,15 @@ interface SidebarItemType {
   href: string;
 }
 
+interface User {
+  name: string;
+  image: string;
+}
+
 export default function Sidebar({ items }: { items: SidebarItemType[] }) {
   const [isProdukOpen, setProdukOpen] = useState(false);
   const pathname = usePathname();
-  const user = useUserStore((state) => state.user);
+  const [user, setUser] = useState<User | null>(null);
   const clearUser = useUserStore((state) => state.clearUser);
   const router = useRouter();
 
@@ -31,6 +37,18 @@ export default function Sidebar({ items }: { items: SidebarItemType[] }) {
       console.error("Logout failed:", error);
     }
   };
+
+  useEffect(() => {
+      const fetchUser = async () => {
+        try {
+          const data = await getUser();
+          if (data) setUser(data);
+        } catch (error) {
+          console.error("Gagal mendapatkan user:", error);
+        }
+      };
+      fetchUser();
+    }, []);
 
   return (
     <aside className="w-64 min-h-screen bg-white border-r flex flex-col justify-between shadow-sm">
