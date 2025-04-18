@@ -14,6 +14,8 @@ export default function Profile() {
     email: "",
     phone_number: "",
   });
+  const [emailErrorOnEdit, setEmailErrorOnEdit] = useState(false);
+
   const [errors, setErrors] = useState<Partial<typeof formData>>({});
   const [showPopup, setShowPopup] = useState(false);
   const [message, setMessage] = useState("");
@@ -30,6 +32,7 @@ export default function Profile() {
 
   const handleCancel = () => {
     setIsEditing(false);
+    setEmailErrorOnEdit(false);
     if (user) {
       setFormData({
         name: user.name,
@@ -42,7 +45,6 @@ export default function Profile() {
   };
 
   const handleSave = async () => {
-    setErrors({}); // Reset error sebelumnya
 
     try {
       const response = await updateUser({
@@ -52,6 +54,7 @@ export default function Profile() {
       });
 
       if (response) {
+        setEmailErrorOnEdit(false);
         setIsEditing(false); // Pindah ke sini
         setImageUrl(response.image || imageUrl);
         setImageFile(null);
@@ -165,13 +168,15 @@ export default function Profile() {
             type="email"
             value={formData.email}
             onChange={handleChange}
-            disabled={!isEditing}
+            disabled={true}
             className={`w-full border rounded-xl p-2 mt-1 ${
               isEditing ? "bg-white" : "bg-gray-100"
             }`}
           />
-          {errors.email && (
-            <p className="text-red-500 text-sm mt-1">{errors.email}</p>
+          {(emailErrorOnEdit) && (
+            <p className="text-red-500 text-sm mt-1">
+              {"*Maaf email tidak bisa diganti"}
+            </p>
           )}
         </div>
 
@@ -195,7 +200,10 @@ export default function Profile() {
         {!isEditing ? (
           <button
             type="button"
-            onClick={() => setIsEditing(true)}
+            onClick={() => {
+              setIsEditing(true);
+              setEmailErrorOnEdit(true);
+            }}
             className="w-full py-3 bg-[#5c2e0e] text-white rounded-xl font-semibold hover:bg-[#47230b] transition"
           >
             Perbarui Profil
