@@ -3,6 +3,8 @@
 import { useEffect, useState } from "react";
 import Image from "next/image";
 import { useUserStore } from "../stores/userStore";
+import { updateUser } from "../utils/user";
+import Popup from "../components/Popup";
 
 export default function Profile() {
   const user = useUserStore((state) => state.user);
@@ -11,8 +13,14 @@ export default function Profile() {
     name: "",
     email: "",
     phone_number: "",
-    image: "",
   });
+  const [errors, setErrors] = useState<Partial<typeof formData>>({});
+  const [showPopup, setShowPopup] = useState(false);
+  const [message, setMessage] = useState("");
+  const [popupType, setPopupType] = useState<"success" | "error">("success");
+
+  const [imageUrl, setImageUrl] = useState("/assets/user.png");
+  const [imageFile, setImageFile] = useState<File | null>(null);
 
   const handleChange = (
     e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>
@@ -22,12 +30,47 @@ export default function Profile() {
 
   const handleCancel = () => {
     setIsEditing(false);
+    if (user) {
+      setFormData({
+        name: user.name,
+        email: user.email,
+        phone_number: user.phone_number,
+      });
+      setImageUrl(user.image || "/assets/user.png");
+      setImageFile(null);
+    }
   };
 
-  const handleSave = () => {
-    setIsEditing(false);
-    console.log("Data disimpan:", formData);
+  const handleSave = async () => {
+    setErrors({}); // Reset error sebelumnya
+  
+    try {
+      const response = await updateUser({
+        name: formData.name,
+        phone_number: formData.phone_number,
+        file: imageFile,
+      });
+  
+      if (response) {
+        setIsEditing(false); // Pindah ke sini
+        setImageUrl(response.image || imageUrl);
+        setImageFile(null);
+        setMessage("Profil berhasil diperbarui!");
+        setPopupType("success");
+        setShowPopup(true);
+      }
+    } catch (error: any) {
+      if (error.type === "validation") {
+        setErrors(error.errors); // Tampilkan error validasi
+        // Jangan setIsEditing(false) di sini, biar user tetap bisa edit
+      } else {
+        setMessage(error.message || "Terjadi kesalahan saat menyimpan profil.");
+        setPopupType("error");
+        setShowPopup(true);
+      }
+    }
   };
+  
 
   useEffect(() => {
     if (user) {
@@ -35,19 +78,26 @@ export default function Profile() {
         name: user.name,
         email: user.email,
         phone_number: user.phone_number,
-        image: user.image || "/assets/user.png",
       });
+      setImageUrl(user.image || "/assets/user.png");
     }
   }, [user]);
 
   return (
     <div className="max-w-2xl mx-auto px-4 py-20 md:py-50">
+      {showPopup && (
+        <Popup
+          message={message}
+          type={popupType}
+          onClose={() => setShowPopup(false)}
+        />
+      )}
       <h1 className="text-center text-2xl font-bold mb-6">Profil Saya</h1>
 
       <div className="flex flex-col items-center space-y-3 mb-6">
         <div className="relative w-40 h-40 rounded-full overflow-hidden border">
           <Image
-            src={formData.image || "/assets/user.png"}
+            src={imageUrl}
             alt="Foto Profil"
             fill
             className="object-cover"
@@ -55,7 +105,17 @@ export default function Profile() {
           />
         </div>
         <label className="inline-flex items-center px-4 py-2 bg-white border border-gray-300 text-sm rounded-xl shadow-sm cursor-pointer hover:bg-gray-100 transition">
-          <input type="file" className="hidden" />
+          <input
+            type="file"
+            className="hidden"
+            onChange={(e) => {
+              const file = e.target.files?.[0];
+              if (file) {
+                setImageFile(file);
+                setImageUrl(URL.createObjectURL(file));
+              }
+            }}
+          />
           📸 Ubah Foto
         </label>
       </div>
@@ -73,6 +133,9 @@ export default function Profile() {
               isEditing ? "bg-white" : "bg-gray-100"
             }`}
           />
+          {errors.name && (
+            <p className="text-red-500 text-sm mt-1">{errors.name}</p>
+          )}
         </div>
 
         <div>
@@ -87,6 +150,9 @@ export default function Profile() {
               isEditing ? "bg-white" : "bg-gray-100"
             }`}
           />
+          {errors.email && (
+            <p className="text-red-500 text-sm mt-1">{errors.email}</p>
+          )}
         </div>
 
         <div>
@@ -101,6 +167,9 @@ export default function Profile() {
               isEditing ? "bg-white" : "bg-gray-100"
             }`}
           />
+          {errors.phone_number && (
+            <p className="text-red-500 text-sm mt-1">{errors.phone_number}</p>
+          )}
         </div>
 
         {!isEditing ? (
