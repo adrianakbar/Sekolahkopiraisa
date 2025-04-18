@@ -43,14 +43,14 @@ export default function Profile() {
 
   const handleSave = async () => {
     setErrors({}); // Reset error sebelumnya
-  
+
     try {
       const response = await updateUser({
         name: formData.name,
         phone_number: formData.phone_number,
         file: imageFile,
       });
-  
+
       if (response) {
         setIsEditing(false); // Pindah ke sini
         setImageUrl(response.image || imageUrl);
@@ -70,7 +70,6 @@ export default function Profile() {
       }
     }
   };
-  
 
   useEffect(() => {
     if (user) {
@@ -108,11 +107,32 @@ export default function Profile() {
           <input
             type="file"
             className="hidden"
-            onChange={(e) => {
+            onChange={async (e) => {
               const file = e.target.files?.[0];
               if (file) {
+                const previewUrl = URL.createObjectURL(file);
                 setImageFile(file);
-                setImageUrl(URL.createObjectURL(file));
+                setImageUrl(previewUrl);
+
+                try {
+                  const response = await updateUser({
+                    name: formData.name,
+                    phone_number: formData.phone_number,
+                    file: file,
+                  });
+
+                  if (response) {
+                    setImageUrl(response.image || previewUrl);
+                    setImageFile(null);
+                    setMessage("Foto profil berhasil diperbarui!");
+                    setPopupType("success");
+                    setShowPopup(true);
+                  }
+                } catch (error: any) {
+                  setMessage(error.message || "Gagal memperbarui foto profil.");
+                  setPopupType("error");
+                  setShowPopup(true);
+                }
               }
             }}
           />
