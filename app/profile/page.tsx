@@ -45,7 +45,6 @@ export default function Profile() {
   };
 
   const handleSave = async () => {
-
     try {
       const response = await updateUser({
         name: formData.name,
@@ -54,6 +53,7 @@ export default function Profile() {
       });
 
       if (response) {
+        setErrors({}); // Reset errors
         setEmailErrorOnEdit(false);
         setIsEditing(false); // Pindah ke sini
         setImageUrl(response.image || imageUrl);
@@ -132,9 +132,17 @@ export default function Profile() {
                     setShowPopup(true);
                   }
                 } catch (error: any) {
-                  setMessage(error.message || "Gagal memperbarui foto profil.");
-                  setPopupType("error");
-                  setShowPopup(true);
+                  if (error.type === "validation") {
+                    setErrors(error.errors); // Tampilkan error validasi
+                    // Jangan setIsEditing(false) di sini, biar user tetap bisa edit
+                  } else {
+                    setMessage(
+                      error.message ||
+                        "Terjadi kesalahan saat menyimpan profil."
+                    );
+                    setPopupType("error");
+                    setShowPopup(true);
+                  }
                 }
               }
             }}
@@ -173,7 +181,7 @@ export default function Profile() {
               isEditing ? "bg-white" : "bg-gray-100"
             }`}
           />
-          {(emailErrorOnEdit) && (
+          {emailErrorOnEdit && (
             <p className="text-red-500 text-sm mt-1">
               {"*Maaf email tidak bisa diganti"}
             </p>
