@@ -113,7 +113,7 @@ export default function Sidebar({ items }: { items: SidebarItemType[] }) {
             <button
               onClick={() => setProdukOpen(!isProdukOpen)}
               className={clsx(
-                "w-full flex items-center justify-between px-3 py-2 rounded-lg text-gray-700 hover:bg-gray-100 hover:text-gray-900 transition",
+                "w-full flex items-center justify-between px-3 py-2 rounded-xl text-gray-700 hover:bg-gray-100 hover:text-gray-900 transition",
                 !isMobile && !isSidebarOpen && "justify-center"
               )}
             >
@@ -129,23 +129,27 @@ export default function Sidebar({ items }: { items: SidebarItemType[] }) {
                 ))}
             </button>
 
-            <div
-              className={clsx(
-                "overflow-hidden transition-all duration-300 ml-9 mt-1 space-y-1 text-sm text-gray-600",
-                isProdukOpen ? "max-h-40" : "max-h-0"
+            <AnimatePresence initial={false}>
+              {isProdukOpen && (
+                <motion.div
+                  initial={{ height: 0, opacity: 0 }}
+                  animate={{ height: "auto", opacity: 1 }}
+                  exit={{ height: 0, opacity: 0 }}
+                  className="ml-9 mt-1 space-y-1 text-sm text-gray-600 overflow-hidden"
+                >
+                  <LinkItem
+                    href="/produk"
+                    pathname={pathname}
+                    label="Daftar Produk"
+                  />
+                  <LinkItem
+                    href="/produk/tambah"
+                    pathname={pathname}
+                    label="Tambah Produk"
+                  />
+                </motion.div>
               )}
-            >
-              <LinkItem
-                href="/produk"
-                pathname={pathname}
-                label="Daftar Produk"
-              />
-              <LinkItem
-                href="/produk/tambah"
-                pathname={pathname}
-                label="Tambah Produk"
-              />
-            </div>
+            </AnimatePresence>  
           </li>
         </ul>
       </nav>
@@ -248,7 +252,7 @@ function SidebarItem({
       <Link href={href}>
         <div
           className={clsx(
-            "flex items-center gap-3 px-3 py-2 rounded-lg transition-all duration-200 cursor-pointer",
+            "flex items-center gap-3 px-3 py-2 rounded-xl transition-all duration-200 cursor-pointer",
             isActive
               ? "bg-primary text-white font-semibold shadow-lg"
               : "text-gray-700 hover:bg-gray-100 hover:text-gray-900",
@@ -277,7 +281,7 @@ function LinkItem({
     <Link href={href}>
       <span
         className={clsx(
-          "block px-2 py-1 rounded transition",
+          "block px-2 py-1 rounded-xl transition",
           isActive ? "text-black bg-gray-100 font-medium" : "hover:text-black"
         )}
       >

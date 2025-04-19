@@ -4,16 +4,19 @@ import Link from "next/link";
 import Image from "next/image";
 import { useEffect, useState } from "react";
 import { getUser } from "../utils/user";
-import { X } from "lucide-react";
+import { LogOut, Menu, X } from "lucide-react";
 import { logout } from "../utils/auth";
 import { useRouter, usePathname } from "next/navigation";
 import { useUserStore } from "../stores/userStore";
 import { Dropdown } from "./Dropdown";
 import { DropdownItem } from "./DropdownItem";
+import { AnimatePresence, motion } from "framer-motion";
+import clsx from "clsx";
 
 interface NavbarItem {
   title: string;
   link: string;
+  icon?: React.ReactNode; // Add icon support for mobile view
 }
 
 interface User {
@@ -35,6 +38,7 @@ export default function Navbar({ navbarItems }: { navbarItems: NavbarItem[] }) {
     try {
       logout();
       clearUser();
+      router.replace("/login");
     } catch (error) {
       console.error("Logout Gagal:", error);
     }
@@ -57,12 +61,12 @@ export default function Navbar({ navbarItems }: { navbarItems: NavbarItem[] }) {
   ) => {
     e.stopPropagation();
 
-    // Cek apakah dropdown saat ini terbuka
+    // Check if dropdown is currently open
     if (isDropdownOpen) {
-      // Jika terbuka, tutup dropdown
+      // If open, close it
       closeUserDropdown();
     } else {
-      // Jika tertutup, buka dropdown
+      // If closed, open it
       setIsDropdownOpen(true);
     }
   };
@@ -79,7 +83,7 @@ export default function Navbar({ navbarItems }: { navbarItems: NavbarItem[] }) {
           width={35}
           height={25}
           priority
-          className="w-5 sm:w-7"
+          className="w-5 md:w-7"
         />
       </Link>
 
@@ -189,7 +193,7 @@ export default function Navbar({ navbarItems }: { navbarItems: NavbarItem[] }) {
               <Link
                 href="/login"
                 onClick={handleLogout}
-                className="flex items-center gap-3 px-3 py-2 mt-3 font-medium text-gray-700 rounded-lg group text-theme-sm hover:bg-gray-100 hover:text-gray-700 dark:text-gray-400 dark:hover:bg-white/5 dark:hover:text-gray-300"
+                className="flex items-center gap-3 px-3 py-2 mt-3 font-medium text-gray-700 group text-theme-sm hover:bg-gray-100 hover:text-gray-700 dark:text-gray-400 dark:hover:bg-white/5 dark:hover:text-gray-300"
               >
                 <svg
                   className="fill-gray-500 group-hover:fill-gray-700 dark:group-hover:fill-gray-300"
@@ -226,96 +230,147 @@ export default function Navbar({ navbarItems }: { navbarItems: NavbarItem[] }) {
         )}
       </div>
 
-      {/* Mobile Menu Button */}
-      <button
-        className="md:hidden flex flex-col space-y-1.5 p-2"
-        onClick={toggleMobileMenu}
-        aria-label="Toggle menu"
-      >
-        <span
-          className={`block w-6 h-0.5 bg-primary transition-transform duration-300 ${
-            isDropdownOpen ? "rotate-45 translate-y-2" : ""
-          }`}
-        />
-        <span
-          className={`block w-6 h-0.5 bg-primary transition-opacity duration-300 ${
-            isDropdownOpen ? "opacity-0" : "opacity-100"
-          }`}
-        />
-        <span
-          className={`block w-6 h-0.5 bg-primary transition-transform duration-300 ${
-            isDropdownOpen ? "-rotate-45 -translate-y-2" : ""
-          }`}
-        />
+      {/* Mobile Menu Button - Now placed directly in navbar */}
+      <button className="md:hidden p-2" onClick={toggleMobileMenu}>
+        <Menu size={24} />
       </button>
 
-      {/* Mobile Menu */}
-      <div
-        className={`md:hidden fixed inset-0 bg-white z-40 transition-transform duration-300 ease-in-out ${
-          isMobileMenuOpen ? "translate-x-0" : "translate-x-full"
-        }`}
-      >
-        <div className="flex justify-end p-4">
-          <button
-            onClick={() => setIsMobileMenuOpen(false)}
-            className="text-gray-700"
+      {/* Mobile Menu - Sidebar style */}
+      <AnimatePresence>
+        {isMobileMenuOpen && (
+          <motion.div
+            className="fixed inset-0 z-40 flex md:hidden"
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            exit={{ opacity: 0 }}
           >
-            <X size={30} />
-          </button>
-        </div>
-        <div className="flex flex-col items-center space-y-6 p-6">
-          {navbarItems.map((item, index) => {
-            const isActive = pathname === item.link;
-            return (
-              <Link
-                key={index}
-                href={item.link}
-                onClick={() => setIsMobileMenuOpen(false)}
-                className={`text-lg font-medium ${
-                  isActive ? "text-primary" : "text-gray-700"
-                }`}
-              >
-                {item.title}
-              </Link>
-            );
-          })}
-          <div className="pt-6 border-t w-full flex flex-col items-center space-y-4">
-            {user ? (
-              <Link href="/profile" onClick={() => setIsMobileMenuOpen(false)}>
-                <div className="flex items-center space-x-3">
-                  <img
-                    src={user.image || "/assets/user.png"}
-                    alt={user.name}
-                    className="w-10 h-10 rounded-full object-cover"
-                  />
-                  <span className="text-base font-medium">{user.name}</span>
-                </div>
-              </Link>
-            ) : (
-              <>
-                <Link
-                  href="/login"
+            {/* Overlay */}
+            <motion.div
+              className="absolute inset-0 bg-black"
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 0.5 }}
+              exit={{ opacity: 0 }}
+              transition={{ duration: 0.3 }}
+              onClick={() => setIsMobileMenuOpen(false)}
+            />
+
+            {/* Sidebar */}
+            <motion.div
+              initial={{ x: "100%" }}
+              animate={{ x: 0 }}
+              exit={{ x: "100%" }}
+              transition={{ duration: 0.3 }}
+              className="relative z-50 w-64 bg-white h-full shadow-xl ml-auto flex flex-col"
+            >
+              {/* Header */}
+              <div className="flex items-center justify-between px-4 py-4">
+                <Image
+                  src="/assets/logo.png"
+                  alt="Logo"
+                  width={24}
+                  height={24}
+                />
+                <button
                   onClick={() => setIsMobileMenuOpen(false)}
-                  className="w-full"
+                  className="p-1"
                 >
-                  <button className="bg-primary w-full py-3 rounded-xl text-white">
-                    Masuk
-                  </button>
-                </Link>
-                <Link
-                  href="/signup"
-                  onClick={() => setIsMobileMenuOpen(false)}
-                  className="w-full"
-                >
-                  <button className="w-full border border-primary py-3 rounded-xl text-primary">
-                    Daftar
-                  </button>
-                </Link>
-              </>
-            )}
-          </div>
-        </div>
-      </div>
+                  <X size={24} />
+                </button>
+              </div>
+
+              {/* Navigation */}
+              <nav className="flex-1 px-4 py-6 overflow-y-auto">
+                <ul className="space-y-4">
+                  {navbarItems.map((item, index) => {
+                    const isActive = pathname === item.link;
+                    // Use default icon if not provided
+                    const icon = item.icon || (
+                      <div className="w-5 h-5  rounded-full flex items-center justify-center text-xs text-primary font-bold">
+                        {item.title.charAt(0)}
+                      </div>
+                    );
+
+                    return (
+                      <li key={index}>
+                        <Link
+                          href={item.link}
+                          onClick={() => setIsMobileMenuOpen(false)}
+                        >
+                          <div
+                            className={clsx(
+                              "flex items-center gap-3 px-3 py-2 rounded-xl transition-all duration-200",
+                              isActive
+                                ? "bg-primary text-white font-semibold shadow-lg"
+                                : "text-gray-700 hover:bg-gray-100 hover:text-gray-900"
+                            )}
+                          >
+                            {icon}
+                            <span>{item.title}</span>
+                          </div>
+                        </Link>
+                      </li>
+                    );
+                  })}
+                </ul>
+              </nav>
+
+              {/* Footer with user profile */}
+              <div className="mt-auto px-4 py-4 bg-gray-100 flex items-center justify-between rounded-t-xl">
+                {user ? (
+                  <>
+                    <div
+                      className="flex items-center gap-2"
+                      onClick={() => {
+                        router.push("/profile");
+                        setIsMobileMenuOpen(false);
+                      }}
+                    >
+                      <Image
+                        src={user.image || "/assets/avatar.png"}
+                        alt="avatar"
+                        width={40}
+                        height={40}
+                        className="rounded-full"
+                      />
+                      <div>
+                        <p className="text-sm font-medium">{user.name}</p>
+                        <p className="text-xs text-gray-500">User</p>
+                      </div>
+                    </div>
+                    <LogOut
+                      size={20}
+                      className="text-gray-700 cursor-pointer"
+                      onClick={() => {
+                        handleLogout();
+                        setIsMobileMenuOpen(false);
+                      }}
+                    />
+                  </>
+                ) : (
+                  <div className="flex flex-col w-full gap-2">
+                    <Link
+                      href="/login"
+                      onClick={() => setIsMobileMenuOpen(false)}
+                    >
+                      <button className="bg-primary w-full py-2 rounded-xl text-white">
+                        Masuk
+                      </button>
+                    </Link>
+                    <Link
+                      href="/signup"
+                      onClick={() => setIsMobileMenuOpen(false)}
+                    >
+                      <button className="w-full border border-primary py-2 rounded-xl text-primary">
+                        Daftar
+                      </button>
+                    </Link>
+                  </div>
+                )}
+              </div>
+            </motion.div>
+          </motion.div>
+        )}
+      </AnimatePresence>
     </nav>
   );
 }
