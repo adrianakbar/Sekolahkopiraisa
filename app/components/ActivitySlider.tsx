@@ -26,7 +26,7 @@ export default function ActivitySlider({
   }, [sliderItems.length]);
 
   return (
-    <div className="relative w-full h-[300px] md:h-[400px] lg:h-[500px] overflow-hidden rounded-xl shadow-md">
+    <div className="relative w-full h-[300px] md:h-[400px] lg:h-[500px] overflow-hidden rounded-xl shadow-lg">
       <AnimatePresence mode="wait">
         <motion.div
           key={sliderItems[current].id}

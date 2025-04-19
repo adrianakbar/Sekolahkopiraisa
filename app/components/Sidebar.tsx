@@ -59,7 +59,7 @@ export default function Sidebar({ items }: { items: SidebarItemType[] }) {
   const renderSidebarContent = (isMobile = false) => (
     <div
       className={clsx(
-        "bg-white h-full shadow-md flex flex-col justify-between duration-300",
+        "bg-white h-full shadow-lg flex flex-col justify-between duration-300",
         isMobile ? "w-64" : isSidebarOpen ? "w-64" : "w-20"
       )}
     >
@@ -191,7 +191,7 @@ export default function Sidebar({ items }: { items: SidebarItemType[] }) {
         {/* Hamburger button - only show when sidebar is closed */}
         {!isMobileOpen && (
           <button
-            className="fixed top-4 left-4 z-50 p-2 bg-white rounded-full shadow-md"
+            className="fixed top-4 left-4 z-50 p-2 bg-white rounded-full shadow-lg"
             onClick={() => setMobileOpen(true)}
           >
             <Menu />
@@ -223,7 +223,7 @@ export default function Sidebar({ items }: { items: SidebarItemType[] }) {
                 animate={{ x: 0 }}
                 exit={{ x: "-100%" }}
                 transition={{ duration: 0.3 }}
-                className="relative z-50 w-64 bg-white h-full shadow-xl"
+                className="relative z-50 w-64 bg-white h-full shadow-lg"
               >
                 {renderSidebarContent(true)}
               </motion.div>

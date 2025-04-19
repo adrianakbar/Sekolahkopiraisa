@@ -34,7 +34,7 @@ export const updateUser = async (formData: {
       },
     });
 
-    return res.data.data;
+    return res.data;
   } catch (error: any) {
     console.error("Gagal update user:", error);
 

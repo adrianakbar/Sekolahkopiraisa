@@ -1,12 +1,16 @@
 "use client";
-import TextEditor from "@/app/components/TextEditor";
-import { createActivity } from "@/app/utils/activity";
-import { useRouter } from "next/navigation";
-import { FormEvent, useState } from "react";
-import { X } from "lucide-react";
-import Popup from "@/app/components/Popup";
 
-export default function CreateActivityPage() {
+import { useEffect, useState, FormEvent } from "react";
+import { useRouter, useParams } from "next/navigation";
+import TextEditor from "@/app/components/TextEditor";
+import Popup from "@/app/components/Popup";
+import { fetchActivityById, updateActivity } from "@/app/utils/activity";
+import { X } from "lucide-react";
+
+export default function EditActivityPage() {
+  const { id } = useParams();
+  const router = useRouter();
+
   const [title, setTitle] = useState("");
   const [content, setContent] = useState("");
   const [thumbnail, setThumbnail] = useState<File | null>(null);
@@ -19,8 +23,91 @@ export default function CreateActivityPage() {
   const [message, setMessage] = useState("");
   const [popupType, setPopupType] = useState<"success" | "error">("success");
 
-  const router = useRouter();
   const maxWords = 2200;
+
+  useEffect(() => {
+    const fetchData = async () => {
+      try {
+        const response = await fetchActivityById(id ? Number(id) : 0);
+        const data = response.data; // Get the actual data from the response
+
+        setTitle(data.title);
+        setContent(data.content);
+
+        // Handle thumbnail and additional images from newsMedia array
+        if (data.newsMedia && data.newsMedia.length > 0) {
+          // Set first image as thumbnail (or you can determine this differently)
+          setThumbnailPreview(data.newsMedia[0].media_url);
+
+          // Set any additional images as image previews (skipping the first one if it's used as thumbnail)
+          const additionalImages = data.newsMedia
+            .slice(1)
+            .map((media: { media_url: any }) => media.media_url);
+          setImagePreviews(additionalImages);
+        }
+      } catch (err) {
+        console.error("Failed to fetch activity:", err);
+        setError("Gagal memuat data berita.");
+      }
+    };
+
+    fetchData();
+  }, [id]);
+
+  const getWordCount = (html: string) => {
+    if (!html) {
+      return 0;
+    }
+
+    const text = html.replace(/<[^>]+>/g, "").trim();
+    return text.split(/\s+/).filter(Boolean).length;
+  };
+
+  const handleSubmit = async (e: FormEvent) => {
+    e.preventDefault();
+    setError(null);
+    setErrors({});
+
+    if (getWordCount(content) > maxWords) {
+      setError(`Maksimal ${maxWords} kata.`);
+      return;
+    }
+
+    try {
+      const formData = new FormData();
+      formData.append("title", title);
+      formData.append("content", content);
+      formData.append("postToFacebook", "false");
+      formData.append("postToInstagram", "false");
+
+      // Add new media if they exist
+      if (thumbnail) {
+        formData.append("media", thumbnail);
+      }
+
+      images.forEach((img) => formData.append("media", img));
+
+      const response = await updateActivity(Number(id), formData);
+
+      if (response && response.message) {
+        setMessage(response.message);
+        setPopupType("success");
+        setShowPopup(true);
+        setTimeout(() => router.push("/admin/activity"), 1500);
+      }
+    } catch (error: any) {
+      if (error.type === "validation") {
+        setErrors(error.errors);
+      } else {
+        console.error("Error:", error);
+        setMessage(
+          error.message || "Terjadi kesalahan saat memperbarui berita."
+        );
+        setPopupType("error");
+        setShowPopup(true);
+      }
+    }
+  };
 
   const handleThumbnailChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
@@ -60,56 +147,6 @@ export default function CreateActivityPage() {
     setImagePreviews((prev) => prev.filter((_, i) => i !== index));
   };
 
-  const getWordCount = (html: string) => {
-    const text = html.replace(/<[^>]+>/g, "").trim();
-    return text.split(/\s+/).filter(Boolean).length;
-  };
-
-  const handleSubmit = async (e: FormEvent) => {
-    e.preventDefault();
-    setError(null);
-    setErrors({});
-
-    if (getWordCount(content) > maxWords) {
-      setError(`Maksimal ${maxWords} kata.`);
-      return;
-    }
-
-    try {
-      const formData = new FormData();
-      formData.append("title", title);
-      formData.append("content", content);
-      formData.append("postToFacebook", "false");
-      formData.append("postToInstagram", "false");
-
-      if (thumbnail) formData.append("media", thumbnail);
-      images.forEach((img) => formData.append("media", img));
-
-      const response = await createActivity(formData);
-
-      if (response && response.message) {
-        setTitle("");
-        setContent("");
-        setThumbnail(null);
-        setThumbnailPreview(null);
-        setImages([]);
-        setImagePreviews([]);
-        setMessage(response.message);
-        setPopupType("success");
-        setShowPopup(true);
-      }
-    } catch (error: any) {
-      if (error.type === "validation") {
-        setErrors(error.errors); // ✅ Ambil langsung dari backend
-      } else {
-        console.error("Error:", error);
-        setMessage(error.message || "Terjadi kesalahan saat menyimpan berita.");
-        setPopupType("error");
-        setShowPopup(true);
-      }
-    }
-  };
-
   return (
     <div className="max-w-7xl mx-auto p-6 bg-white rounded shadow-lg">
       {showPopup && (
@@ -119,7 +156,7 @@ export default function CreateActivityPage() {
           onClose={() => setShowPopup(false)}
         />
       )}
-      <h1 className="text-xl font-bold mb-4">Buat Berita Baru</h1>
+      <h1 className="text-xl font-bold mb-4">Edit Berita</h1>
       {error && <p className="text-red-600 mb-4">{error}</p>}
 
       <form onSubmit={handleSubmit} className="flex flex-col md:flex-row gap-6">
@@ -128,7 +165,7 @@ export default function CreateActivityPage() {
           <div className="mb-4">
             <label className="block mb-1 font-semibold">Konten Berita</label>
             <TextEditor
-              content={content}
+              content={content || ""}
               setContent={(value: string) => {
                 setContent(value);
                 setErrors((prev) => ({ ...prev, content: "" }));
@@ -201,10 +238,7 @@ export default function CreateActivityPage() {
                   id="thumbnail-upload"
                   type="file"
                   accept="image/*"
-                  onChange={(e) => {
-                    handleThumbnailChange(e);
-                    setErrors((prev) => ({ ...prev, media: "" }));
-                  }}
+                  onChange={handleThumbnailChange}
                   className="hidden"
                 />
               </div>
@@ -256,11 +290,7 @@ export default function CreateActivityPage() {
                   type="file"
                   accept="image/*"
                   multiple
-                  onChange={(e) => {
-                    handleImageChange(e);
-                    setError(null);
-                    setErrors((prev) => ({ ...prev, media: "" }));
-                  }}
+                  onChange={handleImageChange}
                   className="hidden"
                   disabled={images.length >= 4}
                 />
@@ -277,7 +307,7 @@ export default function CreateActivityPage() {
             type="submit"
             className="w-full bg-primary text-white py-3 px-4 rounded-xl hover:-translate-y-1 duration-150 ease-in"
           >
-            Unggah Berita
+            Update Berita
           </button>
         </div>
       </form>

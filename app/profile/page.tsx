@@ -29,7 +29,11 @@ export default function Profile() {
   const handleChange = (
     e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>
   ) => {
-    setFormData({ ...formData, [e.target.name]: e.target.value });
+    const { name, value } = e.target;
+    setFormData((prev) => ({ ...prev, [name]: value }));
+
+    // Hapus error untuk field yang sedang diedit
+    setErrors((prevErrors) => ({ ...prevErrors, [name]: "" }));
   };
 
   const handleCancel = () => {
@@ -60,7 +64,7 @@ export default function Profile() {
         setIsEditing(false); // Pindah ke sini
         setImageUrl(response.image || imageUrl);
         setImageFile(null);
-        setMessage("Profil berhasil diperbarui!");
+        setMessage(response.message);
         setPopupType("success");
         setShowPopup(true);
       }

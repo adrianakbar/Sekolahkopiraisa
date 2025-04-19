@@ -80,7 +80,7 @@ export default function TextEditor({
   return (
     <div className="flex gap-6">
       {/* LEFT - Editor */}
-      <div className="w-2/3">
+      <div className="w-full">
         {/* Toolbar */}
         <div className="flex flex-wrap gap-2 border-b pb-2 mb-4">
           <button onClick={() => editor?.chain().focus().toggleBold().run()}>
@@ -107,28 +107,6 @@ export default function TextEditor({
         {/* Word Count / Character Count */}
         <div className="text-sm text-gray-500 mt-2">
           {content.replace(/<[^>]*>/g, "").length}/{maxCharacters} karakter
-        </div>
-      </div>
-
-      {/* RIGHT - Gambar Sampul & Deskripsi */}
-      <div className="w-1/3">
-        <div className="mb-4">
-          <label className="block font-semibold mb-1">Sampul Gambar</label>
-          <div
-            {...getRootProps()}
-            className="border h-40 rounded flex justify-center items-center bg-gray-100 cursor-pointer overflow-hidden"
-          >
-            <input {...getInputProps()} />
-            {thumbnail ? (
-              <img
-                src={thumbnail}
-                alt="Thumbnail"
-                className="h-full w-full object-cover"
-              />
-            ) : (
-              <span className="text-gray-400 text-sm">📷 Upload Gambar</span>
-            )}
-          </div>
         </div>
       </div>
     </div>
