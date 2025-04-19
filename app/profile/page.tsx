@@ -5,6 +5,7 @@ import Image from "next/image";
 import { useUserStore } from "../stores/userStore";
 import { updateUser } from "../utils/user";
 import Popup from "../components/Popup";
+import ConfirmModal from "../components/ConfirmModal";
 
 export default function Profile() {
   const user = useUserStore((state) => state.user);
@@ -20,6 +21,7 @@ export default function Profile() {
   const [showPopup, setShowPopup] = useState(false);
   const [message, setMessage] = useState("");
   const [popupType, setPopupType] = useState<"success" | "error">("success");
+  const [showConfirmModal, setShowConfirmModal] = useState(false);
 
   const [imageUrl, setImageUrl] = useState("/assets/user.png");
   const [imageFile, setImageFile] = useState<File | null>(null);
@@ -220,11 +222,24 @@ export default function Profile() {
           <div className="flex justify-between space-x-4">
             <button
               type="button"
-              onClick={handleSave}
+              onClick={() => {
+                setShowConfirmModal(true);
+              }}
               className="w-full py-3 bg-green-600 text-white rounded-xl font-semibold hover:bg-green-700 transition"
             >
               Simpan
             </button>
+            <ConfirmModal
+              title="Simpan Perubahan"
+              description="Apakah Anda yakin ingin menyimpan perubahan ini?"
+              isOpen={showConfirmModal}
+              onClose={() => setShowConfirmModal(false)}
+              onConfirm={() => {
+                setShowConfirmModal(false);
+                handleSave();
+              }}
+            />
+
             <button
               type="button"
               onClick={handleCancel}

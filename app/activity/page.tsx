@@ -3,8 +3,8 @@ import { useEffect, useState } from "react";
 import ActivitySlider from "../components/ActivitySlider";
 import ActivityCard from "../components/ActivityCard";
 import Footer from "../components/Footer";
-import { fetchAllNews } from "../utils/activity";
-import SkeletonActivity from "../components/SkeletonActivity";
+import { fetchAllActivity } from "../utils/activity";
+import ActivityUserSkeleton from "../components/ActivityUserSkeleton";
 
 interface ActivityItemApi {
   id: number;
@@ -44,7 +44,7 @@ export default function Activity() {
     const getActivities = async () => {
       try {
         setLoading(true);
-        const response = await fetchAllNews();
+        const response = await fetchAllActivity();
         const rawData = response.data;
 
         const filtered = rawData
@@ -97,7 +97,7 @@ export default function Activity() {
   }));
 
   if (loading) {
-    return <SkeletonActivity />;
+    return <ActivityUserSkeleton />;
   }
 
   if (error) {

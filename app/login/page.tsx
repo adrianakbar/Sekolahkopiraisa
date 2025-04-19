@@ -94,7 +94,7 @@ export default function Login() {
       {/* Modal Forgot Password */}
       {showForgotPasswordModal && (
         <div className="fixed inset-0 backdrop-blur-lg flex items-center justify-center z-40">
-          <div className="bg-white rounded-xl p-6 w-full max-w-md mx-4">
+          <div className="bg-white rounded-xl p-6 w-full max-w-md mx-4 shadow-xl">
             <div className="flex justify-between items-center mb-4">
               <h2 className="text-xl font-semibold">Reset Password</h2>
               <button

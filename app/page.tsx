@@ -6,7 +6,7 @@ import ActivityCard from "./components/ActivityCarousel";
 import Footer from "./components/Footer";
 import ImageAboutus from "./components/ImageAboutus";
 import { useEffect, useState } from "react";
-import { fetchAllNews } from "./utils/activity";
+import { fetchAllActivity } from "./utils/activity";
 import Link from "next/link";
 
 interface ActivityItemApi {
@@ -21,7 +21,7 @@ export default function Home() {
   useEffect(() => {
     const getActivities = async () => {
       try {
-        const response = await fetchAllNews();
+        const response = await fetchAllActivity();
         const rawData = response.data;
         
         // Sort by created_at date in descending order (newest first)

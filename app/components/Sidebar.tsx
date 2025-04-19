@@ -1,66 +1,102 @@
 "use client";
 
-import type { ReactNode } from "react";
 import { useEffect, useState } from "react";
 import Link from "next/link";
-import { usePathname, useRouter } from "next/navigation";
 import Image from "next/image";
-import { ChevronRight, ChevronDown, LogOut, Menu, Store } from "lucide-react";
+import { usePathname, useRouter } from "next/navigation";
+import {
+  ChevronRight,
+  ChevronDown,
+  LogOut,
+  Menu,
+  Store,
+  X,
+} from "lucide-react";
+import clsx from "clsx";
 import { useUserStore } from "../stores/userStore";
 import { logout } from "../utils/auth";
 import { getUser } from "../utils/user";
+import { AnimatePresence, motion } from "framer-motion";
 
 interface SidebarItemType {
-  icon: ReactNode;
+  icon: React.ReactNode;
   text: string;
   href: string;
 }
-
 interface User {
   name: string;
   image: string;
 }
 
 export default function Sidebar({ items }: { items: SidebarItemType[] }) {
+  const [isSidebarOpen, setSidebarOpen] = useState(true);
+  const [isMobileOpen, setMobileOpen] = useState(false);
   const [isProdukOpen, setProdukOpen] = useState(false);
   const pathname = usePathname();
+  const router = useRouter();
   const [user, setUser] = useState<User | null>(null);
   const clearUser = useUserStore((state) => state.clearUser);
-  const router = useRouter();
 
   const handleLogout = () => {
-    try {
-      logout();
-      clearUser();
-      router.replace("/login");
-    } catch (error) {
-      console.error("Logout failed:", error);
-    }
+    logout();
+    clearUser();
+    router.replace("/login");
   };
 
   useEffect(() => {
-      const fetchUser = async () => {
-        try {
-          const data = await getUser();
-          if (data) setUser(data);
-        } catch (error) {
-          console.error("Gagal mendapatkan user:", error);
-        }
-      };
-      fetchUser();
-    }, []);
+    const fetchUser = async () => {
+      try {
+        const data = await getUser();
+        if (data) setUser(data);
+      } catch (error) {
+        console.error("Gagal mendapatkan user:", error);
+      }
+    };
+    fetchUser();
+  }, []);
 
-  return (
-    <aside className="w-64 min-h-screen bg-white border-r flex flex-col justify-between shadow-sm">
+  const renderSidebarContent = (isMobile = false) => (
+    <div
+      className={clsx(
+        "bg-white h-full shadow-md flex flex-col justify-between duration-300",
+        isMobile ? "w-64" : isSidebarOpen ? "w-64" : "w-20"
+      )}
+    >
       {/* Header */}
-      <div className="flex items-center justify-between px-4 py-4 border-b">
+      <div className="flex items-center justify-between px-4 py-4">
         <Image src="/assets/logo.png" alt="Logo" width={24} height={24} />
-        <Menu className="text-[#57270D] cursor-pointer" />
+        {isMobile ? (
+          <button onClick={() => setMobileOpen(false)}>
+            <X />
+          </button>
+        ) : (
+          <div
+            className="relative w-6 h-6 cursor-pointer"
+            onClick={() => setSidebarOpen(!isSidebarOpen)}
+          >
+            <Menu
+              className={clsx(
+                "absolute transition-all duration-300",
+                isSidebarOpen
+                  ? "opacity-0 scale-90 rotate-45"
+                  : "opacity-100 scale-100 rotate-0"
+              )}
+            />
+            <X
+              className={clsx(
+                "absolute transition-all duration-300",
+                isSidebarOpen
+                  ? "opacity-100 scale-100 rotate-0"
+                  : "opacity-0 scale-90 -rotate-45"
+              )}
+            />
+          </div>
+        )}
       </div>
 
       {/* Navigation */}
-      <nav className="flex-1 px-4 py-6">
-        <ul className="space-y-2">
+      <nav className="flex-1 px-4 py-6 overflow-y-auto">
+        <ul className="space-y-4">
           {items.map((item) => (
             <SidebarItem
               key={item.href}
@@ -68,6 +104,7 @@ export default function Sidebar({ items }: { items: SidebarItemType[] }) {
               text={item.text}
               href={item.href}
               isActive={pathname === item.href}
+              isSidebarOpen={isMobile ? true : isSidebarOpen}
             />
           ))}
 
@@ -75,49 +112,40 @@ export default function Sidebar({ items }: { items: SidebarItemType[] }) {
           <li>
             <button
               onClick={() => setProdukOpen(!isProdukOpen)}
-              className="w-full flex items-center justify-between gap-3 px-3 py-2 rounded-lg text-gray-700 hover:bg-gray-100 hover:text-gray-900 transition"
+              className={clsx(
+                "w-full flex items-center justify-between px-3 py-2 rounded-lg text-gray-700 hover:bg-gray-100 hover:text-gray-900 transition",
+                !isMobile && !isSidebarOpen && "justify-center"
+              )}
             >
               <span className="flex items-center gap-3">
                 <Store size={20} />
-                <span>Toko</span>
+                {(isMobile || isSidebarOpen) && <span>Toko</span>}
               </span>
-              {isProdukOpen ? (
-                <ChevronDown size={16} />
-              ) : (
-                <ChevronRight size={16} />
-              )}
+              {(isMobile || isSidebarOpen) &&
+                (isProdukOpen ? (
+                  <ChevronDown size={16} />
+                ) : (
+                  <ChevronRight size={16} />
+                ))}
             </button>
 
-            {isProdukOpen && (
-              <ul className="ml-9 mt-1 space-y-1 text-sm text-gray-600">
-                <li>
-                  <Link href="/produk">
-                    <span
-                      className={`block px-2 py-1 rounded transition ${
-                        pathname === "/produk"
-                          ? "text-black bg-gray-100 font-medium"
-                          : "hover:text-black"
-                      }`}
-                    >
-                      Daftar Produk
-                    </span>
-                  </Link>
-                </li>
-                <li>
-                  <Link href="/produk/tambah">
-                    <span
-                      className={`block px-2 py-1 rounded transition ${
-                        pathname === "/produk/tambah"
-                          ? "text-black bg-gray-100 font-medium"
-                          : "hover:text-black"
-                      }`}
-                    >
-                      Tambah Produk
-                    </span>
-                  </Link>
-                </li>
-              </ul>
-            )}
+            <div
+              className={clsx(
+                "overflow-hidden transition-all duration-300 ml-9 mt-1 space-y-1 text-sm text-gray-600",
+                isProdukOpen ? "max-h-40" : "max-h-0"
+              )}
+            >
+              <LinkItem
+                href="/produk"
+                pathname={pathname}
+                label="Daftar Produk"
+              />
+              <LinkItem
+                href="/produk/tambah"
+                pathname={pathname}
+                label="Tambah Produk"
+              />
+            </div>
           </li>
         </ul>
       </nav>
@@ -126,16 +154,18 @@ export default function Sidebar({ items }: { items: SidebarItemType[] }) {
       <div className="px-4 py-4 bg-gray-100 flex items-center justify-between rounded-t-xl">
         <div className="flex items-center gap-2">
           <Image
-            src="/assets/logo.png"
+            src={user?.image || "/assets/avatar.png"}
             alt="avatar"
             width={40}
             height={40}
             className="rounded-full"
           />
-          <div>
-            <p className="text-sm font-medium">{user?.name}</p>
-            <p className="text-xs text-gray-500">Admin</p>
-          </div>
+          {(isMobile || isSidebarOpen) && (
+            <div>
+              <p className="text-sm font-medium">{user?.name}</p>
+              <p className="text-xs text-gray-500">Admin</p>
+            </div>
+          )}
         </div>
         <LogOut
           size={20}
@@ -143,7 +173,60 @@ export default function Sidebar({ items }: { items: SidebarItemType[] }) {
           onClick={handleLogout}
         />
       </div>
-    </aside>
+    </div>
+  );
+
+  return (
+    <>
+      {/* Desktop Sidebar */}
+      <aside className="hidden md:block">{renderSidebarContent()}</aside>
+
+      {/* Mobile Sidebar (overlay) */}
+      <div className="md:hidden">
+        {/* Hamburger button - only show when sidebar is closed */}
+        {!isMobileOpen && (
+          <button
+            className="fixed top-4 left-4 z-50 p-2 bg-white rounded-full shadow-md"
+            onClick={() => setMobileOpen(true)}
+          >
+            <Menu />
+          </button>
+        )}
+
+        {/* Sidebar overlay */}
+        <AnimatePresence>
+          {isMobileOpen && (
+            <motion.div
+              className="fixed inset-0 z-40 flex"
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              exit={{ opacity: 0 }}
+            >
+              {/* Overlay */}
+              <motion.div
+                className="absolute inset-0 bg-black"
+                initial={{ opacity: 0 }}
+                animate={{ opacity: 0.5 }}
+                exit={{ opacity: 0 }}
+                transition={{ duration: 0.3 }}
+                onClick={() => setMobileOpen(false)}
+              />
+
+              {/* Sidebar */}
+              <motion.div
+                initial={{ x: "-100%" }}
+                animate={{ x: 0 }}
+                exit={{ x: "-100%" }}
+                transition={{ duration: 0.3 }}
+                className="relative z-50 w-64 bg-white h-full shadow-xl"
+              >
+                {renderSidebarContent(true)}
+              </motion.div>
+            </motion.div>
+          )}
+        </AnimatePresence>
+      </div>
+    </>
   );
 }
 
@@ -152,28 +235,54 @@ function SidebarItem({
   text,
   href,
   isActive,
+  isSidebarOpen,
 }: {
-  icon: ReactNode;
+  icon: React.ReactNode;
   text: string;
   href: string;
   isActive: boolean;
+  isSidebarOpen: boolean;
 }) {
   return (
     <li>
       <Link href={href}>
         <div
-          className={`flex items-center justify-between gap-3 px-3 py-2 rounded-lg transition-all duration-200 cursor-pointer ${
+          className={clsx(
+            "flex items-center gap-3 px-3 py-2 rounded-lg transition-all duration-200 cursor-pointer",
             isActive
-              ? "bg-gray-100 text-black font-semibold shadow-sm"
-              : "text-gray-700 hover:bg-gray-100 hover:text-gray-900"
-          }`}
+              ? "bg-primary text-white font-semibold shadow-lg"
+              : "text-gray-700 hover:bg-gray-100 hover:text-gray-900",
+            !isSidebarOpen && "justify-center"
+          )}
         >
-          <span className="flex items-center gap-3">
-            {icon}
-            <span>{text}</span>
-          </span>
+          {icon}
+          {isSidebarOpen && <span>{text}</span>}
         </div>
       </Link>
     </li>
+  );
+}
+
+function LinkItem({
+  href,
+  pathname,
+  label,
+}: {
+  href: string;
+  pathname: string;
+  label: string;
+}) {
+  const isActive = pathname === href;
+  return (
+    <Link href={href}>
+      <span
+        className={clsx(
+          "block px-2 py-1 rounded transition",
+          isActive ? "text-black bg-gray-100 font-medium" : "hover:text-black"
+        )}
+      >
+        {label}
+      </span>
+    </Link>
   );
 }

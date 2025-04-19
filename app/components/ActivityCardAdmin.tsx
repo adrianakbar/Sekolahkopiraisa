@@ -1,0 +1,74 @@
+"use client";
+
+import { Eye, SquarePen, Trash } from "lucide-react";
+
+export interface ActivityProps {
+  id: number;
+  title: string;
+  content: string;
+  image: string;
+  time: string;
+}
+
+interface ActivityCardAdminProps {
+  item: ActivityProps;
+  onDelete?: (id: number) => void;
+  onEdit?: (id: number) => void;
+  onView?: (id: number) => void;
+}
+
+export default function ActivityCardAdmin({
+  item,
+  onDelete,
+  onEdit,
+  onView,
+}: ActivityCardAdminProps) {
+  return (
+    <div className="bg-secondary rounded-lg border border-gray-400 p-4 flex justify-between shadow-lg">
+      <div className="flex">
+        <div className="mr-4 flex-shrink-0">
+          <img
+            src={item.image}
+            alt="Activity thumbnail"
+            className="w-32 h-24 object-cover rounded"
+          />
+        </div>
+        <div className="flex flex-col justify-center">
+          <h2 className="text-lg font-medium text-gray-800">{item.title}</h2>
+          <div className="text-sm text-gray-600 mt-1">
+            <span>Diunggah</span> • <span>{item.time}</span>
+          </div>
+        </div>
+      </div>
+
+      <div className="flex items-center space-x-2">
+        {/* Edit */}
+        <button
+          onClick={() => onEdit?.(item.id)}
+          className="p-3 text-white rounded-xl bg-primary hover:-translate-y-1 duration-150 ease-in"
+          title="Edit"
+        >
+          <SquarePen size={20} />
+        </button>
+
+        {/* View */}
+        <button
+          onClick={() => onView?.(item.id)}
+          className="p-3 text-white rounded-xl bg-primary hover:-translate-y-1 duration-150 ease-in"
+          title="Lihat Detail"
+        >
+          <Eye size={20} />
+        </button>
+
+        {/* Delete */}
+        <button
+          onClick={() => onDelete?.(item.id)}
+          className="p-3 text-white rounded-xl bg-primary hover:-translate-y-1 duration-150 ease-in"
+          title="Hapus"
+        >
+          <Trash size={20} />
+        </button>
+      </div>
+    </div>
+  );
+}
