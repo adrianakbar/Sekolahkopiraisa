@@ -54,6 +54,7 @@ export default function Sidebar({ items }: { items: SidebarItemType[] }) {
     };
     fetchUser();
   }, []);
+  
 
   const renderSidebarContent = (isMobile = false) => (
     <div

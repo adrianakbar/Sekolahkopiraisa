@@ -45,6 +45,19 @@ export default function Navbar({ navbarItems }: { navbarItems: NavbarItem[] }) {
   };
 
   useEffect(() => {
+    if (isMobileMenuOpen) {
+      document.body.style.overflow = "hidden"; // Menonaktifkan scroll
+    } else {
+      document.body.style.overflow = "auto"; // Mengaktifkan scroll kembali
+    }
+
+    // Cleanup effect saat komponen unmount atau state berubah
+    return () => {
+      document.body.style.overflow = "auto"; // Pastikan overflow di-reset saat komponen unmount
+    };
+  }, [isMobileMenuOpen]); //
+
+  useEffect(() => {
     const fetchUser = async () => {
       try {
         const data = await getUser();
