@@ -6,6 +6,7 @@ import TextEditor from "@/app/components/TextEditor";
 import Popup from "@/app/components/Popup";
 import { fetchActivityById, updateActivity } from "@/app/utils/activity";
 import { X } from "lucide-react";
+import ConfirmModal from "@/app/components/ConfirmModal";
 
 export default function EditActivityPage() {
   const { id } = useParams();
@@ -22,6 +23,7 @@ export default function EditActivityPage() {
   const [showPopup, setShowPopup] = useState(false);
   const [message, setMessage] = useState("");
   const [popupType, setPopupType] = useState<"success" | "error">("success");
+  const [showConfirmModal, setShowConfirmModal] = useState(false);
 
   const maxWords = 2200;
 
@@ -70,7 +72,7 @@ export default function EditActivityPage() {
 
     if (getWordCount(content) > maxWords) {
       setError(`Maksimal ${maxWords} kata.`);
-      return;
+      return; 
     }
 
     try {
@@ -149,6 +151,18 @@ export default function EditActivityPage() {
 
   return (
     <div className="max-w-7xl mx-auto p-6 bg-white rounded shadow-lg">
+      {showConfirmModal && (
+              <ConfirmModal
+                isOpen={showConfirmModal}
+                onClose={() => setShowConfirmModal(false)}
+                onConfirm={async () => {
+
+                  setShowConfirmModal(false);
+                }}
+                title="Konfirmasi Update"
+                description="Apakah Anda yakin ingin memperbarui berita ini?"
+              />
+            )}
       {showPopup && (
         <Popup
           message={message}
@@ -156,7 +170,7 @@ export default function EditActivityPage() {
           onClose={() => setShowPopup(false)}
         />
       )}
-      <h1 className="text-xl font-bold mb-4">Edit Berita</h1>
+      <h1 className="text-xl font-semibold mb-4">Edit Berita</h1>
       {error && <p className="text-red-600 mb-4">{error}</p>}
 
       <form onSubmit={handleSubmit} className="flex flex-col md:flex-row gap-6">

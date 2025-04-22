@@ -17,6 +17,7 @@ import { useUserStore } from "../stores/userStore";
 import { logout } from "../utils/auth";
 import { getUser } from "../utils/user";
 import { AnimatePresence, motion } from "framer-motion";
+import ConfirmModal from "./ConfirmModal";
 
 interface SidebarItemType {
   icon: React.ReactNode;
@@ -37,10 +38,10 @@ export default function Sidebar({ items }: { items: SidebarItemType[] }) {
   const [user, setUser] = useState<User | null>(null);
   const clearUser = useUserStore((state) => state.clearUser);
 
+  const [showConfirmModal, setShowConfirmModal] = useState(false);
+
   const handleLogout = () => {
-    logout();
-    clearUser();
-    router.replace("/login");
+    setShowConfirmModal(true);
   };
 
   useEffect(() => {
@@ -54,7 +55,6 @@ export default function Sidebar({ items }: { items: SidebarItemType[] }) {
     };
     fetchUser();
   }, []);
-  
 
   const renderSidebarContent = (isMobile = false) => (
     <div
@@ -150,7 +150,7 @@ export default function Sidebar({ items }: { items: SidebarItemType[] }) {
                   />
                 </motion.div>
               )}
-            </AnimatePresence>  
+            </AnimatePresence>
           </li>
         </ul>
       </nav>
@@ -185,6 +185,20 @@ export default function Sidebar({ items }: { items: SidebarItemType[] }) {
     <>
       {/* Desktop Sidebar */}
       <aside className="hidden md:block">{renderSidebarContent()}</aside>
+      {showConfirmModal && (
+        <ConfirmModal
+          isOpen={showConfirmModal}
+          onClose={() => setShowConfirmModal(false)}
+          onConfirm={async () => {
+            await logout();
+            clearUser();
+            router.replace("/login");
+            setShowConfirmModal(false);
+          }}
+          title="Konfirmasi Logout"
+          description="Apakah Anda yakin ingin Logout?"
+        />
+      )}
 
       {/* Mobile Sidebar (overlay) */}
       <div className="md:hidden">

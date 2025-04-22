@@ -136,7 +136,7 @@ export default function Activity() {
       />
 
       <div className="flex justify-between mb-4 sm:mb-6">
-        <h1 className="text-xl sm:text-2xl font-bold text-gray-800">Daftar Berita</h1>
+        <h1 className="text-xl sm:text-2xl font-semibold text-gray-800">Daftar Berita</h1>
         <button
           className="bg-amber-950 text-white px-3 py-1 sm:px-4 sm:py-2 rounded-xl flex items-center hover:-translate-y-1 duration-150 ease-in text-sm sm:text-base"
           onClick={handleAddActivity}

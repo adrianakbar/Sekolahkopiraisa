@@ -5,6 +5,7 @@ import ActivityCard from "../components/ActivityCard";
 import Footer from "../components/Footer";
 import { fetchAllActivity } from "../utils/activity";
 import ActivityUserSkeleton from "../components/ActivityUserSkeleton";
+import { useRouter } from "next/navigation";
 
 interface ActivityItemApi {
   id: number;
@@ -39,6 +40,12 @@ export default function Activity() {
   const [activities, setActivities] = useState<ActivityItemApi[]>([]);
   const [loading, setLoading] = useState<boolean>(true);
   const [error, setError] = useState<string | null>(null);
+
+  const router = useRouter();
+
+  const handleCardClick = (id: number) => {
+    router.push(`/activity/${id}`);
+  };
 
   useEffect(() => {
     const getActivities = async () => {
@@ -94,6 +101,7 @@ export default function Activity() {
     image: item.image,
     title: item.title,
     time: item.time,
+    onClick: () => handleCardClick(item.id),
   }));
 
   if (loading) {
@@ -117,7 +125,7 @@ export default function Activity() {
   }
 
   return (
-    <>
+    <div className="bg-secondary">
       <div className="px-4 md:px-8 py-4 max-w-400 mx-auto">
         <section className="mt-20 md:mt-30">
           {sliderItems.length > 0 ? (
@@ -128,7 +136,7 @@ export default function Activity() {
             </div>
           )}
         </section>
-        <section className="mt-8">
+        <section className="my-8 bg-white p-6 rounded-lg shadow-md">
           <h2 className="text-lg md:text-xl font-semibold mb-4">
             Berita Terbaru
           </h2>
@@ -142,6 +150,6 @@ export default function Activity() {
         </section>
       </div>
       <Footer />
-    </>
+    </div>
   );
 }

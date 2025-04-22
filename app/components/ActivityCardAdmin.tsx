@@ -45,14 +45,6 @@ export default function ActivityCardAdmin({
         >
           <SquarePen size={18} />
         </button>
-        {/* View */}
-        <button
-          onClick={() => onView?.(item.id)}
-          className="p-2 sm:p-3 text-white rounded-xl bg-green-500 hover:-translate-y-1 duration-150 ease-in"
-          title="Lihat Detail"
-        >
-          <Eye size={18} />
-        </button>
         {/* Delete */}
         <button
           onClick={() => onDelete?.(item.id)}

@@ -12,6 +12,7 @@ import { Dropdown } from "./Dropdown";
 import { DropdownItem } from "./DropdownItem";
 import { AnimatePresence, motion } from "framer-motion";
 import clsx from "clsx";
+import ConfirmModal from "./ConfirmModal";
 
 interface NavbarItem {
   title: string;
@@ -29,19 +30,14 @@ export default function Navbar({ navbarItems }: { navbarItems: NavbarItem[] }) {
   const [user, setUser] = useState<User | null>(null);
   const [isDropdownOpen, setIsDropdownOpen] = useState(false);
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
+  const [showConfirmModal, setShowConfirmModal] = useState(false);
 
   const pathname = usePathname();
   const router = useRouter();
   const clearUser = useUserStore((state) => state.clearUser);
 
   const handleLogout = () => {
-    try {
-      logout();
-      clearUser();
-      router.replace("/login");
-    } catch (error) {
-      console.error("Logout Gagal:", error);
-    }
+    setShowConfirmModal(true);
   };
 
   useEffect(() => {
@@ -89,6 +85,20 @@ export default function Navbar({ navbarItems }: { navbarItems: NavbarItem[] }) {
 
   return (
     <nav className="flex justify-between items-center p-3 md:p-5 shadow-md bg-white/80 fixed w-full z-50 px-4 md:px-8 lg:px-16">
+      {showConfirmModal && (
+        <ConfirmModal
+          isOpen={showConfirmModal}
+          onClose={() => setShowConfirmModal(false)}
+          onConfirm={async () => {
+            await logout();
+            clearUser();
+            router.replace("/login");
+            setShowConfirmModal(false);
+          }}
+          title="Konfirmasi Logout"
+          description="Apakah Anda yakin ingin Logout?"
+        />
+      )}
       <Link href="/" className="flex items-center">
         <Image
           alt="Logo"

@@ -5,6 +5,7 @@ interface ActivityCardProps {
   image: string;
   title: string;
   time: string;
+  onClick?: () => void;
 }
 
 export default function ActivityCard({
@@ -16,11 +17,11 @@ export default function ActivityCard({
     <>
       {cardItems.map((activity) => (
         <div key={activity.id} className="w-full">
-          <div className="relative h-40 w-full rounded-xl overflow-hidden mb-2">
+          <div className="relative h-40 w-full rounded-xl overflow-hidden mb-2" onClick={activity.onClick}>
             <Image
               src={activity.image}
               alt={activity.title}
-              layout="fill"
+              fill
               className="object-cover rounded-xl transition duration-300 hover:brightness-75"
             />
           </div>

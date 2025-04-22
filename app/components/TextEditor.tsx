@@ -81,23 +81,7 @@ export default function TextEditor({
     <div className="flex gap-6">
       {/* LEFT - Editor */}
       <div className="w-full">
-        {/* Toolbar */}
-        <div className="flex flex-wrap gap-2 border-b pb-2 mb-4">
-          <button onClick={() => editor?.chain().focus().toggleBold().run()}>
-            <b>B</b>
-          </button>
-          <button onClick={() => editor?.chain().focus().toggleItalic().run()}>
-            <i>I</i>
-          </button>
-          <button
-            onClick={() => editor?.chain().focus().toggleUnderline().run()}
-          >
-            <u>U</u>
-          </button>
-          <button onClick={() => editor?.chain().focus().toggleStrike().run()}>
-            <s>S</s>
-          </button>
-        </div>
+        
 
         {/* Editor */}
         <div className="min-h-[300px] border p-3 rounded">
