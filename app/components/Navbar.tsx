@@ -273,7 +273,6 @@ export default function Navbar({ navbarItems }: { navbarItems: NavbarItem[] }) {
               animate={{ opacity: 0.5 }}
               exit={{ opacity: 0 }}
               transition={{ duration: 0.3 }}
-              onClick={() => setIsMobileMenuOpen(false)}
             />
 
             {/* Sidebar */}
@@ -316,7 +315,6 @@ export default function Navbar({ navbarItems }: { navbarItems: NavbarItem[] }) {
                       <li key={index}>
                         <Link
                           href={item.link}
-                          onClick={() => setIsMobileMenuOpen(false)}
                         >
                           <div
                             className={clsx(
@@ -344,7 +342,6 @@ export default function Navbar({ navbarItems }: { navbarItems: NavbarItem[] }) {
                       className="flex items-center gap-2"
                       onClick={() => {
                         router.push("/profile");
-                        setIsMobileMenuOpen(false);
                       }}
                     >
                       <Image

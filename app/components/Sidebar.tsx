@@ -157,7 +157,12 @@ export default function Sidebar({ items }: { items: SidebarItemType[] }) {
 
       {/* Footer */}
       <div className="px-4 py-4 bg-gray-100 flex items-center justify-between rounded-t-xl">
-        <div className="flex items-center gap-2">
+        <div
+          className="flex items-center gap-2"
+          onClick={() => {
+            router.push("/admin/profile");
+          }}
+        >
           <Image
             src={user?.image || "/assets/avatar.png"}
             alt="avatar"
