@@ -70,7 +70,7 @@ export default function ProductDetail() {
       return;
     }
     
-    alert(`Added to cart: ${quantity} x ${product.name} (Size: ${selectedSize.us}, Color: ${selectedColor.name})`);
+    // alert(`Added to cart: ${quantity} x ${product.name} (Size: ${selectedSize.us}, Color: ${selectedColor.name})`);
   };
 
   return (
@@ -188,17 +188,18 @@ export default function ProductDetail() {
             {/* Size Selection */}
             <div className="mb-8">
               <div className="flex justify-between items-center mb-2">
-                <h2 className="text-lg font-medium">Size: {selectedSize ? `US ${selectedSize.us}` : 'Select Size'}</h2>
+            {/* <h2 className="text-lg font-medium">Size: {selectedSize ? `US ${selectedSize.us}` : 'Select Size'}</h2> */}
+                
                 <button className="text-sm underline">Size Guide</button>
               </div>
-              <div className="grid grid-cols-4 gap-2">
+              {/* <div className="grid grid-cols-4 gap-2">
                 {product.sizes.map((size) => (
                   <button
                     key={size.us}
-                    onClick={() => setSelectedSize(size)}
+                    // onClick={() => setSelectedSize(size)}
                     disabled={size.availability === 'out_of_stock'}
                     className={`py-3 border ${
-                      selectedSize?.us === size.us 
+                      // selectedSize?.us === size.us 
                         ? 'border-black bg-black text-white' 
                         : 'border-gray-300 hover:border-gray-500'
                     } ${
@@ -220,7 +221,7 @@ export default function ProductDetail() {
               </div>
               {selectedSize?.availability === 'low_stock' && (
                 <p className="text-orange-500 text-sm mt-2">Low stock - only a few left!</p>
-              )}
+              )} */}
             </div>
 
             {/* Quantity and Add to Bag */}
