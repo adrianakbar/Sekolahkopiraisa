@@ -4,6 +4,7 @@
 @theme inline {
   --color-primary: #401E12;
   --color-secondary: #F5EDE4;
+  --color-tertiary: #FCFBF7;
 }
 
 body {

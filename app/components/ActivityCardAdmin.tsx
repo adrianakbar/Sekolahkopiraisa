@@ -20,7 +20,7 @@ export default function ActivityCardAdmin({
   onView,
 }: ActivityCardAdminProps) {
   return (
-    <div className="bg-secondary rounded-xl p-2 sm:p-4 flex flex-col sm:flex-row justify-between shadow-lg">
+    <div className="bg-tertiary rounded-xl p-2 sm:p-4 flex flex-col sm:flex-row justify-between shadow-lg">
       <div className="flex flex-col sm:flex-row">
         <div className="sm:mr-4 flex-shrink-0 mb-3 sm:mb-0">
           <img

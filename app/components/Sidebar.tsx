@@ -11,6 +11,10 @@ import {
   Menu,
   Store,
   X,
+  List,
+  PlusCircle,
+  Package,
+  Handshake,
 } from "lucide-react";
 import clsx from "clsx";
 import { useUserStore } from "../stores/userStore";
@@ -114,7 +118,7 @@ export default function Sidebar({ items }: { items: SidebarItemType[] }) {
             <button
               onClick={() => setProdukOpen(!isProdukOpen)}
               className={clsx(
-                "w-full flex items-center justify-between px-3 py-2 rounded-xl text-gray-700 hover:bg-gray-100 hover:text-gray-900 transition",
+                "cursor-pointer w-full flex items-center justify-between px-3 py-2 rounded-xl text-gray-700 hover:bg-gray-100 hover:text-gray-900 transition",
                 !isMobile && !isSidebarOpen && "justify-center"
               )}
             >
@@ -139,14 +143,24 @@ export default function Sidebar({ items }: { items: SidebarItemType[] }) {
                   className="ml-9 mt-1 space-y-1 text-sm text-gray-600 overflow-hidden"
                 >
                   <LinkItem
-                    href="/produk"
+                    href="/admin/product"
                     pathname={pathname}
-                    label="Daftar Produk"
+                    label={
+                      <span className="flex items-center gap-2">
+                        <Package size={20} />
+                        Produk
+                      </span>
+                    }
                   />
                   <LinkItem
                     href="/produk/tambah"
                     pathname={pathname}
-                    label="Tambah Produk"
+                    label={
+                      <span className="flex items-center gap-2">
+                        <Handshake size={20} />
+                        Mitra
+                      </span>
+                    }
                   />
                 </motion.div>
               )}
@@ -294,7 +308,7 @@ function LinkItem({
 }: {
   href: string;
   pathname: string;
-  label: string;
+  label: React.ReactNode;
 }) {
   const isActive = pathname === href;
   return (

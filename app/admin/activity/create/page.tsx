@@ -176,9 +176,9 @@ export default function CreateActivityPage() {
                       setThumbnail(null);
                       setThumbnailPreview(null);
                     }}
-                    className="absolute top-2 right-2 bg-white rounded-full p-1 shadow-lg"
+                    className="absolute top-2 right-2 bg-primary rounded-full p-1 shadow-lg"
                   >
-                    <X size={16} />
+                    <X size={16} className="text-white"/>
                   </button>
                 </div>
               ) : (
@@ -230,9 +230,9 @@ export default function CreateActivityPage() {
                       <button
                         type="button"
                         onClick={() => removeImage(index)}
-                        className="absolute top-1 right-1 bg-white rounded-full p-1 shadow-lg"
+                        className="absolute top-1 right-1 bg-primary rounded-full p-1 shadow-lg"
                       >
-                        <X size={14} />
+                        <X size={14} className="text-white"/>
                       </button>
                     </div>
                   ))}

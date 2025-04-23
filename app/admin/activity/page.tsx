@@ -7,6 +7,7 @@ import ActivityCardAdmin, {
 import ConfirmModal from "@/app/components/ConfirmModal";
 import Popup from "@/app/components/Popup";
 import { deleteActivity, fetchAllActivity } from "@/app/utils/activity";
+import { ChevronDown, Funnel, FunnelPlus, Plus } from "lucide-react";
 import { useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
 
@@ -21,11 +22,27 @@ export default function Activity() {
   const [loading, setLoading] = useState<boolean>(true);
   const [error, setError] = useState<string | null>(null);
   const router = useRouter();
-  
+  const [sortOption, setSortOption] = useState("newest");
+  const sortActivities = (data: typeof activities, option: string) => {
+    const sorted = [...data];
+    if (option === "newest") {
+      sorted.sort(
+        (a, b) => new Date(b.time).getTime() - new Date(a.time).getTime()
+      );
+    } else if (option === "oldest") {
+      sorted.sort(
+        (a, b) => new Date(a.time).getTime() - new Date(b.time).getTime()
+      );
+    } else if (option === "az") {
+      sorted.sort((a, b) => a.title.localeCompare(b.title));
+    }
+    return sorted;
+  };
+
   const handleAddActivity = () => {
     router.push("/admin/activity/create");
   };
-  
+
   const handleDeleteActivity = async (id: number) => {
     try {
       const response = await deleteActivity(id);
@@ -67,6 +84,10 @@ export default function Activity() {
       return dateString; // Return original string if there's an error
     }
   };
+
+  useEffect(() => {
+    setActivities((prev) => sortActivities(prev, sortOption));
+  }, [sortOption]);
 
   useEffect(() => {
     const getActivities = async () => {
@@ -135,14 +156,36 @@ export default function Activity() {
         }}
       />
 
-      <div className="flex justify-between mb-4 sm:mb-6">
-        <h1 className="text-xl sm:text-2xl font-semibold text-gray-800">Daftar Berita</h1>
-        <button
-          className="bg-amber-950 text-white px-3 py-1 sm:px-4 sm:py-2 rounded-xl flex items-center hover:-translate-y-1 duration-150 ease-in text-sm sm:text-base"
-          onClick={handleAddActivity}
-        >
-          <span className="mr-1 font-bold">+</span> Tambah Berita
-        </button>
+      <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4 mb-4 sm:mb-6">
+        <h1 className="text-xl sm:text-2xl font-semibold text-gray-800">
+          Daftar Berita
+        </h1>
+
+        <div className="flex flex-col sm:flex-row items-center gap-4">
+          <button
+            className="bg-amber-950 text-white px-3 py-1 sm:px-4 sm:py-2 rounded-xl flex items-center gap-2 hover:-translate-y-1 duration-150 ease-in text-sm sm:text-base"
+            onClick={handleAddActivity}
+          >
+            <Plus size={20} />
+            <span>Tambah Berita</span>
+          </button>
+
+          <div className="relative hover:-translate-y-1 duration-150 ease-in">
+            <select
+              value={sortOption}
+              onChange={(e) => setSortOption(e.target.value)}
+              className="appearance-none border border-gray-300 rounded-xl px-3 py-2 text-sm pr-8"
+            >
+              <option value="newest">Terbaru</option>
+              <option value="oldest">Terlama</option>
+              <option value="az">Judul A-Z</option>
+            </select>
+            <FunnelPlus
+              className="absolute right-2 top-1/2 transform -translate-y-1/2 text-gray-500 pointer-events-none"
+              size={20}
+            />
+          </div>
+        </div>
       </div>
 
       <div className="flex flex-col space-y-3 sm:space-y-4">
