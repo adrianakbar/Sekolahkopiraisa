@@ -84,7 +84,7 @@ export default function TextEditor({
         
 
         {/* Editor */}
-        <div className="min-h-[300px] border p-3 rounded">
+        <div className="min-h-[300px] border p-3 rounded-xl">
           <EditorContent editor={editor} className="outline-none" />
         </div>
 

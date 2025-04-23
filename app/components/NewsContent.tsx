@@ -46,6 +46,7 @@ const formatFullDate = (dateString: string): string => {
 
 export default function NewsContent({ activity }: NewsContentProps) {
   if (!activity) return null;
+  console.log(activity.content);
 
   const images = activity.newsMedia?.map((media) => media.media_url);
 
@@ -117,6 +118,7 @@ export default function NewsContent({ activity }: NewsContentProps) {
 
       {/* Content */}
       <div className="prose prose-lg max-w-3xl text-justify">
+        
         <div dangerouslySetInnerHTML={{ __html: activity.content }} />
       </div>
     </div>

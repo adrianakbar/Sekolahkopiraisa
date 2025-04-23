@@ -125,7 +125,7 @@ export default function Signup() {
               />
               <button
                 type="button"
-                className="absolute top-8 right-3 text-gray-500"
+                className="cursor-pointer absolute top-8 right-3 text-gray-500"
                 onClick={() => setShowPassword(!showPassword)}
               >
                 {showPassword ? <EyeOff size={18} /> : <Eye size={18} />}
@@ -163,7 +163,7 @@ export default function Signup() {
             </p>
             <button
               type="submit"
-              className="w-full p-2 bg-primary text-white rounded-xl hover:-translate-y-1 duration-150 ease-in"
+              className="cursor-pointer w-full p-2 bg-primary text-white rounded-xl hover:-translate-y-1 duration-150 ease-in"
             >
               Buat Akun
             </button>
@@ -176,7 +176,7 @@ export default function Signup() {
           </div>
           <button
             type="button"
-            className="w-full p-2 bg-gray-300 rounded-xl border-gray-400 border hover:-translate-y-1 duration-150 ease-in flex justify-center items-center gap-2"
+            className="cursor-pointer w-full p-2 bg-gray-300 rounded-xl border-gray-400 border hover:-translate-y-1 duration-150 ease-in flex justify-center items-center gap-2"
             onClick={loginWithGoogle}
           >
             <Image

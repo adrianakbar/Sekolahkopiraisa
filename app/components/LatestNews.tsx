@@ -35,7 +35,8 @@ const formatFullDate = (dateString: string): string => {
 export default function LatestNews({ items }: Props) {
   return (
     <div>
-      <h3 className="text-lg font-semibold mb-4">Berita Terbaru</h3>
+      <h3 className="text-lg font-medium">Berita Terbaru</h3>
+      <div className="w-20 h-[3px] bg-primary mb-4"></div>
       <div className="space-y-4">
         {items.map((item) => (
           <Link href={`/activity/${item.id}`} key={item.id}>
@@ -46,7 +47,7 @@ export default function LatestNews({ items }: Props) {
                 className="w-16 h-16 object-cover rounded-md"
               />
               <div className="flex flex-col">
-                <p className="text-sm font-medium">{item.title}</p>
+                <p className="text-sm">{item.title}</p>
                 <p className="text-xs text-gray-500">
                   {formatFullDate(item.created_at)}
                 </p>

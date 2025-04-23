@@ -99,7 +99,7 @@ export default function Login() {
               <h2 className="text-xl font-semibold">Reset Password</h2>
               <button
                 onClick={() => setShowForgotPasswordModal(false)}
-                className="text-gray-500 hover:text-gray-700"
+                className="cursor-pointer text-gray-500 hover:text-gray-700"
               >
                 <X />
               </button>
@@ -127,13 +127,13 @@ export default function Login() {
                 <button
                   type="button"
                   onClick={() => setShowForgotPasswordModal(false)}
-                  className="flex-1 p-2 border border-gray-300 rounded-xl hover:-translate-y-1 duration-150 ease-in"
+                  className="cursor-pointer flex-1 p-2 border border-gray-300 rounded-xl hover:-translate-y-1 duration-150 ease-in"
                 >
                   Batal
                 </button>
                 <button
                   type="submit"
-                  className="flex-1 p-2 bg-primary text-white rounded-xl hover:-translate-y-1 duration-150 ease-in"
+                  className="cursor-pointer flex-1 p-2 bg-primary text-white rounded-xl hover:-translate-y-1 duration-150 ease-in"
                 >
                   Kirim
                 </button>
@@ -196,7 +196,7 @@ export default function Login() {
                 <button
                   type="button"
                   onClick={() => setShowForgotPasswordModal(true)}
-                  className="text-xs md:text-sm text-blue-500 hover:underline"
+                  className="cursor-pointer text-xs md:text-sm text-blue-500 hover:underline"
                 >
                   Lupa Password?
                 </button>
@@ -212,7 +212,7 @@ export default function Login() {
 
               <button
                 type="button"
-                className="absolute top-9 right-3 text-gray-500"
+                className="cursor-pointer absolute top-9 right-3 text-gray-500"
                 onClick={() => setShowPassword(!showPassword)}
               >
                 {showPassword ? <EyeOff size={18} /> : <Eye size={18} />}
@@ -224,7 +224,7 @@ export default function Login() {
 
             <button
               type="submit"
-              className="w-full p-2 bg-primary text-white rounded-xl mt-4 hover:-translate-y-1 duration-150 ease-in"
+              className="cursor-pointer w-full p-2 bg-primary text-white rounded-xl mt-4 hover:-translate-y-1 duration-150 ease-in"
             >
               Masuk
             </button>
@@ -238,7 +238,7 @@ export default function Login() {
 
           <button
             type="button"
-            className="w-full p-2 bg-gray-300 rounded-xl border-gray-400 border hover:-translate-y-1 duration-150 ease-in flex justify-center items-center gap-2"
+            className="cursor-pointer w-full p-2 bg-gray-300 rounded-xl border-gray-400 border hover:-translate-y-1 duration-150 ease-in flex justify-center items-center gap-2"
             onClick={loginWithGoogle}
           >
             <Image

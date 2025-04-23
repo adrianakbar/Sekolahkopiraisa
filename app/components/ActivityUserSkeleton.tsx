@@ -29,7 +29,7 @@ export default function ActivityUserSkeleton() {
       </section>
 
       {/* Skeleton untuk ActivityCard */}
-      <section className="mt-8">
+      <section className="mt-8 bg-white p-6 rounded-xl shadow-md">
         <div className="mb-4">
           <Skeleton width="25%" height={24} />
         </div>

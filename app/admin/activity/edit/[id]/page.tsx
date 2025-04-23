@@ -150,7 +150,7 @@ export default function EditActivityPage() {
   };
 
   return (
-    <div className="max-w-7xl mx-auto p-6 bg-white rounded shadow-lg">
+    <div className="max-w-7xl mx-auto p-6 bg-white rounded-xl shadow-lg">
       {showConfirmModal && (
               <ConfirmModal
                 isOpen={showConfirmModal}
@@ -206,7 +206,7 @@ export default function EditActivityPage() {
                 setTitle(e.target.value);
                 setErrors((prev) => ({ ...prev, title: "" }));
               }}
-              className="w-full p-3 border border-gray-300 rounded"
+              className="w-full p-3 border border-gray-300 rounded-xl"
             />
             {errors.title && (
               <p className="text-sm text-red-600 mt-1">{errors.title}</p>
@@ -216,13 +216,13 @@ export default function EditActivityPage() {
           {/* Thumbnail */}
           <div className="mb-6">
             <label className="block mb-1 font-semibold">Sampul Gambar</label>
-            <div className="border rounded p-4 bg-gray-50">
+            <div className="border rounded-xl p-4 bg-gray-50">
               {thumbnailPreview ? (
                 <div className="relative mb-3">
                   <img
                     src={thumbnailPreview}
                     alt="Thumbnail Preview"
-                    className="w-full h-40 object-cover rounded"
+                    className="w-full h-40 object-cover rounded-xl"
                   />
                   <button
                     type="button"
@@ -236,7 +236,7 @@ export default function EditActivityPage() {
                   </button>
                 </div>
               ) : (
-                <div className="border-dashed border-2 border-gray-300 bg-gray-100 rounded flex items-center justify-center h-40 mb-3">
+                <div className="border-dashed border-2 border-gray-300 bg-gray-100 rounded-xl flex items-center justify-center h-40 mb-3">
                   <span className="text-gray-500">Unggah Sampul</span>
                 </div>
               )}
@@ -244,7 +244,7 @@ export default function EditActivityPage() {
               <div className="flex justify-between items-center">
                 <label
                   htmlFor="thumbnail-upload"
-                  className="cursor-pointer bg-primary text-white px-4 py-2 rounded hover:bg-primary/90 transition"
+                  className="cursor-pointer bg-primary text-white px-4 py-2 rounded-xl hover:bg-primary/90 transition"
                 >
                   Pilih Gambar
                 </label>
@@ -268,7 +268,7 @@ export default function EditActivityPage() {
             <label className="block mb-1 font-semibold">
               Gambar Tambahan (maks 4)
             </label>
-            <div className="border rounded p-4 bg-gray-50">
+            <div className="border rounded-xl p-4 bg-gray-50">
               {imagePreviews.length > 0 && (
                 <div className="grid grid-cols-2 gap-2 mb-3">
                   {imagePreviews.map((preview, index) => (
@@ -276,7 +276,7 @@ export default function EditActivityPage() {
                       <img
                         src={preview}
                         alt={`Preview ${index + 1}`}
-                        className="w-full h-24 object-cover rounded"
+                        className="w-full h-24 object-cover rounded-xl"
                       />
                       <button
                         type="button"
@@ -293,7 +293,7 @@ export default function EditActivityPage() {
               <div className="flex justify-between items-center">
                 <label
                   htmlFor="image-upload"
-                  className={`cursor-pointer bg-primary text-white px-4 py-2 rounded hover:bg-primary/90 transition ${
+                  className={`cursor-pointer bg-primary text-white px-4 py-2 rounded-xl hover:bg-primary/90 transition ${
                     images.length >= 4 ? "opacity-50 pointer-events-none" : ""
                   }`}
                 >

@@ -32,7 +32,7 @@ export default function Dashboard() {
   }, []);
 
   return (
-    <main className="p-6 bg-gray-50 min-h-screen">
+    <main className="p-6 min-h-screen">
       {/* Greeting */}
       <h1 className="text-2xl font-bold mb-4">{user?.name}</h1>
       <p className="text-gray-600 mb-8">

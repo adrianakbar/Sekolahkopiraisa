@@ -20,7 +20,7 @@ export default function CreateActivityPage() {
   const [popupType, setPopupType] = useState<"success" | "error">("success");
 
   const router = useRouter();
-  const maxWords = 2200;
+  const maxWords = 2110;
 
   const handleThumbnailChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
@@ -70,11 +70,6 @@ export default function CreateActivityPage() {
     setError(null);
     setErrors({});
 
-    if (getWordCount(content) > maxWords) {
-      setError(`Maksimal ${maxWords} kata.`);
-      return;
-    }
-
     try {
       const formData = new FormData();
       formData.append("title", title);
@@ -82,7 +77,8 @@ export default function CreateActivityPage() {
       formData.append("postToFacebook", "false");
       formData.append("postToInstagram", "false");
 
-      if (thumbnail) formData.append("media", thumbnail);
+
+      if (thumbnail) formData.append("thumbnail", thumbnail);
       images.forEach((img) => formData.append("media", img));
 
       const response = await createActivity(formData);
@@ -111,7 +107,7 @@ export default function CreateActivityPage() {
   };
 
   return (
-    <div className="max-w-7xl mx-auto p-6 bg-white rounded shadow-lg">
+    <div className="max-w-7xl mx-auto p-6 bg-white rounded-xl shadow-lg">
       {showPopup && (
         <Popup
           message={message}
@@ -155,8 +151,9 @@ export default function CreateActivityPage() {
                 setTitle(e.target.value);
                 setErrors((prev) => ({ ...prev, title: "" }));
               }}
-              className="w-full p-3 border border-gray-300 rounded"
+              className="w-full p-3 border border-gray-300 rounded-xl"
             />
+            <p className="text-sm text-gray-500 mt-1">{title.length}/90 karakter</p>
             {errors.title && (
               <p className="text-sm text-red-600 mt-1">{errors.title}</p>
             )}
@@ -165,13 +162,13 @@ export default function CreateActivityPage() {
           {/* Thumbnail */}
           <div className="mb-6">
             <label className="block mb-1 font-semibold">Sampul Gambar</label>
-            <div className="border rounded p-4 bg-gray-50">
+            <div className="border rounded-xl p-4 bg-gray-50">
               {thumbnailPreview ? (
                 <div className="relative mb-3">
                   <img
                     src={thumbnailPreview}
                     alt="Thumbnail Preview"
-                    className="w-full h-40 object-cover rounded"
+                    className="w-full h-40 object-cover rounded-xl"
                   />
                   <button
                     type="button"
@@ -185,7 +182,7 @@ export default function CreateActivityPage() {
                   </button>
                 </div>
               ) : (
-                <div className="border-dashed border-2 border-gray-300 bg-gray-100 rounded flex items-center justify-center h-40 mb-3">
+                <div className="border-dashed border-2 border-gray-300 bg-gray-100 rounded-xl flex items-center justify-center h-40 mb-3">
                   <span className="text-gray-500">Unggah Sampul</span>
                 </div>
               )}
@@ -193,7 +190,7 @@ export default function CreateActivityPage() {
               <div className="flex justify-between items-center">
                 <label
                   htmlFor="thumbnail-upload"
-                  className="cursor-pointer bg-primary text-white px-4 py-2 rounded hover:bg-primary/90 transition"
+                  className="cursor-pointer bg-primary text-white px-4 py-2 rounded-xl hover:-translate-y-1 duration-150 ease-in"
                 >
                   Pilih Gambar
                 </label>
@@ -203,14 +200,14 @@ export default function CreateActivityPage() {
                   accept="image/*"
                   onChange={(e) => {
                     handleThumbnailChange(e);
-                    setErrors((prev) => ({ ...prev, media: "" }));
+                    setErrors((prev) => ({ ...prev, thumbnail: "" }));
                   }}
                   className="hidden"
                 />
               </div>
 
-              {errors.media && (
-                <p className="text-sm text-red-600 mt-1">{errors.media}</p>
+              {errors.thumbnail && (
+                <p className="text-sm text-red-600 mt-1">{errors.thumbnail}</p>
               )}
             </div>
           </div>
@@ -220,7 +217,7 @@ export default function CreateActivityPage() {
             <label className="block mb-1 font-semibold">
               Gambar Tambahan (maks 4)
             </label>
-            <div className="border rounded p-4 bg-gray-50">
+            <div className="border rounded-xl p-4 bg-gray-50">
               {imagePreviews.length > 0 && (
                 <div className="grid grid-cols-2 gap-2 mb-3">
                   {imagePreviews.map((preview, index) => (
@@ -228,7 +225,7 @@ export default function CreateActivityPage() {
                       <img
                         src={preview}
                         alt={`Preview ${index + 1}`}
-                        className="w-full h-24 object-cover rounded"
+                        className="w-full h-24 object-cover rounded-xl"
                       />
                       <button
                         type="button"
@@ -245,7 +242,7 @@ export default function CreateActivityPage() {
               <div className="flex justify-between items-center">
                 <label
                   htmlFor="image-upload"
-                  className={`cursor-pointer bg-primary text-white px-4 py-2 rounded hover:bg-primary/90 transition ${
+                  className={`cursor-pointer bg-primary text-white px-4 py-2 rounded-xl hover:-translate-y-1 duration-150 ease-in ${
                     images.length >= 4 ? "opacity-50 pointer-events-none" : ""
                   }`}
                 >
@@ -275,7 +272,7 @@ export default function CreateActivityPage() {
           {/* Tombol Submit */}
           <button
             type="submit"
-            className="w-full bg-primary text-white py-3 px-4 rounded-xl hover:-translate-y-1 duration-150 ease-in"
+            className="cursor-pointer w-full bg-primary text-white py-3 px-4 rounded-xl hover:-translate-y-1 duration-150 ease-in"
           >
             Unggah Berita
           </button>

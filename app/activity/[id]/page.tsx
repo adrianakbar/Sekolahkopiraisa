@@ -53,14 +53,14 @@ export default function ActivityDetail() {
         <div className="max-w-7xl mx-auto px-4 md:px-8 grid md:grid-cols-3 gap-10">
           <div className="md:col-span-2">
             {/* White card for NewsContent */}
-            <div className="bg-white p-6 rounded-lg shadow-md mb-6">
+            <div className="bg-white p-6 rounded-xl shadow-md mb-6">
               <NewsContent activity={activity} />
               <CommentSection activityId={id as string} />
             </div>
           </div>
           <div>
             {/* White card for LatestNews */}
-            <div className="bg-white p-6 rounded-lg shadow-md">
+            <div className="bg-white p-6 rounded-xl shadow-md">
               <LatestNews items={latestNews} />
             </div>
           </div>

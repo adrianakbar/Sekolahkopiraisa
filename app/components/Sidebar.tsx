@@ -156,7 +156,7 @@ export default function Sidebar({ items }: { items: SidebarItemType[] }) {
       </nav>
 
       {/* Footer */}
-      <div className="px-4 py-4 bg-gray-100 flex items-center justify-between rounded-t-xl">
+      <div className="cursor-pointer px-4 py-4 bg-gray-100 flex items-center justify-between rounded-t-xl">
         <div
           className="flex items-center gap-2"
           onClick={() => {

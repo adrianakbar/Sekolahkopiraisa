@@ -110,7 +110,7 @@ export default function Activity() {
   }, []);
 
   return (
-    <div className="max-w-7xl mx-auto sm:p-3 bg-gray-50 min-h-screen">
+    <div className="max-w-7xl mx-auto sm:p-3 min-h-screen">
       {showPopup && (
         <Popup
           message={message}

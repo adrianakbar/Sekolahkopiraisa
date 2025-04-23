@@ -15,25 +15,32 @@ interface ActivityItemApi {
   time: string;
 }
 
-// Format time for relative time display
-const formatRelativeTime = (dateString: string): string => {
-  const now = new Date();
+const formatFullDate = (dateString: string): string => {
   const date = new Date(dateString);
-  const diffMs = now.getTime() - date.getTime();
+  const days = ["Minggu", "Senin", "Selasa", "Rabu", "Kamis", "Jumat", "Sabtu"];
+  const months = [
+    "Januari",
+    "Februari",
+    "Maret",
+    "April",
+    "Mei",
+    "Juni",
+    "Juli",
+    "Agustus",
+    "September",
+    "Oktober",
+    "November",
+    "Desember",
+  ];
 
-  const diffMins = Math.floor(diffMs / 60000);
-  const diffHrs = Math.floor(diffMins / 60);
-  const diffDays = Math.floor(diffHrs / 24);
+  const dayName = days[date.getDay()];
+  const day = date.getDate();
+  const month = months[date.getMonth()];
+  const year = date.getFullYear();
+  const hours = String(date.getHours()).padStart(2, "0");
+  const minutes = String(date.getMinutes()).padStart(2, "0");
 
-  if (diffMins < 60) {
-    return `${diffMins}m`;
-  } else if (diffHrs < 24) {
-    return `${diffHrs}hr`;
-  } else if (diffDays < 7) {
-    return `${diffDays}d`;
-  } else {
-    return date.toLocaleDateString();
-  }
+  return `${dayName}, ${day} ${month} ${year} ${hours}:${minutes}`;
 };
 
 export default function Activity() {
@@ -70,7 +77,7 @@ export default function Activity() {
               title: item.title,
               content: item.content,
               image: imageMedia.media_url, // Gambar default
-              time: formatRelativeTime(item.created_at),
+              time: formatFullDate(item.created_at),
             };
           })
           .filter(Boolean); // buang null
@@ -136,7 +143,7 @@ export default function Activity() {
             </div>
           )}
         </section>
-        <section className="my-8 bg-white p-6 rounded-lg shadow-md">
+        <section className="my-8 bg-white p-6 rounded-xl shadow-md">
           <h2 className="text-lg md:text-xl font-semibold mb-4">
             Berita Terbaru
           </h2>
