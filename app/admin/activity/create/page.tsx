@@ -5,8 +5,11 @@ import { useRouter } from "next/navigation";
 import { FormEvent, useState } from "react";
 import { X } from "lucide-react";
 import Popup from "@/app/components/Popup";
+import Image from "next/image";
 
 export default function CreateActivityPage() {
+  const [postToFacebook, setPostToFacebook] = useState(Boolean(false));
+  const [postToInstagram, setPostToInstagram] = useState(Boolean(false));
   const [title, setTitle] = useState("");
   const [content, setContent] = useState("");
   const [thumbnail, setThumbnail] = useState<File | null>(null);
@@ -74,16 +77,15 @@ export default function CreateActivityPage() {
       const formData = new FormData();
       formData.append("title", title);
       formData.append("content", content);
-      formData.append("postToFacebook", "false");
-      formData.append("postToInstagram", "false");
-
+      formData.append("postToFacebook", String(postToFacebook));
+      formData.append("postToInstagram", String(postToInstagram));
 
       if (thumbnail) formData.append("thumbnail", thumbnail);
       images.forEach((img) => formData.append("media", img));
-
       const response = await createActivity(formData);
 
       if (response && response.message) {
+        console.log("Response:", formData);
         setTitle("");
         setContent("");
         setThumbnail(null);
@@ -115,14 +117,16 @@ export default function CreateActivityPage() {
           onClose={() => setShowPopup(false)}
         />
       )}
-      <h1 className="text-xl font-semibold mb-4">Buat Berita Baru</h1>
+      <h1 className="text-lg font-semibold mb-4">Buat Berita Baru</h1>
       {error && <p className="text-red-600 mb-4">{error}</p>}
 
       <form onSubmit={handleSubmit} className="flex flex-col md:flex-row gap-6">
         {/* Konten Berita */}
         <div className="w-full md:w-2/3">
           <div className="mb-4">
-            <label className="block mb-1 font-semibold">Konten Berita</label>
+            <label className="block mb-1 text-sm font-medium">
+              Konten Berita
+            </label>
             <TextEditor
               content={content}
               setContent={(value: string) => {
@@ -142,7 +146,9 @@ export default function CreateActivityPage() {
         <div className="w-full md:w-1/3">
           {/* Judul */}
           <div className="mb-6">
-            <label className="block mb-1 font-semibold">Judul Berita</label>
+            <label className="block mb-1 text-sm font-medium">
+              Judul Berita
+            </label>
             <input
               type="text"
               placeholder="Judul Berita"
@@ -151,9 +157,11 @@ export default function CreateActivityPage() {
                 setTitle(e.target.value);
                 setErrors((prev) => ({ ...prev, title: "" }));
               }}
-              className="w-full p-3 border border-gray-300 rounded-xl"
+              className="w-full p-2 border border-gray-300 rounded-xl"
             />
-            <p className="text-sm text-gray-500 mt-1">{title.length}/90 karakter</p>
+            <p className="text-sm text-gray-500 mt-1">
+              {title.length}/90 karakter
+            </p>
             {errors.title && (
               <p className="text-sm text-red-600 mt-1">{errors.title}</p>
             )}
@@ -161,8 +169,10 @@ export default function CreateActivityPage() {
 
           {/* Thumbnail */}
           <div className="mb-6">
-            <label className="block mb-1 font-semibold">Sampul Gambar</label>
-            <div className="border rounded-xl p-4 bg-gray-50">
+            <label className="block mb-1 text-sm font-medium">
+              Sampul Gambar
+            </label>
+            <div className="border rounded-xl p-3 bg-gray-50">
               {thumbnailPreview ? (
                 <div className="relative mb-3">
                   <img
@@ -178,19 +188,19 @@ export default function CreateActivityPage() {
                     }}
                     className="absolute top-2 right-2 bg-primary rounded-full p-1 shadow-lg"
                   >
-                    <X size={16} className="text-white"/>
+                    <X size={16} className="text-white" />
                   </button>
                 </div>
               ) : (
                 <div className="border-dashed border-2 border-gray-300 bg-gray-100 rounded-xl flex items-center justify-center h-40 mb-3">
-                  <span className="text-gray-500">Unggah Sampul</span>
+                  <span className="text-gray-500 text-sm">Unggah Sampul</span>
                 </div>
               )}
 
               <div className="flex justify-between items-center">
                 <label
                   htmlFor="thumbnail-upload"
-                  className="cursor-pointer bg-primary text-white px-4 py-2 rounded-xl hover:-translate-y-1 duration-150 ease-in"
+                  className="cursor-pointer bg-primary text-white px-3 py-1.5 rounded-xl hover:-translate-y-1 duration-150 ease-in text-sm"
                 >
                   Pilih Gambar
                 </label>
@@ -214,7 +224,7 @@ export default function CreateActivityPage() {
 
           {/* Gambar Tambahan */}
           <div className="mb-6">
-            <label className="block mb-1 font-semibold">
+            <label className="block mb-1 text-sm font-medium">
               Gambar Tambahan (maks 4)
             </label>
             <div className="border rounded-xl p-4 bg-gray-50">
@@ -232,7 +242,7 @@ export default function CreateActivityPage() {
                         onClick={() => removeImage(index)}
                         className="absolute top-1 right-1 bg-primary rounded-full p-1 shadow-lg"
                       >
-                        <X size={14} className="text-white"/>
+                        <X size={14} className="text-white" />
                       </button>
                     </div>
                   ))}
@@ -242,7 +252,7 @@ export default function CreateActivityPage() {
               <div className="flex justify-between items-center">
                 <label
                   htmlFor="image-upload"
-                  className={`cursor-pointer bg-primary text-white px-4 py-2 rounded-xl hover:-translate-y-1 duration-150 ease-in ${
+                  className={`cursor-pointer bg-primary text-white text-sm px-3 py-1.5 rounded-xl hover:-translate-y-1 duration-150 ease-in ${
                     images.length >= 4 ? "opacity-50 pointer-events-none" : ""
                   }`}
                 >
@@ -269,10 +279,58 @@ export default function CreateActivityPage() {
             </div>
           </div>
 
+          <div className="mb-4 flex items-center gap-6">
+            {/* Switch Post to Facebook */}
+            <div className="flex items-center gap-2">
+              <Image
+                src="/assets/facebook-logo.svg"
+                alt="Facebook Icon"
+                width={20}
+                height={24}
+              />
+              <button
+                type="button"
+                onClick={() => setPostToFacebook(!postToFacebook)}
+                className={`w-12 h-6 flex items-center rounded-full p-1 transition-colors ${
+                  postToFacebook ? "bg-secondary" : "bg-gray-300"
+                }`}
+              >
+                <div
+                  className={`bg-white w-4 h-4 rounded-full shadow-md transform transition-transform ${
+                    postToFacebook ? "translate-x-6" : "translate-x-0"
+                  }`}
+                />
+              </button>
+            </div>
+
+            {/* Switch Post to Instagram */}
+            <div className="flex items-center gap-2">
+              <Image
+                src="/assets/instagram-logo.svg"
+                alt="Instagram Icon"
+                width={20}
+                height={24}
+              />
+              <button
+                type="button"
+                onClick={() => setPostToInstagram(!postToInstagram)}
+                className={`w-12 h-6 flex items-center rounded-full p-1 transition-colors ${
+                  postToInstagram ? "bg-secondary" : "bg-gray-300"
+                }`}
+              >
+                <div
+                  className={`bg-white w-4 h-4 rounded-full shadow-md transform transition-transform ${
+                    postToInstagram ? "translate-x-6" : "translate-x-0"
+                  }`}
+                />
+              </button>
+            </div>
+          </div>
+
           {/* Tombol Submit */}
           <button
             type="submit"
-            className="cursor-pointer w-full bg-primary text-white py-3 px-4 rounded-xl hover:-translate-y-1 duration-150 ease-in"
+            className="cursor-pointer w-full bg-primary text-white py-2 px-3 text-sm rounded-xl hover:-translate-y-1 duration-150 ease-in"
           >
             Unggah Berita
           </button>

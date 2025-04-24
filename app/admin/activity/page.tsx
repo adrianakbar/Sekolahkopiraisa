@@ -163,7 +163,7 @@ export default function Activity() {
 
         <div className="flex flex-col sm:flex-row items-center gap-4">
           <button
-            className="bg-amber-950 text-white px-2 py-1.5 rounded-xl flex items-center gap-1 hover:-translate-y-1 duration-150 ease-in text-sm"
+            className="bg-amber-950 text-white px-3 py-1.5 rounded-xl flex items-center gap-1 hover:-translate-y-1 duration-150 ease-in text-sm"
             onClick={handleAddActivity}
           >
             <Plus size={20} />
@@ -174,7 +174,7 @@ export default function Activity() {
             <select
               value={sortOption}
               onChange={(e) => setSortOption(e.target.value)}
-              className="appearance-none border border-gray-300 rounded-xl px-2 py-1.5 text-sm pr-5"
+              className="appearance-none border border-gray-300 rounded-xl px-3 py-1.5 text-sm pr-5"
             >
               <option value="newest">Terbaru</option>
               <option value="oldest">Terlama</option>

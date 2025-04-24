@@ -84,7 +84,7 @@ export default function Navbar({ navbarItems }: { navbarItems: NavbarItem[] }) {
   const toggleMobileMenu = () => setIsMobileMenuOpen((prev) => !prev);
 
   return (
-    <nav className="flex justify-between items-center p-3 md:p-5 shadow-md bg-white/80 fixed w-full z-50 px-4 md:px-8 lg:px-16">
+    <nav className="flex justify-between items-center p-3 shadow-md bg-white/80 fixed w-full z-50 px-4 md:px-8 lg:px-16">
       {showConfirmModal && (
         <ConfirmModal
           isOpen={showConfirmModal}

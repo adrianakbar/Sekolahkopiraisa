@@ -7,7 +7,7 @@ interface Comment {
 }
 
 interface Props {
-  activityId: string;
+  activityId: number;
 }
 
 export default function CommentSection({ activityId }: Props) {

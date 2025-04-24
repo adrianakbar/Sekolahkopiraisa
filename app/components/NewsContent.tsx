@@ -52,7 +52,7 @@ export default function NewsContent({ activity }: NewsContentProps) {
 
   return (
     <div className="mb-10">
-      <h1 className="text-xl md:text-2xl font-semibold mb-2">
+      <h1 className="text-lg font-medium mb-2">
         {activity.title}
       </h1>
       <p className="text-gray-500 mb-6 text-sm">
@@ -119,7 +119,7 @@ export default function NewsContent({ activity }: NewsContentProps) {
       )}
 
       {/* Content */}
-      <div className="prose prose-lg max-w-3xl text-justify">
+      <div className="prose prose-lg max-w-3xl text-justify text-sm">
         <div dangerouslySetInnerHTML={{ __html: activity.content }} />
       </div>
     </div>

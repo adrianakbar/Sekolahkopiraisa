@@ -47,7 +47,7 @@ export default function ActivityDetail() {
 
   return (
     <>
-      <div className="bg-secondary pt-20 md:pt-30">
+      <div className="bg-secondary pt-20 md:pt-25">
         {" "}
         {/* Background gray and padding */}
         <div className="max-w-7xl mx-auto px-4 md:px-8 grid md:grid-cols-3 gap-10">
@@ -55,7 +55,7 @@ export default function ActivityDetail() {
             {/* White card for NewsContent */}
             <div className="bg-white p-6 rounded-xl shadow-md mb-6">
               <NewsContent activity={activity} />
-              <CommentSection activityId={id as string} />
+              <CommentSection activityId={id ? Number(id) : 0} />
             </div>
           </div>
           <div>

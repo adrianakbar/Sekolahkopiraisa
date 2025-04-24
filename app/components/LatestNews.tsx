@@ -1,4 +1,5 @@
 import Link from "next/link";
+import Image from "next/image";
 
 interface Props {
   items: { id: number; title: string; image: string; created_at: string }[];
@@ -41,13 +42,16 @@ export default function LatestNews({ items }: Props) {
         {items.map((item) => (
           <Link href={`/activity/${item.id}`} key={item.id}>
             <div className="flex items-start gap-4 cursor-pointer hover:bg-gray-100 p-2 rounded-lg">
-              <img
-                src={item.image}
-                alt={item.title}
-                className="w-16 h-16 object-cover rounded-md"
-              />
+              <div className="relative w-16 h-16 flex-shrink-0">
+                <Image
+                  src={item.image}
+                  alt={item.title}
+                  fill
+                  className="rounded-lg object-cover"
+                />
+              </div>
               <div className="flex flex-col">
-                <p className="text-sm">{item.title}</p>
+                <p className="text-xs">{item.title}</p>
                 <p className="text-xs text-gray-500">
                   {formatFullDate(item.created_at)}
                 </p>

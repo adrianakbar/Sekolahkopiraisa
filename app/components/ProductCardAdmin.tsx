@@ -33,11 +33,11 @@ export default function ProductCard({
           <h2 className="text-sm font-bold text-black leading-snug">{title}</h2>
           <p className="text-sm font-semibold text-amber-950 mt-1">{price}</p>
         </div>
-        <div className="flex justify-end sm:items-center space-x-2 mt-3 md:mt-0">
+        <div className="flex justify-end md:items-center space-x-2 mt-3 md:mt-0">
           {/* Edit */}
           <button
             onClick={() => onEdit?.()}
-            className="cursor-pointer p-2 sm:p-3 text-white rounded-xl bg-blue-500 hover:-translate-y-1 duration-150 ease-in"
+            className="cursor-pointer p-2 md:p-3 text-white rounded-xl bg-blue-500 hover:-translate-y-1 duration-150 ease-in"
             title="Edit"
           >
             <SquarePen size={18} />
@@ -45,7 +45,7 @@ export default function ProductCard({
           {/* Delete */}
           <button
             onClick={() => onDelete?.()}
-            className="cursor-pointer p-2 sm:p-3 text-white rounded-xl bg-red-500 hover:-translate-y-1 duration-150 ease-in"
+            className="cursor-pointer p-2 md:p-3 text-white rounded-xl bg-red-500 hover:-translate-y-1 duration-150 ease-in"
             title="Hapus"
           >
             <Trash size={18} />
