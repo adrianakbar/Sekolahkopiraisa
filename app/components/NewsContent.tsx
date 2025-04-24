@@ -52,7 +52,9 @@ export default function NewsContent({ activity }: NewsContentProps) {
 
   return (
     <div className="mb-10">
-      <h1 className="text-xl md:text-2xl font-semibold mb-2">{activity.title}</h1>
+      <h1 className="text-xl md:text-2xl font-semibold mb-2">
+        {activity.title}
+      </h1>
       <p className="text-gray-500 mb-6 text-sm">
         {formatFullDate(activity.created_at)}
       </p>
@@ -118,7 +120,6 @@ export default function NewsContent({ activity }: NewsContentProps) {
 
       {/* Content */}
       <div className="prose prose-lg max-w-3xl text-justify">
-        
         <div dangerouslySetInnerHTML={{ __html: activity.content }} />
       </div>
     </div>

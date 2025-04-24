@@ -64,7 +64,7 @@ export default function Activity() {
   };
 
   const handleViewActivity = (id: number) => {
-    router.push(`/admin/activity/detail/${id}`);
+    window.open(`/activity/${id}`, "_blank");
   };
 
   const formatUpload = (dateString: string): string => {
@@ -157,13 +157,13 @@ export default function Activity() {
       />
 
       <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4 mb-4 sm:mb-6">
-        <h1 className="text-xl sm:text-2xl font-semibold text-gray-800">
+        <h1 className="text-lg font-semibold text-gray-800">
           Daftar Berita
         </h1>
 
         <div className="flex flex-col sm:flex-row items-center gap-4">
           <button
-            className="bg-amber-950 text-white px-3 py-1 sm:px-4 sm:py-2 rounded-xl flex items-center gap-2 hover:-translate-y-1 duration-150 ease-in text-sm sm:text-base"
+            className="bg-amber-950 text-white px-2 py-1.5 rounded-xl flex items-center gap-1 hover:-translate-y-1 duration-150 ease-in text-sm"
             onClick={handleAddActivity}
           >
             <Plus size={20} />
@@ -174,7 +174,7 @@ export default function Activity() {
             <select
               value={sortOption}
               onChange={(e) => setSortOption(e.target.value)}
-              className="appearance-none border border-gray-300 rounded-xl px-3 py-2 text-sm pr-8"
+              className="appearance-none border border-gray-300 rounded-xl px-2 py-1.5 text-sm pr-5"
             >
               <option value="newest">Terbaru</option>
               <option value="oldest">Terlama</option>
@@ -188,7 +188,7 @@ export default function Activity() {
         </div>
       </div>
 
-      <div className="flex flex-col space-y-3 sm:space-y-4">
+      <div className="flex flex-col space-y-3 md:space-y-4">
         {loading ? (
           <>
             <ActivityAdminSkeleton />

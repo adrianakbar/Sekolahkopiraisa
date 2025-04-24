@@ -1,13 +1,14 @@
 import Image from "next/image";
-import { Pencil, Trash2 } from "lucide-react";
+import { Pencil, SquarePen, Trash, Trash2 } from "lucide-react";
 
-type ProductCardProps = {
+interface ProductCardProps {
+  id: number;
   image: string;
   title: string;
   price: string;
   onEdit: () => void;
   onDelete: () => void;
-};
+}
 
 export default function ProductCard({
   image,
@@ -17,8 +18,8 @@ export default function ProductCard({
   onDelete,
 }: ProductCardProps) {
   return (
-    <div className="rounded-xl overflow-hidden shadow border p-3 flex flex-col justify-between bg-white">
-      <div className="relative w-full h-40">
+    <div className="cursor-pointer rounded-xl overflow-hidden shadow-lg border border-gray-300 p-3 flex flex-col justify-between bg-white">
+      <div className="relative w-full h-70">
         <Image
           src={image}
           alt={title}
@@ -29,25 +30,25 @@ export default function ProductCard({
       </div>
       <div className="mt-3 flex flex-col justify-between flex-grow">
         <div>
-          <h2 className="text-sm font-bold text-black leading-snug">
-            {title}
-          </h2>
-          <p className="text-sm font-semibold text-amber-950 mt-1">
-            {price}
-          </p>
+          <h2 className="text-sm font-bold text-black leading-snug">{title}</h2>
+          <p className="text-sm font-semibold text-amber-950 mt-1">{price}</p>
         </div>
-        <div className="flex gap-2 mt-4">
+        <div className="flex justify-end sm:items-center space-x-2 mt-3 md:mt-0">
+          {/* Edit */}
           <button
-            onClick={onEdit}
-            className="bg-amber-950 text-white p-2 rounded-md hover:bg-amber-900"
+            onClick={() => onEdit?.()}
+            className="cursor-pointer p-2 sm:p-3 text-white rounded-xl bg-blue-500 hover:-translate-y-1 duration-150 ease-in"
+            title="Edit"
           >
-            <Pencil size={16} />
+            <SquarePen size={18} />
           </button>
+          {/* Delete */}
           <button
-            onClick={onDelete}
-            className="bg-amber-950 text-white p-2 rounded-md hover:bg-amber-900"
+            onClick={() => onDelete?.()}
+            className="cursor-pointer p-2 sm:p-3 text-white rounded-xl bg-red-500 hover:-translate-y-1 duration-150 ease-in"
+            title="Hapus"
           >
-            <Trash2 size={16} />
+            <Trash size={18} />
           </button>
         </div>
       </div>

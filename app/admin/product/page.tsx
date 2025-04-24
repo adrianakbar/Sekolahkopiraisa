@@ -32,8 +32,7 @@ export default function Product() {
             title={product.title}
             price={product.price}
             onEdit={() => console.log("Edit", index)}
-            onDelete={() => console.log("Delete", index)}
-          />
+            onDelete={() => console.log("Delete", index)} id={0}          />
         ))}
       </div>
     </div>

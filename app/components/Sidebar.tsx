@@ -64,12 +64,12 @@ export default function Sidebar({ items }: { items: SidebarItemType[] }) {
     <div
       className={clsx(
         "bg-white h-full shadow-lg flex flex-col justify-between duration-300",
-        isMobile ? "w-64" : isSidebarOpen ? "w-64" : "w-20"
+        isMobile ? "w-64" : isSidebarOpen ? "w-50" : "w-20"
       )}
     >
       {/* Header */}
       <div className="flex items-center justify-between px-4 py-4">
-        <Image src="/assets/logo.png" alt="Logo" width={24} height={24} />
+        <Image src="/assets/logo.png" alt="Logo" width={20} height={20} />
         {isMobile ? (
           <button onClick={() => setMobileOpen(false)}>
             <X />
@@ -100,8 +100,8 @@ export default function Sidebar({ items }: { items: SidebarItemType[] }) {
       </div>
 
       {/* Navigation */}
-      <nav className="flex-1 px-4 py-6 overflow-y-auto">
-        <ul className="space-y-4">
+      <nav className="flex-1 px-4 overflow-y-auto">
+        <ul className="space-y-3">
           {items.map((item) => (
             <SidebarItem
               key={item.href}
@@ -122,7 +122,7 @@ export default function Sidebar({ items }: { items: SidebarItemType[] }) {
                 !isMobile && !isSidebarOpen && "justify-center"
               )}
             >
-              <span className="flex items-center gap-3">
+              <span className="flex items-center gap-3 text-sm">
                 <Store size={20} />
                 {(isMobile || isSidebarOpen) && <span>Toko</span>}
               </span>
@@ -140,7 +140,7 @@ export default function Sidebar({ items }: { items: SidebarItemType[] }) {
                   initial={{ height: 0, opacity: 0 }}
                   animate={{ height: "auto", opacity: 1 }}
                   exit={{ height: 0, opacity: 0 }}
-                  className="ml-9 mt-1 space-y-1 text-sm text-gray-600 overflow-hidden"
+                  className="ml-5 mt-1 space-y-1 text-sm text-gray-600 overflow-hidden"
                 >
                   <LinkItem
                     href="/admin/product"
@@ -170,7 +170,7 @@ export default function Sidebar({ items }: { items: SidebarItemType[] }) {
       </nav>
 
       {/* Footer */}
-      <div className="cursor-pointer px-4 py-4 bg-gray-100 flex items-center justify-between rounded-t-xl">
+      <div className="cursor-pointer px-3 py-3 bg-gray-100 flex items-center justify-between rounded-t-xl">
         <div
           className="flex items-center gap-2"
           onClick={() => {
@@ -180,13 +180,13 @@ export default function Sidebar({ items }: { items: SidebarItemType[] }) {
           <Image
             src={user?.image || "/assets/avatar.png"}
             alt="avatar"
-            width={40}
-            height={40}
+            width={35}
+            height={35}
             className="rounded-full"
           />
           {(isMobile || isSidebarOpen) && (
             <div>
-              <p className="text-sm font-medium">{user?.name}</p>
+              <p className="text-xs font-medium">{user?.name}</p>
               <p className="text-xs text-gray-500">Admin</p>
             </div>
           )}
@@ -286,7 +286,7 @@ function SidebarItem({
       <Link href={href}>
         <div
           className={clsx(
-            "flex items-center gap-3 px-3 py-2 rounded-xl transition-all duration-200 cursor-pointer",
+            "flex items-center gap-3 px-3 py-2 rounded-xl transition-all duration-200 cursor-pointer text-sm",
             isActive
               ? "bg-primary text-white font-semibold shadow-lg"
               : "text-gray-700 hover:bg-gray-100 hover:text-gray-900",
