@@ -348,7 +348,7 @@ export default function EditActivityPage() {
           {/* Tombol Submit */}
           <button
             type="submit"
-            className="w-full bg-primary text-white py-2 px-3 rounded-xl hover:-translate-y-1 duration-150 ease-in"
+            className="cursor-pointer w-full bg-primary text-white py-2 px-3 text-sm font-medium rounded-xl hover:-translate-y-1 duration-150 ease-in"
           >
             Update Berita
           </button>

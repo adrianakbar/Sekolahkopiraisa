@@ -85,13 +85,6 @@ export default function CreateActivityPage() {
       const response = await createActivity(formData);
 
       if (response && response.message) {
-        console.log("Response:", formData);
-        setTitle("");
-        setContent("");
-        setThumbnail(null);
-        setThumbnailPreview(null);
-        setImages([]);
-        setImagePreviews([]);
         setMessage(response.message);
         setPopupType("success");
         setShowPopup(true);

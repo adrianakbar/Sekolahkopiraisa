@@ -1,10 +1,10 @@
 import React from "react";
 import Image from "next/image";
 import { Swiper, SwiperSlide } from "swiper/react";
-import "swiper/css"; // Impor Swiper styles
-import "swiper/css/navigation"; // Impor navigation styles
-import "swiper/css/pagination"; // Impor pagination styles
-import { Navigation } from "swiper/modules"; // <== Tambahkan ini!
+import "swiper/css";
+import "swiper/css/navigation";
+import "swiper/css/pagination";
+import { Navigation } from "swiper/modules";
 import { CircleArrowLeft, CircleArrowRight } from "lucide-react";
 
 interface NewsContentProps {
@@ -12,7 +12,7 @@ interface NewsContentProps {
     title: string;
     content: string;
     created_at: string;
-    newsMedia?: { media_url: string }[];
+    newsMedia?: { media_url: string; isThumbnail?: boolean }[];
   };
 }
 
@@ -20,18 +20,8 @@ const formatFullDate = (dateString: string): string => {
   const date = new Date(dateString);
   const days = ["Minggu", "Senin", "Selasa", "Rabu", "Kamis", "Jumat", "Sabtu"];
   const months = [
-    "Januari",
-    "Februari",
-    "Maret",
-    "April",
-    "Mei",
-    "Juni",
-    "Juli",
-    "Agustus",
-    "September",
-    "Oktober",
-    "November",
-    "Desember",
+    "Januari", "Februari", "Maret", "April", "Mei", "Juni",
+    "Juli", "Agustus", "September", "Oktober", "November", "Desember",
   ];
 
   const dayName = days[date.getDay()];
@@ -46,21 +36,20 @@ const formatFullDate = (dateString: string): string => {
 
 export default function NewsContent({ activity }: NewsContentProps) {
   if (!activity) return null;
-  console.log(activity.content);
 
-  const images = activity.newsMedia?.map((media) => media.media_url);
+  const thumbnailMedia = activity.newsMedia?.find((media) => media.isThumbnail);
+  const otherMedia = activity.newsMedia?.filter((media) => media !== thumbnailMedia);
+  const images = [
+    ...(thumbnailMedia ? [thumbnailMedia.media_url] : []),
+    ...(otherMedia?.map((media) => media.media_url) || []),
+  ];
 
   return (
     <div className="mb-10">
-      <h1 className="text-lg font-medium mb-2">
-        {activity.title}
-      </h1>
-      <p className="text-gray-500 mb-6 text-sm">
-        {formatFullDate(activity.created_at)}
-      </p>
+      <h1 className="text-lg font-medium mb-2">{activity.title}</h1>
+      <p className="text-gray-500 mb-6 text-sm">{formatFullDate(activity.created_at)}</p>
 
-      {/* Carousel */}
-      {images && images.length > 1 ? (
+      {images.length > 1 ? (
         <div className="relative mb-6">
           <Swiper
             modules={[Navigation]}
@@ -88,7 +77,6 @@ export default function NewsContent({ activity }: NewsContentProps) {
             ))}
           </Swiper>
 
-          {/* Custom Arrows */}
           <button
             className="custom-prev absolute left-4 top-1/2 -translate-y-1/2 z-10 bg-primary bg-opacity-80 hover:bg-opacity-100 transition p-2 rounded-full shadow-md"
             aria-label="Previous slide"
@@ -103,8 +91,6 @@ export default function NewsContent({ activity }: NewsContentProps) {
           </button>
         </div>
       ) : (
-        // If only one image
-        images &&
         images.length === 1 && (
           <div className="relative w-full h-64 md:h-[400px] rounded-lg overflow-hidden mb-6">
             <Image
@@ -118,7 +104,6 @@ export default function NewsContent({ activity }: NewsContentProps) {
         )
       )}
 
-      {/* Content */}
       <div className="prose prose-lg max-w-3xl text-justify text-sm">
         <div dangerouslySetInnerHTML={{ __html: activity.content }} />
       </div>

@@ -34,30 +34,28 @@ export default function Profile() {
   const [fbLinked, setFbLinked] = useState(false);
   const [igUsername, setIgUsername] = useState("");
 
-
-
   const handleFacebookLogin = async () => {
     // First check if FB SDK is loaded
-    if (typeof window === 'undefined' || !(window as any).FB) {
+    if (typeof window === "undefined" || !(window as any).FB) {
       console.error("Facebook SDK not loaded yet");
       setMessage("Facebook SDK belum tersedia. Silakan muat ulang halaman.");
       setPopupType("error");
       setShowPopup(true);
       return;
     }
-  
+
     try {
       const FB = (window as any).FB;
-      
+
       console.log("Memulai proses login Facebook...");
-      
+
       FB.login(
         (response: any) => {
           console.log("FB login response:", response);
-          
+
           if (response && response.authResponse) {
             const { accessToken } = response.authResponse;
-            
+
             if (!accessToken) {
               console.error("Access token tidak diterima");
               setMessage("Tidak bisa mendapatkan token akses dari Facebook.");
@@ -65,55 +63,68 @@ export default function Profile() {
               setShowPopup(true);
               return;
             }
-            
+
             console.log("Token diterima, mengirim ke backend...");
-            
+
             // Call your API endpoint with the token
             facebookLogin(accessToken)
-              .then(data => {
+              .then((data) => {
                 console.log("✅ Facebook berhasil ditautkan:", data);
-                
+
                 // Set states based on the response from the backend
                 setFbLinked(true);
                 setIsFbLoggedIn(true);
-                
+
                 // If the backend returns profile image, use it
                 if (data.data && data.data.image) {
                   setFbProfilePic(data.data.image);
                 }
-                
+
                 // If the backend returns Instagram data, update state
                 if (data.data && data.data.instagram_username) {
                   setIgUsername(data.data.instagram_username);
-                } else if (data.data && data.data.instagram && data.data.instagram.instagram_username) {
+                } else if (
+                  data.data &&
+                  data.data.instagram &&
+                  data.data.instagram.instagram_username
+                ) {
                   setIgUsername(data.data.instagram.instagram_username);
                 }
-                
+
                 setMessage(data.message || "Akun Facebook berhasil ditautkan!");
                 setPopupType("success");
                 setShowPopup(true);
               })
-              .catch(err => {
+              .catch((err) => {
                 console.error("❌ Gagal menautkan Facebook:", err);
-                setMessage(err.message || "Gagal menautkan akun Facebook. Silakan coba lagi.");
+                setMessage(
+                  err.message ||
+                    "Gagal menautkan akun Facebook. Silakan coba lagi."
+                );
                 setPopupType("error");
                 setShowPopup(true);
               });
           } else {
             console.log("User membatalkan login atau tidak memberikan izin.");
-            setMessage("Anda membatalkan proses tautkan Facebook atau izin tidak diberikan.");
+            setMessage(
+              "Anda membatalkan proses tautkan Facebook atau izin tidak diberikan."
+            );
             setPopupType("error");
             setShowPopup(true);
           }
         },
-        { 
-          scope: "public_profile,email,pages_show_list,instagram_basic,pages_read_engagement",
-          return_scopes: true
+        {
+          scope:
+            "public_profile,email,pages_show_list,instagram_basic,pages_read_engagement",
+          return_scopes: true,
         }
       );
     } catch (error: any) {
       console.error("Error in Facebook login process:", error);
-      setMessage("Terjadi kesalahan saat menghubungkan ke Facebook: " + (error.message || "Kesalahan tidak diketahui"));
+      setMessage(
+        "Terjadi kesalahan saat menghubungkan ke Facebook: " +
+          (error.message || "Kesalahan tidak diketahui")
+      );
       setPopupType("error");
       setShowPopup(true);
     }
@@ -174,11 +185,27 @@ export default function Profile() {
   };
 
   useEffect(() => {
+    if (typeof window !== "undefined" && (window as any).FB) {
+      const FB = (window as any).FB;
+
+      FB.getLoginStatus((response: any) => {
+        if (response.status === "connected") {
+          setIsFbLoggedIn(true);
+          setFbLinked(true); // ini yang penting
+        } else {
+          setIsFbLoggedIn(false);
+          setFbLinked(false);
+        }
+      });
+    }
+  }, []);
+
+  useEffect(() => {
     // Load FB SDK
-    if (typeof window !== 'undefined' && !(window as any).FB) {
+    if (typeof window !== "undefined" && !(window as any).FB) {
       window.fbAsyncInit = function () {
         const FB = (window as any).FB;
-        
+
         console.log("Initializing Facebook SDK...");
         FB.init({
           appId: process.env.NEXT_PUBLIC_FACEBOOK_APP_ID || "",
@@ -186,14 +213,14 @@ export default function Profile() {
           xfbml: true,
           version: "v19.0",
         });
-  
+
         console.log("Checking Facebook login status...");
         FB.getLoginStatus((response: any) => {
           console.log("Facebook login status:", response.status);
           if (response.status === "connected") {
             setIsFbLoggedIn(true);
             setFbLinked(true);
-            
+
             FB.api("/me/picture?type=normal", (pic: any) => {
               if (pic && !pic.error && pic.data) {
                 setFbProfilePic(pic.data.url);
@@ -202,15 +229,17 @@ export default function Profile() {
           }
         });
       };
-  
+
       // Create and append script
       console.log("Loading Facebook SDK script...");
       const script = document.createElement("script");
       script.src = "https://connect.facebook.net/en_US/sdk.js";
       script.async = true;
       script.defer = true;
-      script.onload = () => console.log("Facebook SDK script loaded successfully");
-      script.onerror = (e) => console.error("Failed to load Facebook SDK script", e);
+      script.onload = () =>
+        console.log("Facebook SDK script loaded successfully");
+      script.onerror = (e) =>
+        console.error("Failed to load Facebook SDK script", e);
       document.body.appendChild(script);
     }
   }, []);
@@ -355,11 +384,11 @@ export default function Profile() {
                 width={20}
                 height={20}
               />
-              <span className="text-sm text-green-600">Tertaut</span>
+              <span className="text-sm text-green-600">Sudah Terhubung</span>
             </div>
           ) : (
             <button
-              className="flex items-center px-4 py-2 bg-blue-600 text-white rounded-xl shadow hover:bg-blue-700 transition"
+              className="flex items-center px-4 py-2 bg-blue-600 text-white rounded-xl shadow hover:-translate-y-1 duration-150 ease-in"
               onClick={handleFacebookLogin}
             >
               <Image

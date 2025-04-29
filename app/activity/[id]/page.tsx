@@ -25,12 +25,17 @@ export default function ActivityDetail() {
 
         setActivity(res.data);
         setLatestNews(
-          latestRes.data.slice(0, 5).map((item: any) => ({
-            id: item.id,
-            title: item.title,
-            image: item.newsMedia?.[0]?.media_url || "",
-            created_at: item.created_at,
-          }))
+          latestRes.data.slice(0, 5).map((item: any) => {
+            const thumbnail =
+              item.newsMedia?.find((media: any) => media.isThumbnail) ||
+              item.newsMedia?.[0];
+            return {
+              id: item.id,
+              title: item.title,
+              image: thumbnail?.media_url || "",
+              created_at: item.created_at,
+            };
+          })
         );
       } catch (err) {
         console.error("Error:", err);

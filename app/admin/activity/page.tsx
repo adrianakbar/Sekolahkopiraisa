@@ -104,15 +104,14 @@ export default function Activity() {
           )
           .map((item: any) => {
             const imageMedia = item.newsMedia.find(
-              (media: any) =>
-                media.isThumbnail && media.media_type?.startsWith("image/")
+              (media: any) => media.isThumbnail
             );
 
             return {
               id: item.id,
               title: item.title,
               content: item.content,
-              image: imageMedia?.media_url || "/placeholder-image.jpg",
+              image: imageMedia?.media_url || "/assets/flower-top.png",
               time: formatUpload(item.created_at),
             };
           })
