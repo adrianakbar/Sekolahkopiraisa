@@ -91,7 +91,6 @@ export const loginUser = async (formData: {
   }
 };
 
-
 // Logout
 export const logout = async () => {
   try {
@@ -140,3 +139,18 @@ export const resetPassword = async ({
   }
 };
 
+// Facebook Login
+export const facebookLogin = async (accessToken: string) => {
+  try {
+    const response = await api.post('/api/v1/auth/facebook/link', {
+      accessToken
+    });
+    
+    return response.data;
+  } catch (error) {
+    console.error('Error in facebookLogin:', error);
+    // Format error to make it more consistent
+    const errorMessage = (error as any).response?.data?.message || (error as any).message || 'Gagal menautkan akun Facebook';
+    throw new Error(errorMessage);
+  }
+};

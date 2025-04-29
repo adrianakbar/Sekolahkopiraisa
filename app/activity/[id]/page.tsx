@@ -3,7 +3,6 @@ import { useEffect, useState } from "react";
 import { useParams, useRouter } from "next/navigation";
 import { fetchActivityById, fetchAllActivity } from "@/app/utils/activity";
 import NewsContent from "@/app/components/NewsContent";
-import CommentSection from "@/app/components/CommentSection";
 import LatestNews from "@/app/components/LatestNews";
 import Footer from "@/app/components/Footer";
 
@@ -55,7 +54,6 @@ export default function ActivityDetail() {
             {/* White card for NewsContent */}
             <div className="bg-white p-6 rounded-xl shadow-md mb-6">
               <NewsContent activity={activity} />
-              <CommentSection activityId={id ? Number(id) : 0} />
             </div>
           </div>
           <div>

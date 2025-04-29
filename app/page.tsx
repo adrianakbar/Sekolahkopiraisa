@@ -71,7 +71,7 @@ export default function Home() {
               <h1 className="text-primary text-xl md:text-2xl">
                 Membangun Ekosistem Kopi Berkualitas
               </h1>
-              <h1 className="text-4xl md:text-6xl lg:text-8xl font-bold text-primary">
+              <h1 className="text-4xl md:text-6xl font-bold text-primary">
                 Sekolah Kopi <br className="hidden sm:block" />
                 Raisa
               </h1>

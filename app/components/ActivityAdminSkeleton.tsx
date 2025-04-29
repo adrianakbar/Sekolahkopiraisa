@@ -5,7 +5,7 @@ import "react-loading-skeleton/dist/skeleton.css";
 
 export default function ActivityAdminSkeleton() {
   return (
-    <div className="bg-secondary rounded-lg p-4 shadow-lg flex flex-col sm:flex-row sm:justify-between sm:items-center space-y-4 sm:space-y-0">
+    <div className="bg-tertiary rounded-lg p-4 shadow-lg flex flex-col sm:flex-row sm:justify-between sm:items-center space-y-4 sm:space-y-0">
       <div className="flex flex-col sm:flex-row sm:items-center">
         <div className="mb-2 sm:mb-0 sm:mr-4 flex-shrink-0">
           <Skeleton height={96} width={128} borderRadius={8} />

@@ -95,6 +95,7 @@ export default function CreateActivityPage() {
         setMessage(response.message);
         setPopupType("success");
         setShowPopup(true);
+        setTimeout(() => router.push("/admin/activity"), 1500);
       }
     } catch (error: any) {
       if (error.type === "validation") {
@@ -117,7 +118,7 @@ export default function CreateActivityPage() {
           onClose={() => setShowPopup(false)}
         />
       )}
-      <h1 className="text-lg font-semibold mb-4">Buat Berita Baru</h1>
+      <h1 className="text-lg font-medium mb-4">Buat Berita Baru</h1>
       {error && <p className="text-red-600 mb-4">{error}</p>}
 
       <form onSubmit={handleSubmit} className="flex flex-col md:flex-row gap-6">
@@ -200,7 +201,7 @@ export default function CreateActivityPage() {
               <div className="flex justify-between items-center">
                 <label
                   htmlFor="thumbnail-upload"
-                  className="cursor-pointer bg-primary text-white px-3 py-1.5 rounded-xl hover:-translate-y-1 duration-150 ease-in text-sm"
+                  className="cursor-pointer font-medium bg-primary text-white px-3 py-1.5 rounded-xl hover:-translate-y-1 duration-150 ease-in text-sm"
                 >
                   Pilih Gambar
                 </label>
@@ -252,7 +253,7 @@ export default function CreateActivityPage() {
               <div className="flex justify-between items-center">
                 <label
                   htmlFor="image-upload"
-                  className={`cursor-pointer bg-primary text-white text-sm px-3 py-1.5 rounded-xl hover:-translate-y-1 duration-150 ease-in ${
+                  className={`cursor-pointer bg-primary font-medium text-white text-sm px-3 py-1.5 rounded-xl hover:-translate-y-1 duration-150 ease-in ${
                     images.length >= 4 ? "opacity-50 pointer-events-none" : ""
                   }`}
                 >
@@ -276,6 +277,9 @@ export default function CreateActivityPage() {
               <p className="text-sm text-gray-500 mt-2">
                 {images.length}/4 gambar terpilih
               </p>
+              {errors.media && (
+              <p className="text-sm text-red-600 mt-1">{errors.media}</p>
+            )}
             </div>
           </div>
 
@@ -330,7 +334,7 @@ export default function CreateActivityPage() {
           {/* Tombol Submit */}
           <button
             type="submit"
-            className="cursor-pointer w-full bg-primary text-white py-2 px-3 text-sm rounded-xl hover:-translate-y-1 duration-150 ease-in"
+            className="cursor-pointer w-full bg-primary text-white py-2 px-3 text-sm font-medium rounded-xl hover:-translate-y-1 duration-150 ease-in"
           >
             Unggah Berita
           </button>

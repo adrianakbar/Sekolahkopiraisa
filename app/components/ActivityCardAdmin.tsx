@@ -22,9 +22,9 @@ export default function ActivityCardAdmin({
   return (
     <div
       className="cursor-pointer bg-tertiary border border-gray-300 rounded-xl p-2 md:p-3 flex flex-col sm:flex-row justify-between shadow-lg"
-      onClick={() => onView?.(item.id)}
+      
     >
-      <div className="flex flex-col sm:flex-row">
+      <div className="flex flex-col sm:flex-row" onClick={() => onView?.(item.id)}>
         <div className="sm:mr-4 flex-shrink-0 mb-3 sm:mb-0">
           <img
             src={item.image}

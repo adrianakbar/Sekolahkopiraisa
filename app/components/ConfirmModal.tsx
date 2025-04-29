@@ -32,26 +32,26 @@ export default function ConfirmModal({
         </button>
 
         {/* Judul */}
-        <h2 className="text-xl md:text-2xl font-bold text-center mb-3">
+        <h2 className="text-lg font-medium text-center mb-3">
           {title}
         </h2>
 
         {/* Deskripsi */}
-        <p className="text-center text-[#3B3B3B] mb-6">
+        <p className="text-center text-sm text-[#3B3B3B] mb-6">
             {description}
         </p>
 
         {/* Tombol aksi */}
-        <div className="flex justify-center space-x-4">
+        <div className="flex justify-center text-sm space-x-4">
           <button
             onClick={onConfirm}
-            className="bg-[#4D2C1D] hover:bg-[#3e2317] text-white font-medium py-2 px-6 rounded-xl"
+            className="bg-[#4D2C1D] hover:bg-[#3e2317] text-white font-medium py-2 px-6 rounded-xl hover:-translate-y-1 duration-150 ease-in"
           >
             Iya
           </button>
           <button
             onClick={onClose}
-            className="border border-[#4D2C1D] text-[#4D2C1D] font-medium py-2 px-6 rounded-xl hover:bg-[#f1ebe7]"
+            className="border border-[#4D2C1D] text-[#4D2C1D] font-medium py-2 px-6 rounded-xl hover:-translate-y-1 duration-150 ease-in"
           >
             Batal
           </button>

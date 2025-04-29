@@ -103,8 +103,9 @@ export default function Activity() {
             )
           )
           .map((item: any) => {
-            const imageMedia = item.newsMedia.find((media: any) =>
-              media.media_type?.startsWith("image/")
+            const imageMedia = item.newsMedia.find(
+              (media: any) =>
+                media.isThumbnail && media.media_type?.startsWith("image/")
             );
 
             return {
@@ -157,9 +158,7 @@ export default function Activity() {
       />
 
       <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4 mb-4 sm:mb-6">
-        <h1 className="text-lg font-semibold text-gray-800">
-          Daftar Berita
-        </h1>
+        <h1 className="text-lg font-medium text-gray-800">Daftar Berita</h1>
 
         <div className="flex flex-col sm:flex-row items-center gap-4">
           <button
@@ -174,7 +173,7 @@ export default function Activity() {
             <select
               value={sortOption}
               onChange={(e) => setSortOption(e.target.value)}
-              className="appearance-none border border-gray-300 rounded-xl px-3 py-1.5 text-sm pr-5"
+              className="appearance-none border border-gray-500 rounded-xl px-3 py-1.5 text-sm pr-5"
             >
               <option value="newest">Terbaru</option>
               <option value="oldest">Terlama</option>
