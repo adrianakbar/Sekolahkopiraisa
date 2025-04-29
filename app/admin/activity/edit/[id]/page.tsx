@@ -1,138 +1,85 @@
 "use client";
-
-import { useEffect, useState, FormEvent } from "react";
-import { useRouter, useParams } from "next/navigation";
 import TextEditor from "@/app/components/TextEditor";
+
+import { useRouter } from "next/navigation";
+import { FormEvent, useEffect, useState } from "react";
+import { X, Loader2 } from "lucide-react";
 import Popup from "@/app/components/Popup";
+import Image from "next/image";
 import { fetchActivityById, updateActivity } from "@/app/utils/activity";
-import { X } from "lucide-react";
-import ConfirmModal from "@/app/components/ConfirmModal";
 
-export default function EditActivityPage() {
-  const { id } = useParams();
-  const router = useRouter();
+interface UpdateActivityPageProps {
+  params: {
+    id: string;
+  };
+}
 
-  const [oldImages, setOldImages] = useState<string[]>([]); 
-  const [deletedImageUrls, setDeletedImageUrls] = useState<string[]>([]); 
-
+export default function UpdateActivityPage({
+  params,
+}: UpdateActivityPageProps) {
+  const { id } = params;
+  const [loading, setLoading] = useState(true);
   const [title, setTitle] = useState("");
   const [content, setContent] = useState("");
   const [thumbnail, setThumbnail] = useState<File | null>(null);
   const [thumbnailPreview, setThumbnailPreview] = useState<string | null>(null);
   const [images, setImages] = useState<File[]>([]);
   const [imagePreviews, setImagePreviews] = useState<string[]>([]);
+  const [retainedMedia, setRetainedMedia] = useState<string[]>([]);
+  const [currentMedia, setCurrentMedia] = useState<
+    Array<{ id: string; url: string }>
+  >([]);
+  const [currentThumbnail, setCurrentThumbnail] = useState<string | null>(null);
   const [error, setError] = useState<string | null>(null);
   const [errors, setErrors] = useState<Record<string, string>>({});
   const [showPopup, setShowPopup] = useState(false);
   const [message, setMessage] = useState("");
   const [popupType, setPopupType] = useState<"success" | "error">("success");
-  const [showConfirmModal, setShowConfirmModal] = useState(false);
 
-  const maxWords = 2200;
+  const router = useRouter();
+  const maxWords = 2110;
 
   useEffect(() => {
-    const fetchData = async () => {
+    const fetchActivity = async () => {
       try {
-        const response = await fetchActivityById(id ? Number(id) : 0);
-        const data = response.data;
+        const response = await fetchActivityById(id);
+        const activity = response.data;
 
-        setTitle(data.title);
-        setContent(data.content);
+        setTitle(activity.title);
+        setContent(activity.content);
 
-        if (data.newsMedia && data.newsMedia.length > 0) {
-          const thumbnailMedia = data.newsMedia.find(
+        if (activity.newsMedia && activity.newsMedia.length > 0) {
+          const thumbnailMedia = activity.newsMedia.find(
             (media: { isThumbnail: boolean }) => media.isThumbnail
           );
 
-          setThumbnailPreview(thumbnailMedia?.media_url || null);
+          setCurrentThumbnail(thumbnailMedia?.media_url);
 
-          const additionalImages = data.newsMedia
+          const additionalImages = activity.newsMedia
             .filter((media: { isThumbnail: boolean }) => !media.isThumbnail)
             .map((media: { media_url: string }) => media.media_url);
 
           setImagePreviews(additionalImages);
-          setOldImages(additionalImages);
+          setRetainedMedia(additionalImages);
         }
-      } catch (err) {
-        console.error("Failed to fetch activity:", err);
-        setError("Gagal memuat data berita.");
+        setLoading(false);
+      } catch (error) {
+        console.error("Error fetching activity:", error);
+        setError("Gagal memuat data berita");
+        setLoading(false);
       }
     };
 
-    fetchData();
+    fetchActivity();
   }, [id]);
-
-  const getWordCount = (html: string) => {
-    if (!html) {
-      return 0;
-    }
-
-    const text = html.replace(/<[^>]+>/g, "").trim();
-    return text.split(/\s+/).filter(Boolean).length;
-  };
-
-  const handleSubmit = async (e: FormEvent) => {
-    e.preventDefault();
-    setError(null);
-    setErrors({});
-
-    if (getWordCount(content) > maxWords) {
-      setError(`Maksimal ${maxWords} kata.`);
-      return;
-    }
-
-    try {
-      const formData = new FormData();
-      formData.append("title", title);
-      formData.append("content", content);
-
-      if (thumbnail) {
-        formData.append("thumbnail", thumbnail);
-      }
-
-      // Add new images
-      images.forEach((img) => {
-        formData.append("media", img);
-      });
-
-      // Add retained media as JSON string
-      if (oldImages.length > 0) {
-        formData.append("retainedMedia", JSON.stringify(oldImages));
-      }
-
-      // Log form data for debugging
-      console.log("Submitting form data:");
-      for (const [key, value] of formData.entries()) {
-        console.log(`${key}:`, value);
-      }
-      
-      const response = await updateActivity(Number(id), formData);
-
-      if (response && response.message) {
-        setMessage(response.message);
-        setPopupType("success");
-        setShowPopup(true);
-        setTimeout(() => router.push("/admin/activity"), 1500);
-      }
-    } catch (error: any) {
-      console.error("Update error:", error);
-      
-      if (error.errors) {
-        setErrors(error.errors);
-      } else {
-        setMessage(
-          error.message || "Terjadi kesalahan saat memperbarui berita."
-        );
-        setPopupType("error");
-        setShowPopup(true);
-      }
-    }
-  };
 
   const handleThumbnailChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
     if (file) {
       setThumbnail(file);
+      // Clear the current thumbnail
+      setCurrentThumbnail(null);
+
       const reader = new FileReader();
       reader.onloadend = () => {
         setThumbnailPreview(reader.result as string);
@@ -145,7 +92,12 @@ export default function EditActivityPage() {
     const files = e.target.files;
     if (files) {
       const newFiles = Array.from(files);
-      if (images.length + newFiles.length > 4) {
+      const totalImages =
+        images.length +
+        currentMedia.filter((m) => retainedMedia.includes(m.id)).length +
+        newFiles.length;
+
+      if (totalImages > 4) {
         setError("Maksimal 4 gambar tambahan.");
         return;
       }
@@ -163,38 +115,65 @@ export default function EditActivityPage() {
   };
 
   const removeImage = (index: number) => {
-    const preview = imagePreviews[index];
-    
-    // Check if this is an old image or a new one
-    const isOldImage = index < oldImages.length;
-    
-    if (isOldImage) {
-      // This is an old image from the server
-      setOldImages((prev) => prev.filter((_, i) => i !== index));
-    } else {
-      // This is a new image the user uploaded
-      // Adjust index for the new images array
-      const newImageIndex = index - oldImages.length;
-      setImages((prev) => prev.filter((_, i) => i !== newImageIndex));
-    }
-    
-    // Remove from previews
+    setImages((prev) => prev.filter((_, i) => i !== index));
     setImagePreviews((prev) => prev.filter((_, i) => i !== index));
   };
 
+  const removeCurrentMedia = (mediaId: string) => {
+    setRetainedMedia((prev) => prev.filter((id) => id !== mediaId));
+  };
+
+  const getWordCount = (html: string) => {
+    const text = html.replace(/<[^>]+>/g, "").trim();
+    return text.split(/\s+/).filter(Boolean).length;
+  };
+
+  const handleSubmit = async (e: FormEvent) => {
+    e.preventDefault();
+    setError(null);
+    setErrors({});
+
+    try {
+      const formData = new FormData();
+      formData.append("title", title);
+      formData.append("content", content);
+      formData.append("retainedMedia", JSON.stringify(retainedMedia));
+
+      if (thumbnail) formData.append("thumbnail", thumbnail);
+      images.forEach((img) => formData.append("media", img));
+
+      const response = await updateActivity(Number(id), formData);
+
+      if (response && response.message) {
+        setMessage(response.message);
+        setPopupType("success");
+        setShowPopup(true);
+        setTimeout(() => router.push("/admin/activity"), 1500);
+      }
+    } catch (error: any) {
+      if (error.type === "validation") {
+        setErrors(error.errors);
+      } else {
+        console.error("Error:", error);
+        setMessage(
+          error.message || "Terjadi kesalahan saat memperbarui berita."
+        );
+        setPopupType("error");
+        setShowPopup(true);
+      }
+    }
+  };
+
+  if (loading) {
+    return (
+      <div className="flex justify-center items-center h-64">
+        <Loader2 className="animate-spin text-primary" size={48} />
+      </div>
+    );
+  }
+
   return (
     <div className="max-w-7xl mx-auto p-6 bg-white rounded-xl shadow-lg">
-      {showConfirmModal && (
-        <ConfirmModal
-          isOpen={showConfirmModal}
-          onClose={() => setShowConfirmModal(false)}
-          onConfirm={async () => {
-            setShowConfirmModal(false);
-          }}
-          title="Konfirmasi Update"
-          description="Apakah Anda yakin ingin memperbarui berita ini?"
-        />
-      )}
       {showPopup && (
         <Popup
           message={message}
@@ -213,7 +192,7 @@ export default function EditActivityPage() {
               Konten Berita
             </label>
             <TextEditor
-              content={content || ""}
+              content={content}
               setContent={(value: string) => {
                 setContent(value);
                 setErrors((prev) => ({ ...prev, content: "" }));
@@ -231,7 +210,7 @@ export default function EditActivityPage() {
         <div className="w-full md:w-1/3">
           {/* Judul */}
           <div className="mb-6">
-            <label className="block mb-1 font-medium text-sm">
+            <label className="block mb-1 text-sm font-medium">
               Judul Berita
             </label>
             <input
@@ -244,6 +223,9 @@ export default function EditActivityPage() {
               }}
               className="w-full p-2 border border-gray-300 rounded-xl"
             />
+            <p className="text-sm text-gray-500 mt-1">
+              {title.length}/90 karakter
+            </p>
             {errors.title && (
               <p className="text-sm text-red-600 mt-1">{errors.title}</p>
             )}
@@ -251,10 +233,10 @@ export default function EditActivityPage() {
 
           {/* Thumbnail */}
           <div className="mb-6">
-            <label className="block mb-1 font-medium text-sm">
+            <label className="block mb-1 text-sm font-medium">
               Sampul Gambar
             </label>
-            <div className="border rounded-xl p-4 bg-gray-50">
+            <div className="border rounded-xl p-3 bg-gray-50">
               {thumbnailPreview ? (
                 <div className="relative mb-3">
                   <img
@@ -262,10 +244,28 @@ export default function EditActivityPage() {
                     alt="Thumbnail Preview"
                     className="w-full h-40 object-cover rounded-xl"
                   />
+                  <button
+                    type="button"
+                    onClick={() => {
+                      setThumbnail(null);
+                      setThumbnailPreview(null);
+                    }}
+                    className="absolute top-2 right-2 bg-primary rounded-full p-1 shadow-lg"
+                  >
+                    <X size={16} className="text-white" />
+                  </button>
+                </div>
+              ) : currentThumbnail ? (
+                <div className="relative mb-3">
+                  <img
+                    src={currentThumbnail}
+                    alt="Current Thumbnail"
+                    className="w-full h-40 object-cover rounded-xl"
+                  />
                 </div>
               ) : (
                 <div className="border-dashed border-2 border-gray-300 bg-gray-100 rounded-xl flex items-center justify-center h-40 mb-3">
-                  <span className="text-gray-500">Unggah Sampul</span>
+                  <span className="text-gray-500 text-sm">Unggah Sampul</span>
                 </div>
               )}
 
@@ -280,7 +280,10 @@ export default function EditActivityPage() {
                   id="thumbnail-upload"
                   type="file"
                   accept="image/*"
-                  onChange={handleThumbnailChange}
+                  onChange={(e) => {
+                    handleThumbnailChange(e);
+                    setErrors((prev) => ({ ...prev, thumbnail: "" }));
+                  }}
                   className="hidden"
                 />
               </div>
@@ -293,12 +296,40 @@ export default function EditActivityPage() {
 
           {/* Gambar Tambahan */}
           <div className="mb-6">
-            <label className="block mb-1">Gambar Tambahan (maks 4)</label>
+            <label className="block mb-1 text-sm font-medium">
+              Gambar Tambahan (maks 4)
+            </label>
             <div className="border rounded-xl p-4 bg-gray-50">
+              {/* Current Media Images */}
+              {currentMedia.length > 0 && (
+                <div className="grid grid-cols-2 gap-2 mb-3">
+                  {currentMedia.map(
+                    (media) =>
+                      retainedMedia.includes(media.id) && (
+                        <div key={media.id} className="relative">
+                          <img
+                            src={media.url}
+                            alt={`Current Media ${media.id}`}
+                            className="w-full h-24 object-cover rounded-xl"
+                          />
+                          <button
+                            type="button"
+                            onClick={() => removeCurrentMedia(media.id)}
+                            className="absolute top-1 right-1 bg-primary rounded-full p-1 shadow-lg"
+                          >
+                            <X size={14} className="text-white" />
+                          </button>
+                        </div>
+                      )
+                  )}
+                </div>
+              )}
+
+              {/* New Media Images */}
               {imagePreviews.length > 0 && (
                 <div className="grid grid-cols-2 gap-2 mb-3">
                   {imagePreviews.map((preview, index) => (
-                    <div key={index} className="relative">
+                    <div key={`new-${index}`} className="relative">
                       <img
                         src={preview}
                         alt={`Preview ${index + 1}`}
@@ -307,9 +338,9 @@ export default function EditActivityPage() {
                       <button
                         type="button"
                         onClick={() => removeImage(index)}
-                        className="absolute top-1 right-1 bg-primary text-white rounded-full p-1 shadow-lg"
+                        className="absolute top-1 right-1 bg-primary rounded-full p-1 shadow-lg"
                       >
-                        <X size={16} />
+                        <X size={14} className="text-white" />
                       </button>
                     </div>
                   ))}
@@ -320,7 +351,12 @@ export default function EditActivityPage() {
                 <label
                   htmlFor="image-upload"
                   className={`cursor-pointer bg-primary font-medium text-white text-sm px-3 py-1.5 rounded-xl hover:-translate-y-1 duration-150 ease-in ${
-                    imagePreviews.length >= 4 ? "opacity-50 pointer-events-none" : ""
+                    images.length +
+                      currentMedia.filter((m) => retainedMedia.includes(m.id))
+                        .length >=
+                    4
+                      ? "opacity-50 pointer-events-none"
+                      : ""
                   }`}
                 >
                   Tambah Gambar
@@ -330,14 +366,26 @@ export default function EditActivityPage() {
                   type="file"
                   accept="image/*"
                   multiple
-                  onChange={handleImageChange}
+                  onChange={(e) => {
+                    handleImageChange(e);
+                    setError(null);
+                    setErrors((prev) => ({ ...prev, media: "" }));
+                  }}
                   className="hidden"
-                  disabled={imagePreviews.length >= 4}
+                  disabled={
+                    images.length +
+                      currentMedia.filter((m) => retainedMedia.includes(m.id))
+                        .length >=
+                    4
+                  }
                 />
               </div>
 
               <p className="text-sm text-gray-500 mt-2">
-                {imagePreviews.length}/4 gambar terpilih
+                {images.length +
+                  currentMedia.filter((m) => retainedMedia.includes(m.id))
+                    .length}
+                /4 gambar terpilih
               </p>
               {errors.media && (
                 <p className="text-sm text-red-600 mt-1">{errors.media}</p>
@@ -350,7 +398,7 @@ export default function EditActivityPage() {
             type="submit"
             className="cursor-pointer w-full bg-primary text-white py-2 px-3 text-sm font-medium rounded-xl hover:-translate-y-1 duration-150 ease-in"
           >
-            Update Berita
+            Perbarui Berita
           </button>
         </div>
       </form>
