@@ -144,7 +144,7 @@ export default function Activity() {
           )}
         </section>
         <section className="my-8 bg-white p-6 rounded-xl shadow-md">
-          <h2 className="text-lg md:text-xl font-semibold mb-4">
+          <h2 className="text-lg font-medium mb-4">
             Berita Terbaru
           </h2>
           {cardItems.length > 0 ? (

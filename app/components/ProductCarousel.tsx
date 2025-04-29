@@ -54,12 +54,12 @@ export default function ProductCarouselCard({
               />
             </div>
             {/* Informasi Produk */}
-            <div className="p-4 flex flex-col flex-grow">
-              <h3 className="text-gray-900 line-clamp-2 text-sm md:text-base font-medium mb-1">{product.name}</h3>
-              <p className="text-gray-700 font-semibold mt-auto mb-3">{product.price}</p>
+            <div className="p-4 flex flex-col flex-grow text-sm">
+              <h3 className="text-gray-900 line-clamp-2 font-medium mb-1">{product.name}</h3>
+              <p className="text-gray-700 font-medium mt-auto mb-3">{product.price}</p>
               {/* Tombol Beli */}
               <div className="flex gap-2 justify-between mt-auto">
-                <button className="w-full py-2 bg-[#613D2B] text-white text-sm md:text-base font-medium rounded-xl hover:-translate-y-1 duration-150 ease-in">
+                <button className="w-full py-2 bg-[#613D2B] text-white font-medium rounded-xl hover:-translate-y-1 duration-150 ease-in">
                   Beli Sekarang
                 </button>
                 <button className="min-w-[44px] py-2 px-2 bg-[#613D2B] text-white font-medium rounded-xl hover:-translate-y-1 duration-150 ease-in flex items-center justify-center">

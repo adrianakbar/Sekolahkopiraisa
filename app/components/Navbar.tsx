@@ -148,7 +148,7 @@ export default function Navbar({ navbarItems }: { navbarItems: NavbarItem[] }) {
                 />
               </span>
 
-              <span className="block mr-1 font-medium text-theme-sm">
+              <span className="block mr-1 text-sm font-medium text-theme-sm">
                 {user.name}
               </span>
 
@@ -178,10 +178,10 @@ export default function Navbar({ navbarItems }: { navbarItems: NavbarItem[] }) {
               className="absolute right-0 mt-[17px] flex w-[260px] flex-col rounded-2xl border border-gray-200 bg-white p-3 shadow-theme-lg dark:border-gray-800 dark:bg-gray-dark"
             >
               <div>
-                <span className="block font-medium text-gray-700 text-theme-sm dark:text-gray-400">
+                <span className="block font-medium text-gray-700 text-sm dark:text-gray-400">
                   {user.name}
                 </span>
-                <span className="mt-0.5 block text-theme-xs text-gray-500 dark:text-gray-400">
+                <span className="mt-0.5 block text-sm text-gray-500 dark:text-gray-400">
                   {user.email || "user@example.com"}
                 </span>
               </div>
@@ -215,7 +215,7 @@ export default function Navbar({ navbarItems }: { navbarItems: NavbarItem[] }) {
               </ul>
               <div
                 onClick={handleLogout}
-                className="cursor-pointer flex items-center gap-3 px-3 py-2 mt-3 font-medium text-gray-700 group text-theme-sm hover:bg-gray-100 hover:text-gray-700 dark:text-gray-400 dark:hover:bg-white/5 dark:hover:text-gray-300"
+                className="cursor-pointer flex items-center gap-3 px-3 py-2 mt-3 font-medium text-gray-700 group text-sm hover:bg-gray-100 hover:text-gray-700 dark:text-gray-400 dark:hover:bg-white/5 dark:hover:text-gray-300"
               >
                 <svg
                   className="fill-gray-500 group-hover:fill-gray-700 dark:group-hover:fill-gray-300"
@@ -306,7 +306,7 @@ export default function Navbar({ navbarItems }: { navbarItems: NavbarItem[] }) {
                     const isActive = pathname === item.link;
                     // Use default icon if not provided
                     const icon = item.icon || (
-                      <div className="w-5 h-5  rounded-full flex items-center justify-center text-xs text-primary font-bold">
+                      <div className="w-5 h-5  rounded-full flex items-center justify-center text-xs text-primary font-medium">
                         {item.title.charAt(0)}
                       </div>
                     );
@@ -318,9 +318,9 @@ export default function Navbar({ navbarItems }: { navbarItems: NavbarItem[] }) {
                         >
                           <div
                             className={clsx(
-                              "flex items-center gap-3 px-3 py-2 rounded-xl transition-all duration-200",
+                              "flex items-center gap-3 px-3 py-2 rounded-xl transition-all duration-200 text-sm",
                               isActive
-                                ? "bg-primary text-white font-semibold shadow-lg"
+                                ? "bg-primary text-white font-medium shadow-lg"
                                 : "text-gray-700 hover:bg-gray-100 hover:text-gray-900"
                             )}
                           >
@@ -366,7 +366,7 @@ export default function Navbar({ navbarItems }: { navbarItems: NavbarItem[] }) {
                     />
                   </>
                 ) : (
-                  <div className="flex flex-col w-full gap-2">
+                  <div className="flex flex-col w-full gap-2 text-sm">
                     <Link
                       href="/login"
                       onClick={() => setIsMobileMenuOpen(false)}

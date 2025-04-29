@@ -25,7 +25,7 @@ export default function ActivityCard({
               className="object-cover rounded-xl transition duration-300 hover:brightness-75"
             />
           </div>
-          <h3 className="text-sm font-semibold leading-snug">{activity.title}</h3>
+          <h3 className="text-sm font-medium leading-snug">{activity.title}</h3>
           <p className="text-xs text-gray-500 mt-1">{activity.time}</p>
         </div>
       ))}

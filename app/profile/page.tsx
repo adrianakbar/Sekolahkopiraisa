@@ -92,7 +92,7 @@ export default function Profile() {
   }, [user]);
 
   return (
-    <div className="max-w-2xl mx-auto px-4 py-20 md:py-50">
+    <div className="max-w-2xl mx-auto px-4 py-20 md:py-35">
       {showPopup && (
         <Popup
           message={message}
@@ -100,7 +100,7 @@ export default function Profile() {
           onClose={() => setShowPopup(false)}
         />
       )}
-      <h1 className="text-center text-2xl font-bold mb-6">Profil Saya</h1>
+      <h1 className="text-center text-lg font-medium mb-6">Profil Saya</h1>
 
       <div className="flex flex-col items-center space-y-3 mb-6">
         <div className="relative w-40 h-40 rounded-full overflow-hidden border">
@@ -157,7 +157,7 @@ export default function Profile() {
         </label>
       </div>
 
-      <form className="space-y-4">
+      <form className="space-y-4 text-sm">
         <div>
           <label className="block font-medium">Nama</label>
           <input
@@ -166,7 +166,7 @@ export default function Profile() {
             value={formData.name}
             onChange={handleChange}
             disabled={!isEditing}
-            className={`w-full border rounded-xl p-2 mt-1 ${
+            className={`w-full border rounded-xl p-1.5 mt-1 ${
               isEditing ? "bg-white" : "bg-gray-100"
             }`}
           />
@@ -183,7 +183,7 @@ export default function Profile() {
             value={formData.email}
             onChange={handleChange}
             disabled={true}
-            className={`w-full border rounded-xl p-2 mt-1 ${
+            className={`w-full border rounded-xl p-1.5 mt-1 ${
               isEditing ? "bg-white" : "bg-gray-100"
             }`}
           />
@@ -202,7 +202,7 @@ export default function Profile() {
             value={formData.phone_number}
             onChange={handleChange}
             disabled={!isEditing}
-            className={`w-full border rounded-xl p-2 mt-1 ${
+            className={`w-full border rounded-xl p-1.5 mt-1 ${
               isEditing ? "bg-white" : "bg-gray-100"
             }`}
           />
@@ -218,7 +218,7 @@ export default function Profile() {
               setIsEditing(true);
               setEmailErrorOnEdit(true);
             }}
-            className="w-full py-3 bg-[#5c2e0e] text-white rounded-xl font-semibold hover:bg-[#47230b] transition"
+            className="w-full py-2 bg-[#5c2e0e] text-white rounded-xl font-medium hover:-translate-y-1 duration-150 ease-in"
           >
             Perbarui Profil
           </button>

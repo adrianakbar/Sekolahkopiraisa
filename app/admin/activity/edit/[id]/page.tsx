@@ -26,9 +26,7 @@ export default function UpdateActivityPage({
   const [images, setImages] = useState<File[]>([]);
   const [imagePreviews, setImagePreviews] = useState<string[]>([]);
   const [retainedMedia, setRetainedMedia] = useState<string[]>([]);
-  const [currentMedia, setCurrentMedia] = useState<
-    Array<{ id: string; url: string }>
-  >([]);
+  const [currentMedia, setCurrentMedia] = useState<string[]>([]);
   const [currentThumbnail, setCurrentThumbnail] = useState<string | null>(null);
   const [error, setError] = useState<string | null>(null);
   const [errors, setErrors] = useState<Record<string, string>>({});
@@ -53,13 +51,15 @@ export default function UpdateActivityPage({
             (media: { isThumbnail: boolean }) => media.isThumbnail
           );
 
-          setCurrentThumbnail(thumbnailMedia?.media_url);
+          if (thumbnailMedia) {
+            setCurrentThumbnail(thumbnailMedia.media_url);
+          }
 
           const additionalImages = activity.newsMedia
             .filter((media: { isThumbnail: boolean }) => !media.isThumbnail)
             .map((media: { media_url: string }) => media.media_url);
 
-          setImagePreviews(additionalImages);
+          setCurrentMedia(additionalImages);
           setRetainedMedia(additionalImages);
         }
         setLoading(false);
@@ -92,10 +92,7 @@ export default function UpdateActivityPage({
     const files = e.target.files;
     if (files) {
       const newFiles = Array.from(files);
-      const totalImages =
-        images.length +
-        currentMedia.filter((m) => retainedMedia.includes(m.id)).length +
-        newFiles.length;
+      const totalImages = images.length + retainedMedia.length + newFiles.length;
 
       if (totalImages > 4) {
         setError("Maksimal 4 gambar tambahan.");
@@ -119,8 +116,8 @@ export default function UpdateActivityPage({
     setImagePreviews((prev) => prev.filter((_, i) => i !== index));
   };
 
-  const removeCurrentMedia = (mediaId: string) => {
-    setRetainedMedia((prev) => prev.filter((id) => id !== mediaId));
+  const removeCurrentMedia = (url: string) => {
+    setRetainedMedia((prev) => prev.filter((mediaUrl) => mediaUrl !== url));
   };
 
   const getWordCount = (html: string) => {
@@ -304,17 +301,17 @@ export default function UpdateActivityPage({
               {currentMedia.length > 0 && (
                 <div className="grid grid-cols-2 gap-2 mb-3">
                   {currentMedia.map(
-                    (media) =>
-                      retainedMedia.includes(media.id) && (
-                        <div key={media.id} className="relative">
+                    (mediaUrl, index) =>
+                      retainedMedia.includes(mediaUrl) && (
+                        <div key={`current-${index}`} className="relative">
                           <img
-                            src={media.url}
-                            alt={`Current Media ${media.id}`}
+                            src={mediaUrl}
+                            alt={`Current Media ${index}`}
                             className="w-full h-24 object-cover rounded-xl"
                           />
                           <button
                             type="button"
-                            onClick={() => removeCurrentMedia(media.id)}
+                            onClick={() => removeCurrentMedia(mediaUrl)}
                             className="absolute top-1 right-1 bg-primary rounded-full p-1 shadow-lg"
                           >
                             <X size={14} className="text-white" />
@@ -351,10 +348,7 @@ export default function UpdateActivityPage({
                 <label
                   htmlFor="image-upload"
                   className={`cursor-pointer bg-primary font-medium text-white text-sm px-3 py-1.5 rounded-xl hover:-translate-y-1 duration-150 ease-in ${
-                    images.length +
-                      currentMedia.filter((m) => retainedMedia.includes(m.id))
-                        .length >=
-                    4
+                    images.length + retainedMedia.length >= 4
                       ? "opacity-50 pointer-events-none"
                       : ""
                   }`}
@@ -372,20 +366,12 @@ export default function UpdateActivityPage({
                     setErrors((prev) => ({ ...prev, media: "" }));
                   }}
                   className="hidden"
-                  disabled={
-                    images.length +
-                      currentMedia.filter((m) => retainedMedia.includes(m.id))
-                        .length >=
-                    4
-                  }
+                  disabled={images.length + retainedMedia.length >= 4}
                 />
               </div>
 
               <p className="text-sm text-gray-500 mt-2">
-                {images.length +
-                  currentMedia.filter((m) => retainedMedia.includes(m.id))
-                    .length}
-                /4 gambar terpilih
+                {images.length + retainedMedia.length}/4 gambar terpilih
               </p>
               {errors.media && (
                 <p className="text-sm text-red-600 mt-1">{errors.media}</p>

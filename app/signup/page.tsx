@@ -81,8 +81,8 @@ export default function Signup() {
           >
             <ChevronLeft /> Kembali ke Homepage
           </Link>
-          <h1 className="text-2xl md:text-3xl font-semibold mb-6">Welcome</h1>
-          <form onSubmit={handleSubmit} className="space-y-4">
+          <h1 className="text-2xl font-medium mb-6">Welcome</h1>
+          <form onSubmit={handleSubmit} className="space-y-4 text-sm">
             <div>
               <label className="block text-sm font-medium">Nama</label>
               <input
@@ -90,7 +90,7 @@ export default function Signup() {
                 value={form.name}
                 onChange={handleChange}
                 type="text"
-                className="w-full p-2 border border-gray-300 rounded-xl"
+                className="w-full p-1.5 border border-gray-300 rounded-xl"
                 placeholder="Masukkan nama lengkap"
               />
               {errors.name && (
@@ -105,7 +105,7 @@ export default function Signup() {
                 value={form.email}
                 onChange={handleChange}
                 type="email"
-                className="w-full p-2 border border-gray-300 rounded-xl"
+                className="w-full p-1.5 border border-gray-300 rounded-xl"
                 placeholder="Masukkan email"
               />
               {errors.email && (
@@ -120,12 +120,12 @@ export default function Signup() {
                 value={form.password}
                 onChange={handleChange}
                 type={showPassword ? "text" : "password"}
-                className="w-full p-2 border border-gray-300 rounded-xl"
+                className="w-full p-1.5 border border-gray-300 rounded-xl"
                 placeholder="Masukkan kata sandi"
               />
               <button
                 type="button"
-                className="cursor-pointer absolute top-8 right-3 text-gray-500"
+                className="cursor-pointer absolute top-7.5 right-3 text-gray-500"
                 onClick={() => setShowPassword(!showPassword)}
               >
                 {showPassword ? <EyeOff size={18} /> : <Eye size={18} />}
@@ -142,7 +142,7 @@ export default function Signup() {
                 value={form.phone_number}
                 onChange={handleChange}
                 type="number"
-                className="w-full p-2 border border-gray-300 rounded-xl"
+                className="w-full p-1.5 border border-gray-300 rounded-xl"
                 placeholder="Masukkan nomor hp"
               />
               {errors.phone_number && (
@@ -163,7 +163,7 @@ export default function Signup() {
             </p>
             <button
               type="submit"
-              className="cursor-pointer w-full p-2 bg-primary text-white rounded-xl hover:-translate-y-1 duration-150 ease-in"
+              className="cursor-pointer w-full p-1.5 bg-primary text-white rounded-xl hover:-translate-y-1 duration-150 ease-in"
             >
               Buat Akun
             </button>
@@ -176,16 +176,16 @@ export default function Signup() {
           </div>
           <button
             type="button"
-            className="cursor-pointer w-full p-2 bg-gray-300 rounded-xl border-gray-400 border hover:-translate-y-1 duration-150 ease-in flex justify-center items-center gap-2"
+            className="cursor-pointer w-full p-1.5 bg-gray-300 rounded-xl border-gray-400 border hover:-translate-y-1 duration-150 ease-in flex justify-center items-center gap-2"
             onClick={loginWithGoogle}
           >
             <Image
               src="/assets/google-logo.png"
               alt="Google Icon"
-              width={20}
+              width={19}
               height={20}
             />
-            <span>Lanjutkan Dengan Google</span>
+            <span className="text-sm">Lanjutkan Dengan Google</span>
           </button>
           <p className="text-center mt-4 text-gray-700 text-sm">
             Sudah punya akun?

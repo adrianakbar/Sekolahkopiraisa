@@ -115,16 +115,16 @@ export default function Home() {
 
           {/* Kolom Teks */}
           <div className="w-full mt-8 md:mt-0 md:ml-2">
-            <h2 className="text-xl md:text-2xl font-semibold text-gray-900 mb-4">
+            <h2 className="text-lg font-medium text-gray-900 mb-4">
               Tentang Kami
             </h2>
-            <p className="text-gray-700 leading-relaxed text-justify text-base md:text-lg">
+            <p className="text-gray-700 leading-relaxed text-justify text-sm">
               Pengembangan kelembagaan melalui BUMDESMA bertujuan memberdayakan
               kelompok tani baru agar lebih efektif dalam penyediaan sarana
               produksi, permodalan, serta pengembangan usaha dari hulu ke hilir,
               termasuk pemasaran dan peningkatan posisi tawar.
             </p>
-            <p className="text-gray-700 mt-4 leading-relaxed text-justify text-base md:text-lg">
+            <p className="text-gray-700 mt-4 leading-relaxed text-justify text-sm">
               BUMDESMA RAISA mendirikan unit usaha sosial "Sekolah Kopi" sebagai
               inovasi dalam pengelolaan kopi hulu-hilir untuk menghadapi
               tantangan penjaminan mutu dan kualitas kopi di Kabupaten
@@ -165,10 +165,10 @@ export default function Home() {
 
         <div className="container mx-auto px-4 relative z-10">
           {/* Judul Section */}
-          <h2 className="text-xl md:text-2xl font-semibold text-center text-gray-900">
+          <h2 className="text-lg font-medium text-center text-gray-900">
             Produk Kami
           </h2>
-          <p className="text-center text-gray-600 mt-2 px-4">
+          <p className="text-center text-gray-600 mt-2 px-4 text-sm">
             Kopi dari para petani dan UMKM Bondowoso, hasil panen terbaik dari
             tanah yang subur
           </p>
@@ -229,10 +229,10 @@ export default function Home() {
       <section className="py-10 md:py-16 bg-[#F5EDE4]">
         <div className="container mx-auto px-4">
           {/* Judul Section */}
-          <h2 className="text-xl md:text-2xl font-semibold text-center text-gray-900">
+          <h2 className="text-lg font-medium text-center text-gray-900">
             Kegiatan Terbaru
           </h2>
-          <p className="text-center text-gray-600 mt-2">
+          <p className="text-center text-gray-600 mt-2 text-sm">
             Cari tahu kegiatan dan info terbaru dari Kopi Raisa
           </p>
 

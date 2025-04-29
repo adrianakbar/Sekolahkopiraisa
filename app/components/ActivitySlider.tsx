@@ -44,7 +44,7 @@ export default function ActivitySlider({
             priority={current === 0} // Prioritizing the first image
           />
           <div className="absolute inset-x-0 bottom-0 bg-gradient-to-t from-black/70 to-transparent px-6 py-8 rounded-b-xl">
-            <h2 className="text-white text-lg md:text-2xl font-semibold max-w-3xl leading-snug">
+            <h2 className="text-white text-lg font-medium max-w-3xl leading-snug">
               {sliderItems[current].title}
             </h2>
           </div>

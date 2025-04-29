@@ -55,7 +55,7 @@ export default function ActivityCarousel({
             <div className="absolute inset-0 bg-gradient-to-t from-black to-transparent opacity-70 group-hover:opacity-80 transition-opacity duration-300 ease-in-out" />
 
             <div className="absolute bottom-0 left-0 right-0 p-3 md:p-4 text-white">
-              <p className="text-sm md:text-base line-clamp-2 md:line-clamp-3">
+              <p className="text-sm font-medium line-clamp-2 md:line-clamp-3">
                 {activity.title}
               </p>
             </div>
