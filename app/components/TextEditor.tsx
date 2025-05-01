@@ -81,10 +81,8 @@ export default function TextEditor({
     <div className="flex gap-6">
       {/* LEFT - Editor */}
       <div className="w-full">
-        
-
         {/* Editor */}
-        <div className="min-h-[300px] border p-3 rounded-xl">
+        <div className="min-h-[300px] border p-3 rounded-xl border-gray-300">
           <EditorContent editor={editor} className="outline-none" />
         </div>
 

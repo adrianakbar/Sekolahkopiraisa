@@ -67,43 +67,63 @@ export default function Profile() {
             console.log("Token diterima, mengirim ke backend...");
 
             // Call your API endpoint with the token
-            facebookLogin(accessToken)
-              .then((data) => {
-                console.log("✅ Facebook berhasil ditautkan:", data);
+            facebookLogin(accessToken).then((data) => {
+              console.log("✅ Facebook berhasil ditautkan:", data);
 
-                // Set states based on the response from the backend
-                setFbLinked(true);
-                setIsFbLoggedIn(true);
+              setFbLinked(true);
+              setIsFbLoggedIn(true);
 
-                // If the backend returns profile image, use it
-                if (data.data && data.data.image) {
-                  setFbProfilePic(data.data.image);
-                }
+              // Set foto profil FB (kalau ada dari backend)
+              if (data.data?.image) {
+                setFbProfilePic(data.data.image);
+              }
 
-                // If the backend returns Instagram data, update state
-                if (data.data && data.data.instagram_username) {
-                  setIgUsername(data.data.instagram_username);
-                } else if (
-                  data.data &&
-                  data.data.instagram &&
-                  data.data.instagram.instagram_username
-                ) {
-                  setIgUsername(data.data.instagram.instagram_username);
-                }
+              // Set IG username dari backend response
+              if (data.data?.instagram_username) {
+                setIgUsername(data.data.instagram_username);
+              } else if (data.data?.instagram?.instagram_username) {
+                setIgUsername(data.data.instagram.instagram_username);
+              }
 
-                setMessage(data.message || "Akun Facebook berhasil ditautkan!");
-                setPopupType("success");
-                setShowPopup(true);
-              })
-              .catch((err) => {
-                console.error("❌ Gagal menautkan Facebook:", err);
-                setMessage(
-                  err.message ||
-                    "Gagal menautkan akun Facebook. Silakan coba lagi."
+              // ✅ Jika backend tidak mengembalikan IG username, ambil dari FB Graph API
+              if (!data.data?.instagram_username) {
+                const FB = (window as any).FB;
+
+                FB.api(
+                  "/me/accounts",
+                  { access_token: accessToken },
+                  (res: any) => {
+                    if (res && res.data && res.data.length > 0) {
+                      const page = res.data[0]; // Ambil page pertama
+
+                      FB.api(
+                        `/${page.id}?fields=connected_instagram_account`,
+                        { access_token: accessToken },
+                        (igRes: any) => {
+                          if (igRes && igRes.connected_instagram_account) {
+                            const igId = igRes.connected_instagram_account.id;
+
+                            FB.api(
+                              `/${igId}?fields=username`,
+                              { access_token: accessToken },
+                              (igDetail: any) => {
+                                if (igDetail?.username) {
+                                  setIgUsername(igDetail.username);
+                                }
+                              }
+                            );
+                          }
+                        }
+                      );
+                    }
+                  }
                 );
-                setPopupType("error");
-                setShowPopup(true);
-              });
+              }
+
+              setMessage(data.message || "Akun Facebook berhasil ditautkan!");
+              setPopupType("success");
+              setShowPopup(true);
+            });
           } else {
             console.log("User membatalkan login atau tidak memberikan izin.");
             setMessage(

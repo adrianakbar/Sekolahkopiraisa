@@ -3,10 +3,13 @@ import TextEditor from "@/app/components/TextEditor";
 
 import { useRouter } from "next/navigation";
 import { FormEvent, useEffect, useState } from "react";
-import { X, Loader2 } from "lucide-react";
+import { X, Loader2, LoaderPinwheel, LoaderCircle } from "lucide-react";
 import Popup from "@/app/components/Popup";
 import Image from "next/image";
 import { fetchActivityById, updateActivity } from "@/app/utils/activity";
+import { DotLottieReact } from "@lottiefiles/dotlottie-react";
+import Skeleton from "react-loading-skeleton";
+import "react-loading-skeleton/dist/skeleton.css";
 
 interface UpdateActivityPageProps {
   params: {
@@ -18,6 +21,7 @@ export default function UpdateActivityPage({
   params,
 }: UpdateActivityPageProps) {
   const { id } = params;
+  const [isSubmitting, setIsSubmitting] = useState(false);
   const [loading, setLoading] = useState(true);
   const [title, setTitle] = useState("");
   const [content, setContent] = useState("");
@@ -62,6 +66,7 @@ export default function UpdateActivityPage({
           setCurrentMedia(additionalImages);
           setRetainedMedia(additionalImages);
         }
+
         setLoading(false);
       } catch (error) {
         console.error("Error fetching activity:", error);
@@ -92,7 +97,8 @@ export default function UpdateActivityPage({
     const files = e.target.files;
     if (files) {
       const newFiles = Array.from(files);
-      const totalImages = images.length + retainedMedia.length + newFiles.length;
+      const totalImages =
+        images.length + retainedMedia.length + newFiles.length;
 
       if (totalImages > 4) {
         setError("Maksimal 4 gambar tambahan.");
@@ -129,6 +135,7 @@ export default function UpdateActivityPage({
     e.preventDefault();
     setError(null);
     setErrors({});
+    setIsSubmitting(true);
 
     try {
       const formData = new FormData();
@@ -158,19 +165,32 @@ export default function UpdateActivityPage({
         setPopupType("error");
         setShowPopup(true);
       }
+    } finally {
+      setIsSubmitting(false);
     }
   };
 
   if (loading) {
     return (
-      <div className="flex justify-center items-center h-64">
-        <Loader2 className="animate-spin text-primary" size={48} />
+      <div className="max-w-7xl mx-auto p-6 bg-tertiary rounded-xl shadow-lg">
+        <Skeleton height={32} width={200} className="mb-4" />
+        <div className="flex flex-col md:flex-row gap-6">
+          <div className="w-full md:w-2/3">
+            <Skeleton height={300} className="mb-6" />
+          </div>
+          <div className="w-full md:w-1/3 space-y-6">
+            <Skeleton height={48} />
+            <Skeleton height={160} />
+            <Skeleton height={220} />
+            <Skeleton height={40} />
+          </div>
+        </div>
       </div>
     );
   }
 
   return (
-    <div className="max-w-7xl mx-auto p-6 bg-white rounded-xl shadow-lg">
+    <div className="max-w-7xl mx-auto p-6 bg-tertiary rounded-xl shadow-lg">
       {showPopup && (
         <Popup
           message={message}
@@ -184,7 +204,7 @@ export default function UpdateActivityPage({
       <form onSubmit={handleSubmit} className="flex flex-col md:flex-row gap-6">
         {/* Konten Berita */}
         <div className="w-full md:w-2/3">
-          <div className="mb-4">
+          <div className="">
             <label className="block mb-1 text-sm font-medium">
               Konten Berita
             </label>
@@ -233,7 +253,7 @@ export default function UpdateActivityPage({
             <label className="block mb-1 text-sm font-medium">
               Sampul Gambar
             </label>
-            <div className="border rounded-xl p-3 bg-gray-50">
+            <div className="border rounded-xl p-3 border-gray-300">
               {thumbnailPreview ? (
                 <div className="relative mb-3">
                   <img
@@ -296,7 +316,7 @@ export default function UpdateActivityPage({
             <label className="block mb-1 text-sm font-medium">
               Gambar Tambahan (maks 4)
             </label>
-            <div className="border rounded-xl p-4 bg-gray-50">
+            <div className="border rounded-xl p-4 border-gray-300">
               {/* Current Media Images */}
               {currentMedia.length > 0 && (
                 <div className="grid grid-cols-2 gap-2 mb-3">
@@ -382,9 +402,17 @@ export default function UpdateActivityPage({
           {/* Tombol Submit */}
           <button
             type="submit"
-            className="cursor-pointer w-full bg-primary text-white py-2 px-3 text-sm font-medium rounded-xl hover:-translate-y-1 duration-150 ease-in"
+            disabled={isSubmitting}
+            className="cursor-pointer w-full bg-primary text-white py-2 px-3 text-sm font-medium rounded-xl hover:-translate-y-1 duration-150 ease-in flex justify-center items-center gap-2 disabled:opacity-50"
           >
-            Perbarui Berita
+            {isSubmitting ? (
+              <>
+                <LoaderCircle className="animate-spin w-4 h-4" />
+                Memproses...
+              </>
+            ) : (
+              "Perbarui Berita"
+            )}
           </button>
         </div>
       </form>

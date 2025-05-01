@@ -19,7 +19,7 @@ export default function ProductCard({
 }: ProductCardProps) {
   return (
     <div className="cursor-pointer rounded-xl overflow-hidden shadow-lg border border-gray-300 p-3 flex flex-col justify-between bg-white">
-      <div className="relative w-full h-70">
+      <div className="relative w-full h-50">
         <Image
           src={image}
           alt={title}
@@ -28,16 +28,16 @@ export default function ProductCard({
           sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
         />
       </div>
-      <div className="mt-3 flex flex-col justify-between flex-grow">
+      <div className="mt-3 flex flex-col justify-between flex-grow text-sm">
         <div>
-          <h2 className="text-sm font-bold text-black leading-snug">{title}</h2>
-          <p className="text-sm font-semibold text-amber-950 mt-1">{price}</p>
+          <h2 className=" font-medium text-black leading-snug">{title}</h2>
+          <p className=" font-medium text-amber-950 mt-1">{price}</p>
         </div>
         <div className="flex justify-end md:items-center space-x-2 mt-3 md:mt-0">
           {/* Edit */}
           <button
             onClick={() => onEdit?.()}
-            className="cursor-pointer p-2 md:p-3 text-white rounded-xl bg-blue-500 hover:-translate-y-1 duration-150 ease-in"
+            className="cursor-pointer p-2 text-white rounded-xl bg-blue-500 hover:-translate-y-1 duration-150 ease-in"
             title="Edit"
           >
             <SquarePen size={18} />
@@ -45,7 +45,7 @@ export default function ProductCard({
           {/* Delete */}
           <button
             onClick={() => onDelete?.()}
-            className="cursor-pointer p-2 md:p-3 text-white rounded-xl bg-red-500 hover:-translate-y-1 duration-150 ease-in"
+            className="cursor-pointer p-2 text-white rounded-xl bg-red-500 hover:-translate-y-1 duration-150 ease-in"
             title="Hapus"
           >
             <Trash size={18} />

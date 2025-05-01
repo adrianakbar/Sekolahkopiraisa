@@ -2,12 +2,13 @@
 
 import Image from "next/image";
 import ProductCard from "./components/ProductCarousel";
-import ActivityCard from "./components/ActivityCarousel";
 import Footer from "./components/Footer";
 import ImageAboutus from "./components/ImageAboutus";
 import { useEffect, useState } from "react";
 import { fetchAllActivity } from "./utils/activity";
 import Link from "next/link";
+import { useRouter } from "next/navigation";
+import ActivityCarousel from "./components/ActivityCarousel";
 
 interface ActivityItemApi {
   id: number;
@@ -15,20 +16,29 @@ interface ActivityItemApi {
   image: string;
 }
 
+
+
 export default function Home() {
   const [activities, setActivities] = useState<ActivityItemApi[]>([]);
+
+  const router = useRouter();
+
+const handleActivityClick = (id: number) => {
+  router.push(`/activity/${id}`);
+};
 
   useEffect(() => {
     const getActivities = async () => {
       try {
         const response = await fetchAllActivity();
         const rawData = response.data;
-        
+
         // Sort by created_at date in descending order (newest first)
-        const sortedData = [...rawData].sort((a, b) => 
-          new Date(b.created_at).getTime() - new Date(a.created_at).getTime()
+        const sortedData = [...rawData].sort(
+          (a, b) =>
+            new Date(b.created_at).getTime() - new Date(a.created_at).getTime()
         );
-        
+
         // Map and filter, then take only the first 5 items
         const filtered: ActivityItemApi[] = sortedData
           .map((item: any) => {
@@ -36,9 +46,9 @@ export default function Home() {
             const imageMedia = item.newsMedia?.find((media: any) =>
               media.media_type?.startsWith("image/")
             );
-            
+
             if (!imageMedia) return null;
-            
+
             return {
               id: item.id,
               title: item.title,
@@ -46,14 +56,14 @@ export default function Home() {
             };
           })
           .filter((item): item is ActivityItemApi => item !== null) // buang null
-          .slice(0, 5);    // batasi 5 data
-          
+          .slice(0, 5); // batasi 5 data
+
         setActivities(filtered);
       } catch (error) {
         console.error("Failed to fetch activities:", error);
       }
     };
-    
+
     getActivities();
   }, []);
 
@@ -131,9 +141,9 @@ export default function Home() {
               Bondowoso.
             </p>
             <Link href="/about">
-            <button className="mt-6 px-4 md:px-6 py-2 md:py-3 bg-[#C19A6B] text-white font-semibold rounded-xl hover:-translate-y-1 duration-150 ease-in">
-              Lihat Selengkapnya
-            </button>
+              <button className="mt-6 px-4 md:px-6 py-2 md:py-3 bg-[#C19A6B] text-white font-semibold rounded-xl hover:-translate-y-1 duration-150 ease-in">
+                Lihat Selengkapnya
+              </button>
             </Link>
           </div>
         </div>
@@ -238,7 +248,7 @@ export default function Home() {
 
           {/* Auto-Slide Aktivitas */}
           <div className="mt-8 md:mt-10">
-            <ActivityCard activityItems={activities} />
+            <ActivityCarousel activityItems={activities} onView={handleActivityClick} />
           </div>
         </div>
       </section>

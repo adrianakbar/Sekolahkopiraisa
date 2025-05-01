@@ -3,11 +3,13 @@ import TextEditor from "@/app/components/TextEditor";
 import { createActivity } from "@/app/utils/activity";
 import { useRouter } from "next/navigation";
 import { FormEvent, useState } from "react";
-import { X } from "lucide-react";
+import { LoaderCircle, X } from "lucide-react";
 import Popup from "@/app/components/Popup";
 import Image from "next/image";
+import { DotLottieReact } from '@lottiefiles/dotlottie-react';
 
 export default function CreateActivityPage() {
+  const [isSubmitting, setIsSubmitting] = useState(false);
   const [postToFacebook, setPostToFacebook] = useState(Boolean(false));
   const [postToInstagram, setPostToInstagram] = useState(Boolean(false));
   const [title, setTitle] = useState("");
@@ -72,6 +74,7 @@ export default function CreateActivityPage() {
     e.preventDefault();
     setError(null);
     setErrors({});
+    setIsSubmitting(true);
 
     try {
       const formData = new FormData();
@@ -99,11 +102,13 @@ export default function CreateActivityPage() {
         setPopupType("error");
         setShowPopup(true);
       }
+    } finally {
+      setIsSubmitting(false);
     }
   };
 
   return (
-    <div className="max-w-7xl mx-auto p-6 bg-white rounded-xl shadow-lg">
+    <div className="max-w-7xl mx-auto p-6 bg-tertiary rounded-xl shadow-lg">
       {showPopup && (
         <Popup
           message={message}
@@ -117,7 +122,7 @@ export default function CreateActivityPage() {
       <form onSubmit={handleSubmit} className="flex flex-col md:flex-row gap-6">
         {/* Konten Berita */}
         <div className="w-full md:w-2/3">
-          <div className="mb-4">
+          <div className="">
             <label className="block mb-1 text-sm font-medium">
               Konten Berita
             </label>
@@ -137,10 +142,10 @@ export default function CreateActivityPage() {
         </div>
 
         {/* Form Tambahan */}
-        <div className="w-full md:w-1/3">
+        <div className="w-full md:w-1/3 text-sm">
           {/* Judul */}
           <div className="mb-6">
-            <label className="block mb-1 text-sm font-medium">
+            <label className="block mb-1 font-medium">
               Judul Berita
             </label>
             <input
@@ -151,7 +156,7 @@ export default function CreateActivityPage() {
                 setTitle(e.target.value);
                 setErrors((prev) => ({ ...prev, title: "" }));
               }}
-              className="w-full p-2 border border-gray-300 rounded-xl"
+              className="w-full p-1.5 border border-gray-300 rounded-xl"
             />
             <p className="text-sm text-gray-500 mt-1">
               {title.length}/90 karakter
@@ -166,7 +171,7 @@ export default function CreateActivityPage() {
             <label className="block mb-1 text-sm font-medium">
               Sampul Gambar
             </label>
-            <div className="border rounded-xl p-3 bg-gray-50">
+            <div className="border rounded-xl p-3 border-gray-300">
               {thumbnailPreview ? (
                 <div className="relative mb-3">
                   <img
@@ -221,7 +226,7 @@ export default function CreateActivityPage() {
             <label className="block mb-1 text-sm font-medium">
               Gambar Tambahan (maks 4)
             </label>
-            <div className="border rounded-xl p-4 bg-gray-50">
+            <div className="border rounded-xl p-4 border-gray-300">
               {imagePreviews.length > 0 && (
                 <div className="grid grid-cols-2 gap-2 mb-3">
                   {imagePreviews.map((preview, index) => (
@@ -289,7 +294,7 @@ export default function CreateActivityPage() {
                 type="button"
                 onClick={() => setPostToFacebook(!postToFacebook)}
                 className={`w-12 h-6 flex items-center rounded-full p-1 transition-colors ${
-                  postToFacebook ? "bg-secondary" : "bg-gray-300"
+                  postToFacebook ? "bg-blue-900" : "bg-gray-300"
                 }`}
               >
                 <div
@@ -312,7 +317,7 @@ export default function CreateActivityPage() {
                 type="button"
                 onClick={() => setPostToInstagram(!postToInstagram)}
                 className={`w-12 h-6 flex items-center rounded-full p-1 transition-colors ${
-                  postToInstagram ? "bg-secondary" : "bg-gray-300"
+                  postToInstagram ? "bg-fuchsia-900" : "bg-gray-300"
                 }`}
               >
                 <div
@@ -327,9 +332,17 @@ export default function CreateActivityPage() {
           {/* Tombol Submit */}
           <button
             type="submit"
-            className="cursor-pointer w-full bg-primary text-white py-2 px-3 text-sm font-medium rounded-xl hover:-translate-y-1 duration-150 ease-in"
+            disabled={isSubmitting}
+            className="cursor-pointer w-full bg-primary text-white py-2 px-3 text-sm font-medium rounded-xl hover:-translate-y-1 duration-150 ease-in flex justify-center items-center gap-2 disabled:opacity-50"
           >
-            Unggah Berita
+            {isSubmitting ? (
+              <>
+                <LoaderCircle className="animate-spin w-4 h-4" />
+                Memproses...
+              </>
+            ) : (
+              "Unggah Berita"
+            )}
           </button>
         </div>
       </form>
