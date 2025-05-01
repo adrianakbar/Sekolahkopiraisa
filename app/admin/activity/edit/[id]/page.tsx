@@ -1,26 +1,17 @@
 "use client";
 import TextEditor from "@/app/components/TextEditor";
 
-import { useRouter } from "next/navigation";
-import { FormEvent, useEffect, useState } from "react";
+import { useParams, useRouter } from "next/navigation";
+import { FormEvent, use, useEffect, useState } from "react";
 import { X, Loader2, LoaderPinwheel, LoaderCircle } from "lucide-react";
 import Popup from "@/app/components/Popup";
-import Image from "next/image";
 import { fetchActivityById, updateActivity } from "@/app/utils/activity";
-import { DotLottieReact } from "@lottiefiles/dotlottie-react";
 import Skeleton from "react-loading-skeleton";
 import "react-loading-skeleton/dist/skeleton.css";
 
-interface UpdateActivityPageProps {
-  params: {
-    id: string;
-  };
-}
-
-export default function UpdateActivityPage({
-  params,
-}: UpdateActivityPageProps) {
-  const { id } = params;
+export default function UpdateActivityPage() {
+  const params = useParams();
+  const id = params?.id as string;
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [loading, setLoading] = useState(true);
   const [title, setTitle] = useState("");
