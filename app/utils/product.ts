@@ -13,7 +13,7 @@ export const fetchProductById = async (id: number) => {
 
 export const createProduct = async (formData: FormData) => {
     try {
-      const response = await api.post("/api/v1/news/post", formData, {
+      const response = await api.post("/api/v1/product", formData, {
         headers: {
           "Content-Type": "multipart/form-data",
         },

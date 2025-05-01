@@ -17,7 +17,7 @@ export const fetchActivityById = async (id: number | string) => {
 // POST berita baru dengan media
 export const createActivity = async (formData: FormData) => {
   try {
-    const response = await api.post("/api/v1/news/post", formData, {
+    const response = await api.post("/api/v1/news", formData, {
       headers: {
         "Content-Type": "multipart/form-data",
       },
