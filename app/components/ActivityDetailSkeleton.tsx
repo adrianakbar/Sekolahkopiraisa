@@ -3,10 +3,10 @@ import "react-loading-skeleton/dist/skeleton.css";
 
 export default function ActivityDetailSkeleton() {
   return (
-    <div className="bg-secondary pt-20 md:pt-24">
+    <div className="bg-secondary pt-20">
       <div className="max-w-7xl mx-auto px-4 grid md:grid-cols-3 gap-6">
         <div className="md:col-span-2 md:mb-10">
-          <div className="bg-white p-6 rounded-xl shadow-md space-y-4">
+          <div className="bg-tertiary p-6 rounded-xl shadow-md space-y-4">
             <Skeleton height={30} width="80%" />
             <Skeleton height={20} width="60%" />
             <Skeleton height={300} />
@@ -14,7 +14,7 @@ export default function ActivityDetailSkeleton() {
           </div>
         </div>
         <div>
-          <div className="bg-white p-6 rounded-xl shadow-md space-y-4">
+          <div className="bg-tertiary p-6 rounded-xl shadow-md space-y-4">
             <Skeleton height={24} width="40%" />
             <div className="space-y-4">
               {[...Array(3)].map((_, i) => (
