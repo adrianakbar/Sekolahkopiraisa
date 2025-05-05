@@ -5,6 +5,7 @@
   import NewsContent from "@/app/components/NewsContent";
   import LatestNews from "@/app/components/LatestNews";
   import Footer from "@/app/components/Footer";
+import ActivityDetailSkeleton from "@/app/components/ActivityDetailSkeleton";
 
   export default function ActivityDetail() {
     const router = useRouter();
@@ -47,7 +48,7 @@
       fetchData();
     }, [id]);
 
-    if (loading) return <div className="p-8">Loading...</div>;
+    if (loading) return <ActivityDetailSkeleton />;
 
     return (
       <>

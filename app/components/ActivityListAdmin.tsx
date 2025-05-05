@@ -1,30 +1,33 @@
 "use client";
 import { Eye, SquarePen, Trash } from "lucide-react";
-export interface ActivityProps {
+export interface ActivityListProps {
   id: number;
   title: string;
   content: string;
   image: string;
   time: string;
-}
-interface ActivityCardAdminProps {
-  item: ActivityProps;
   onDelete?: (id: number) => void;
   onEdit?: (id: number) => void;
   onView?: (id: number) => void;
 }
-export default function ActivityCardAdmin({
-  item,
+export default function ActivityListAdmin({
+  id,
+  title,
+  content,
+  image,
+  time,
   onDelete,
   onEdit,
   onView,
-}: ActivityCardAdminProps) {
+}: ActivityListProps) {
+  const item = { id, title, content, image, time };
+
   return (
-    <div
-      className="cursor-pointer bg-tertiary border border-gray-300 rounded-xl p-2 md:p-3 flex flex-col sm:flex-row justify-between shadow-lg"
-      
-    >
-      <div className="flex flex-col sm:flex-row" onClick={() => onView?.(item.id)}>
+    <div className="cursor-pointer bg-tertiary border border-gray-300 rounded-xl p-2 md:p-3 flex flex-col sm:flex-row justify-between shadow-lg">
+      <div
+        className="flex flex-col sm:flex-row"
+        onClick={() => onView?.(item.id)}
+      >
         <div className="sm:mr-4 flex-shrink-0 mb-3 sm:mb-0">
           <img
             src={item.image}

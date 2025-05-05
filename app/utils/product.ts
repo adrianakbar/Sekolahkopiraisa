@@ -1,6 +1,6 @@
 import api from "./api";
 
-export const fetchAllProducts = async () => {
+export const fetchAllProduct = async () => {
   const response = await api.get("/api/v1/product");
   return response.data;
 };

@@ -1,9 +1,9 @@
 "use client";
 
 import ActivityAdminSkeleton from "@/app/components/ActivityAdminSkeleton";
-import ActivityCardAdmin, {
-  ActivityProps,
-} from "@/app/components/ActivityCardAdmin";
+import ActivityListAdmin, {
+  ActivityListProps,
+} from "@/app/components/ActivityListAdmin";
 import ConfirmModal from "@/app/components/ConfirmModal";
 import Popup from "@/app/components/Popup";
 import { deleteActivity, fetchAllActivity } from "@/app/utils/activity";
@@ -18,7 +18,7 @@ export default function Activity() {
   const [showConfirmModal, setShowConfirmModal] = useState(false);
 
   const [activityToDelete, setActivityToDelete] = useState<number | null>(null);
-  const [activities, setActivities] = useState<ActivityProps[]>([]);
+  const [activities, setActivities] = useState<ActivityListProps[]>([]);
   const [loading, setLoading] = useState<boolean>(true);
   const [error, setError] = useState<string | null>(null);
   const router = useRouter();
@@ -199,9 +199,9 @@ export default function Activity() {
           <div className="text-center py-8">Tidak ada berita tersedia</div>
         ) : (
           activities.map((item) => (
-            <ActivityCardAdmin
+            <ActivityListAdmin
               key={item.id}
-              item={item}
+              {...item}
               onDelete={(id) => {
                 setActivityToDelete(id);
                 setShowConfirmModal(true);

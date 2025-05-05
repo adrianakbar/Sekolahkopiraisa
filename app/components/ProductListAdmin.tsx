@@ -1,18 +1,19 @@
 import Image from "next/image";
 import { Pencil, SquarePen, Trash, Trash2 } from "lucide-react";
 
-interface ProductListProps {
+export interface ProductListProps {
   id: number;
   image: string;
-  title: string;
+  name: string;
   price: string;
-  onEdit: () => void;
-  onDelete: () => void;
+  onEdit: (id: number) => void;
+  onDelete: (id: number) => void;
 }
 
 export default function ProductListAdmin({
+  id,
   image,
-  title,
+  name,
   price,
   onEdit,
   onDelete,
@@ -22,7 +23,7 @@ export default function ProductListAdmin({
       <div className="relative w-full h-50">
         <Image
           src={image}
-          alt={title}
+          alt={name}
           fill
           className="object-cover rounded-lg"
           sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
@@ -30,13 +31,15 @@ export default function ProductListAdmin({
       </div>
       <div className="mt-3 flex flex-col justify-between flex-grow text-sm">
         <div>
-          <h2 className=" font-medium text-black leading-snug">{title}</h2>
-          <p className=" font-medium text-amber-950 mt-1">{price}</p>
+          <h2 className=" font-medium text-black leading-snug">{name}</h2>
+          <p className="font-medium text-primary mt-1">
+            Rp {Number(price).toLocaleString("id-ID")}
+          </p>
         </div>
         <div className="flex justify-end md:items-center space-x-2 mt-3 md:mt-0">
           {/* Edit */}
           <button
-            onClick={() => onEdit?.()}
+            onClick={() => onEdit?.(id)}
             className="cursor-pointer p-2 text-white rounded-xl bg-blue-500 hover:-translate-y-1 duration-150 ease-in"
             title="Edit"
           >
@@ -44,7 +47,7 @@ export default function ProductListAdmin({
           </button>
           {/* Delete */}
           <button
-            onClick={() => onDelete?.()}
+            onClick={() => onDelete?.(id)}
             className="cursor-pointer p-2 text-white rounded-xl bg-red-500 hover:-translate-y-1 duration-150 ease-in"
             title="Hapus"
           >
