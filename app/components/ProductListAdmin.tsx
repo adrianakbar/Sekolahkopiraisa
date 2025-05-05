@@ -1,7 +1,7 @@
 import Image from "next/image";
 import { Pencil, SquarePen, Trash, Trash2 } from "lucide-react";
 
-interface ProductCardProps {
+interface ProductListProps {
   id: number;
   image: string;
   title: string;
@@ -10,13 +10,13 @@ interface ProductCardProps {
   onDelete: () => void;
 }
 
-export default function ProductCard({
+export default function ProductListAdmin({
   image,
   title,
   price,
   onEdit,
   onDelete,
-}: ProductCardProps) {
+}: ProductListProps) {
   return (
     <div className="cursor-pointer rounded-xl overflow-hidden shadow-lg border border-gray-300 p-3 flex flex-col justify-between bg-white">
       <div className="relative w-full h-50">

@@ -2,7 +2,8 @@
 
 import ConfirmModal from "@/app/components/ConfirmModal";
 import Popup from "@/app/components/Popup";
-import ProductCardAdmin from "@/app/components/ProductCardAdmin";
+import ProductListAdmin from "@/app/components/ProductListAdmin";
+
 import { deleteProduct } from "@/app/utils/product";
 import { Plus } from "lucide-react";
 import { useRouter } from "next/navigation";
@@ -60,7 +61,7 @@ export default function Product() {
 
       <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-6">
         {products.map((product, index) => (
-          <ProductCardAdmin
+          <ProductListAdmin
             key={index}
             image={product.image}
             title={product.title}

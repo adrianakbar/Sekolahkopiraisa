@@ -55,7 +55,7 @@ export default function Signup() {
       )}
 
       <div className="md:col-span-12 lg:col-span-6 flex justify-center items-center bg-background relative p-4 md:p-8 lg:p-10 order-2 md:order-1">
-        <div className="absolute -top-10 right-0 -z-0 hidden md:block">
+        <div className="absolute -top-13 right-0 -z-0 hidden md:block">
           <Image
             src="/assets/flower-top.png"
             width={300}

@@ -20,8 +20,18 @@ const formatFullDate = (dateString: string): string => {
   const date = new Date(dateString);
   const days = ["Minggu", "Senin", "Selasa", "Rabu", "Kamis", "Jumat", "Sabtu"];
   const months = [
-    "Januari", "Februari", "Maret", "April", "Mei", "Juni",
-    "Juli", "Agustus", "September", "Oktober", "November", "Desember",
+    "Januari",
+    "Februari",
+    "Maret",
+    "April",
+    "Mei",
+    "Juni",
+    "Juli",
+    "Agustus",
+    "September",
+    "Oktober",
+    "November",
+    "Desember",
   ];
 
   const dayName = days[date.getDay()];
@@ -38,7 +48,9 @@ export default function NewsContent({ activity }: NewsContentProps) {
   if (!activity) return null;
 
   const thumbnailMedia = activity.newsMedia?.find((media) => media.isThumbnail);
-  const otherMedia = activity.newsMedia?.filter((media) => media !== thumbnailMedia);
+  const otherMedia = activity.newsMedia?.filter(
+    (media) => media !== thumbnailMedia
+  );
   const images = [
     ...(thumbnailMedia ? [thumbnailMedia.media_url] : []),
     ...(otherMedia?.map((media) => media.media_url) || []),
@@ -47,24 +59,22 @@ export default function NewsContent({ activity }: NewsContentProps) {
   return (
     <div className="mb-10">
       <h1 className="text-lg font-medium mb-2">{activity.title}</h1>
-      <p className="text-gray-500 mb-6 text-sm">{formatFullDate(activity.created_at)}</p>
+      <p className="text-gray-500 mb-6 text-sm">
+        {formatFullDate(activity.created_at)}
+      </p>
 
       {images.length > 1 ? (
         <div className="relative mb-6">
           <Swiper
             modules={[Navigation]}
-            navigation={{
-              nextEl: ".custom-next",
-              prevEl: ".custom-prev",
-            }}
+            navigation={{ nextEl: ".custom-next", prevEl: ".custom-prev" }}
             spaceBetween={20}
             slidesPerView={1}
-            pagination={{ clickable: true }}
             loop
           >
             {images.map((image, index) => (
               <SwiperSlide key={index}>
-                <div className="relative w-full h-64 md:h-[400px] rounded-lg overflow-hidden">
+                <div className="relative w-full h-56 sm:h-64 md:h-[400px] rounded-lg overflow-hidden">
                   <Image
                     src={image}
                     alt={`Image ${index + 1}`}
@@ -77,22 +87,19 @@ export default function NewsContent({ activity }: NewsContentProps) {
             ))}
           </Swiper>
 
-          <button
-            className="custom-prev absolute left-4 top-1/2 -translate-y-1/2 z-10 bg-primary bg-opacity-80 hover:bg-opacity-100 transition p-2 rounded-full shadow-md"
-            aria-label="Previous slide"
-          >
-            <CircleArrowLeft className="w-6 h-6 text-white" />
+          {/* Navigasi Kiri */}
+          <button className="custom-prev absolute left-2 sm:left-4 top-1/2 -translate-y-1/2 z-10 bg-primary bg-opacity-80 hover:bg-opacity-100 transition p-1.5 sm:p-2 rounded-full shadow-md">
+            <CircleArrowLeft className="w-5 h-5 sm:w-6 sm:h-6 text-white" />
           </button>
-          <button
-            className="custom-next absolute right-4 top-1/2 -translate-y-1/2 z-10 bg-primary bg-opacity-80 hover:bg-opacity-100 transition p-2 rounded-full shadow-md"
-            aria-label="Next slide"
-          >
-            <CircleArrowRight className="w-6 h-6 text-white" />
+
+          {/* Navigasi Kanan */}
+          <button className="custom-next absolute right-2 sm:right-4 top-1/2 -translate-y-1/2 z-10 bg-primary bg-opacity-80 hover:bg-opacity-100 transition p-1.5 sm:p-2 rounded-full shadow-md">
+            <CircleArrowRight className="w-5 h-5 sm:w-6 sm:h-6 text-white" />
           </button>
         </div>
       ) : (
         images.length === 1 && (
-          <div className="relative w-full h-64 md:h-[400px] rounded-lg overflow-hidden mb-6">
+          <div className="relative w-full h-56 sm:h-64 md:h-[400px] rounded-lg overflow-hidden mb-6">
             <Image
               src={images[0]}
               alt={activity.title}
@@ -104,7 +111,7 @@ export default function NewsContent({ activity }: NewsContentProps) {
         )
       )}
 
-      <div className="prose prose-lg max-w-3xl text-justify text-sm">
+      <div className="prose prose-sm sm:prose-base md:prose-lg max-w-none md:max-w-3xl text-justify text-sm">
         <div dangerouslySetInnerHTML={{ __html: activity.content }} />
       </div>
     </div>

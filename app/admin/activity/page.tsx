@@ -156,10 +156,10 @@ export default function Activity() {
         }}
       />
 
-      <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4 mb-4 sm:mb-6">
+      <div className="flex flex-col md:flex-row items-center justify-between gap-4 mb-4 md:mb-6">
         <h1 className="text-lg font-medium text-gray-800">Daftar Berita</h1>
 
-        <div className="flex flex-col sm:flex-row items-center gap-4">
+        <div className="flex items-center gap-4">
           <button
             className="bg-amber-950 text-white px-3 py-1.5 rounded-xl flex items-center gap-1 hover:-translate-y-1 duration-150 ease-in text-sm"
             onClick={handleAddActivity}

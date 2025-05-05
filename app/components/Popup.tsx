@@ -22,7 +22,8 @@ export default function Popup({
     return () => clearTimeout(timer);
   }, [onClose, duration]);
 
-  const bgColor = type === "error" ? "bg-red-500" : "bg-green-500";
+  const bgColor = type === "error" ? "bg-gradient-to-r from-red-500 to-red-600" : "bg-gradient-to-r from-green-500 to-green-600";
+
   const Icon = type === "error" ? <TriangleAlert size={20} /> : <CheckCheck size={20} />;
 
   return (
@@ -36,11 +37,11 @@ export default function Popup({
           className={`fixed z-50 ${bgColor} text-white px-4 py-3 rounded-lg shadow-lg 
             max-w-[90vw] md:max-w-fit w-full 
             top-6 left-1/2 -translate-x-1/2 
-            sm:top-6 sm:right-6 sm:left-auto sm:translate-x-0`}
+            md:top-6 md:right-6 md:left-auto md:translate-x-0`}
         >
           <div className="flex items-center gap-3">
             <span>{Icon}</span>
-            <span className="flex-1 text-sm sm:text-base break-words">
+            <span className="flex-1 text-sm break-words">
               {message}
             </span>
             <button onClick={onClose} className="ml-2">

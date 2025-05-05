@@ -2,7 +2,7 @@ import "./globals.css";
 import LayoutWrapper from "./components/LayoutWrapper";
 
 export const metadata = {
-  title: "Sistem Informasi Manajemen Kegiatan",
+  title: "Sekolah Kopi Raisa",
   description: "Sistem informasi untuk mengelola kegiatan dan produk",
   icons: {
     icon: "/assets/logo.png",
