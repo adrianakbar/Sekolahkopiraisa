@@ -57,6 +57,7 @@ export default function Product() {
           image: item.image,
           name: item.name,
           price: item.price,
+          stock: item.inventory.stock
         }));
         setProduct(formattedData);
       } catch (err) {
@@ -97,7 +98,7 @@ export default function Product() {
       />
       <div className="flex justify-between mb-4 sm:mb-6">
         <h1 className="text-lg font-medium text-gray-800">Daftar Produk</h1>
-        <button className="bg-amber-950 text-white px-3 py-1.5 rounded-xl flex items-center gap-1 hover:-translate-y-1 duration-150 ease-in text-sm" onClick={handleAddProduct}>
+        <button className="cursor-pointer bg-amber-950 text-white px-3 py-1.5 rounded-xl flex items-center gap-1 hover:-translate-y-1 duration-150 ease-in text-sm" onClick={handleAddProduct}>
           <Plus size={20} />
           <span>Tambah Produk</span>
         </button>
@@ -111,6 +112,7 @@ export default function Product() {
             image={product.image}
             name={product.name}
             price={product.price}
+            stock={product.stock}
             onEdit={handleEditProduct}
             onDelete={(id) => {
               setProductToDelete(id);

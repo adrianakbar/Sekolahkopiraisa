@@ -1,6 +1,6 @@
 "use client";
 
-import { X } from "lucide-react";
+import { LoaderCircle, X } from "lucide-react";
 import React from "react";
 
 interface ConfirmModalProps {
@@ -9,14 +9,16 @@ interface ConfirmModalProps {
   onConfirm: () => void;
   title: string;
   description: string;
+  isSubmitting?: boolean;
 }
 
 export default function ConfirmModal({
   isOpen,
   onClose,
   onConfirm,
-    title,
-    description,
+  title,
+  description,
+  isSubmitting = false,
 }: ConfirmModalProps) {
   if (!isOpen) return null;
 
@@ -26,32 +28,33 @@ export default function ConfirmModal({
         {/* Tombol close */}
         <button
           onClick={onClose}
-          className="absolute top-4 right-4 text-2xl text-[#A99F99] hover:text-gray-800"
+          className="absolute top-4 right-4 text-[#A99F99] hover:text-gray-800"
         >
           <X />
         </button>
 
         {/* Judul */}
-        <h2 className="text-lg font-medium text-center mb-3">
-          {title}
-        </h2>
+        <h2 className="text-lg font-medium text-center mb-3">{title}</h2>
 
         {/* Deskripsi */}
-        <p className="text-center text-sm text-[#3B3B3B] mb-6">
-            {description}
-        </p>
+        <p className="text-center text-sm text-[#3B3B3B] mb-6">{description}</p>
 
         {/* Tombol aksi */}
         <div className="flex justify-center text-sm space-x-4">
           <button
             onClick={onConfirm}
-            className="bg-[#4D2C1D] hover:bg-[#3e2317] text-white font-medium py-2 px-6 rounded-xl hover:-translate-y-1 duration-150 ease-in"
+            disabled={isSubmitting}
+            className="cursor-pointer bg-primary text-white font-medium py-2 px-6 rounded-xl hover:-translate-y-1 duration-150 ease-in"
           >
-            Iya
+            {isSubmitting ? (
+              <LoaderCircle className="animate-spin w-4" />
+            ) : (
+              "Iya"
+            )}
           </button>
           <button
             onClick={onClose}
-            className="border border-[#4D2C1D] text-[#4D2C1D] font-medium py-2 px-6 rounded-xl hover:-translate-y-1 duration-150 ease-in"
+            className="cursor-pointer border border-primary text-[#4D2C1D] font-medium py-2 px-6 rounded-xl hover:-translate-y-1 duration-150 ease-in"
           >
             Batal
           </button>

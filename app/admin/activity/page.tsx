@@ -140,7 +140,7 @@ export default function Activity() {
         />
       )}
       <ConfirmModal
-        title="Hapus Berita"
+        title="Yakin Hapus Berita?"
         description="Apakah Anda yakin ingin menghapus berita ini?"
         isOpen={showConfirmModal}
         onClose={() => {

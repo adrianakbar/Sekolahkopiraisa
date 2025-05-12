@@ -116,7 +116,7 @@ export default function CreateActivityPage() {
           onClose={() => setShowPopup(false)}
         />
       )}
-      <h1 className="text-lg font-medium mb-4">Buat Berita Baru</h1>
+      <h1 className="text-lg font-medium mb-4">Tambah Kegiatan Baru</h1>
       {error && <p className="text-red-600 mb-4">{error}</p>}
 
       <form onSubmit={handleSubmit} className="flex flex-col md:flex-row gap-6">

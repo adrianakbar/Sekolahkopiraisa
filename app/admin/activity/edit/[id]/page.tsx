@@ -8,6 +8,7 @@ import Popup from "@/app/components/Popup";
 import { fetchActivityById, updateActivity } from "@/app/utils/activity";
 import Skeleton from "react-loading-skeleton";
 import "react-loading-skeleton/dist/skeleton.css";
+import ConfirmModal from "@/app/components/ConfirmModal";
 
 export default function UpdateActivityPage() {
   const params = useParams();
@@ -28,6 +29,7 @@ export default function UpdateActivityPage() {
   const [showPopup, setShowPopup] = useState(false);
   const [message, setMessage] = useState("");
   const [popupType, setPopupType] = useState<"success" | "error">("success");
+  const [showConfirmModal, setShowConfirmModal] = useState(false);
 
   const router = useRouter();
   const maxWords = 2110;
@@ -117,16 +119,11 @@ export default function UpdateActivityPage() {
     setRetainedMedia((prev) => prev.filter((mediaUrl) => mediaUrl !== url));
   };
 
-  const getWordCount = (html: string) => {
-    const text = html.replace(/<[^>]+>/g, "").trim();
-    return text.split(/\s+/).filter(Boolean).length;
-  };
-
-  const handleSubmit = async (e: FormEvent) => {
-    e.preventDefault();
+  const handleSubmit = async () => {
     setError(null);
     setErrors({});
     setIsSubmitting(true);
+    // setConfirmModalSubmitting(true);
 
     try {
       const formData = new FormData();
@@ -140,6 +137,7 @@ export default function UpdateActivityPage() {
       const response = await updateActivity(Number(id), formData);
 
       if (response && response.message) {
+ 
         setMessage(response.message);
         setPopupType("success");
         setShowPopup(true);
@@ -148,6 +146,7 @@ export default function UpdateActivityPage() {
     } catch (error: any) {
       if (error.type === "validation") {
         setErrors(error.errors);
+       
       } else {
         console.error("Error:", error);
         setMessage(
@@ -158,6 +157,7 @@ export default function UpdateActivityPage() {
       }
     } finally {
       setIsSubmitting(false);
+      setShowConfirmModal(false);
     }
   };
 
@@ -189,10 +189,20 @@ export default function UpdateActivityPage() {
           onClose={() => setShowPopup(false)}
         />
       )}
-      <h1 className="text-lg font-medium mb-4">Edit Berita</h1>
+      <ConfirmModal
+        title="Simpan Perubahan"
+        description="Apakah Anda yakin ingin mengubah berita? Pastikan informasi yang Anda masukkan sudah benar."
+        isOpen={showConfirmModal}
+        isSubmitting={isSubmitting}
+        onClose={() => {
+          setShowConfirmModal(false);
+        }}
+        onConfirm={handleSubmit}
+      />
+      <h1 className="text-lg font-medium mb-4">Edit Kegiatan</h1>
       {error && <p className="text-red-600 mb-4">{error}</p>}
 
-      <form onSubmit={handleSubmit} className="flex flex-col md:flex-row gap-6">
+      <form className="flex flex-col md:flex-row gap-6">
         {/* Konten Berita */}
         <div className="w-full md:w-2/3">
           <div className="">
@@ -252,16 +262,7 @@ export default function UpdateActivityPage() {
                     alt="Thumbnail Preview"
                     className="w-full h-40 object-cover rounded-xl"
                   />
-                  <button
-                    type="button"
-                    onClick={() => {
-                      setThumbnail(null);
-                      setThumbnailPreview(null);
-                    }}
-                    className="absolute top-2 right-2 bg-primary rounded-full p-1 shadow-lg"
-                  >
-                    <X size={16} className="text-white" />
-                  </button>
+                  
                 </div>
               ) : currentThumbnail ? (
                 <div className="relative mb-3">
@@ -392,18 +393,11 @@ export default function UpdateActivityPage() {
 
           {/* Tombol Submit */}
           <button
-            type="submit"
-            disabled={isSubmitting}
+            type="button"
             className="cursor-pointer w-full bg-primary text-white py-2 px-3 text-sm font-medium rounded-xl hover:-translate-y-1 duration-150 ease-in flex justify-center items-center gap-2 disabled:opacity-50"
+            onClick={() => setShowConfirmModal(true)}
           >
-            {isSubmitting ? (
-              <>
-                <LoaderCircle className="animate-spin w-4 h-4" />
-                Memproses...
-              </>
-            ) : (
-              "Perbarui Berita"
-            )}
+            Perbarui Berita
           </button>
         </div>
       </form>
