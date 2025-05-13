@@ -27,6 +27,8 @@ export default function Dashboard() {
       console.error("Error fetching activity count:", error);
     }
   };
+
+  
   useEffect(() => {
     fetchActivityCount();
   }, []);

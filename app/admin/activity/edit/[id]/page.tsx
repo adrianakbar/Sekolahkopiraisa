@@ -10,7 +10,7 @@ import Skeleton from "react-loading-skeleton";
 import "react-loading-skeleton/dist/skeleton.css";
 import ConfirmModal from "@/app/components/ConfirmModal";
 
-export default function UpdateActivityPage() {
+export default function EditActivityPage() {
   const params = useParams();
   const id = params?.id as string;
   const [isSubmitting, setIsSubmitting] = useState(false);

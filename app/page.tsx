@@ -1,7 +1,7 @@
 "use client";
 
 import Image from "next/image";
-import ProductCard from "./components/ProductCarousel";
+import ProductCard, { ProductCarouselProps } from "./components/ProductCarousel";
 import Footer from "./components/Footer";
 import ImageAboutus from "./components/ImageAboutus";
 import { useEffect, useState } from "react";
@@ -9,6 +9,8 @@ import { fetchAllActivity } from "./utils/activity";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import ActivityCarousel from "./components/ActivityCarousel";
+import { fetchAllProduct } from "./utils/product";
+import { get } from "http";
 
 interface ActivityItemApi {
   id: number;
@@ -16,54 +18,70 @@ interface ActivityItemApi {
   image: string;
 }
 
-
-
 export default function Home() {
   const [activities, setActivities] = useState<ActivityItemApi[]>([]);
+  const [products, setProducts] = useState<ProductCarouselProps[]>([]);
 
   const router = useRouter();
 
-const handleActivityClick = (id: number) => {
-  router.push(`/activity/${id}`);
-};
+  const handleActivityClick = (id: number) => {
+    router.push(`/activity/${id}`);
+  };
+
+  const getActivities = async () => {
+    try {
+      const response = await fetchAllActivity();
+      const rawData = response.data;
+
+      // Sort by created_at date in descending order (newest first)
+      const sortedData = [...rawData].sort(
+        (a, b) =>
+          new Date(b.created_at).getTime() - new Date(a.created_at).getTime()
+      );
+
+      // Map and filter, then take only the first 5 items
+      const filtered: ActivityItemApi[] = sortedData
+        .map((item: any) => {
+          // Ambil media yang tipe-nya image
+          const imageMedia = item.newsMedia?.find((media: any) =>
+            media.media_type?.startsWith("image/")
+          );
+
+          if (!imageMedia) return null;
+
+          return {
+            id: item.id,
+            title: item.title,
+            image: imageMedia.media_url,
+          };
+        })
+        .filter((item): item is ActivityItemApi => item !== null) // buang null
+        .slice(0, 5); // batasi 5 data
+
+      setActivities(filtered);
+    } catch (error) {
+      console.error("Failed to fetch activities:", error);
+    }
+  };
+
+  const getProducts = async () => {
+    try {
+      const response = await fetchAllProduct();
+      const rawData = response.data;
+      const formattedData = rawData.map((item: ProductCarouselProps) => ({
+        id: item.id,
+        name: item.name,
+        price: item.price,
+        image: item.image,
+      }));
+      setProducts(formattedData);
+    } catch (error) {
+      console.error("Failed to fetch products:", error);
+    }
+  };
 
   useEffect(() => {
-    const getActivities = async () => {
-      try {
-        const response = await fetchAllActivity();
-        const rawData = response.data;
-
-        // Sort by created_at date in descending order (newest first)
-        const sortedData = [...rawData].sort(
-          (a, b) =>
-            new Date(b.created_at).getTime() - new Date(a.created_at).getTime()
-        );
-
-        // Map and filter, then take only the first 5 items
-        const filtered: ActivityItemApi[] = sortedData
-          .map((item: any) => {
-            // Ambil media yang tipe-nya image
-            const imageMedia = item.newsMedia?.find((media: any) =>
-              media.media_type?.startsWith("image/")
-            );
-
-            if (!imageMedia) return null;
-
-            return {
-              id: item.id,
-              title: item.title,
-              image: imageMedia.media_url,
-            };
-          })
-          .filter((item): item is ActivityItemApi => item !== null) // buang null
-          .slice(0, 5); // batasi 5 data
-
-        setActivities(filtered);
-      } catch (error) {
-        console.error("Failed to fetch activities:", error);
-      }
-    };
-
+    getProducts();
     getActivities();
   }, []);
 
@@ -186,50 +204,7 @@ const handleActivityClick = (id: number) => {
           {/* Auto-Slide Produk */}
           <div className="mt-8 md:mt-10">
             <ProductCard
-              productItems={[
-                {
-                  id: 1,
-                  name: "KOPI RAISA - ARUTALA KOPI ROBUSTA GAYO",
-                  price: "Rp. 57,000",
-                  image: "/assets/product.png",
-                },
-                {
-                  id: 2,
-                  name: "KOPI RAISA - ARUTALA KOPI ROBUSTA GAYO",
-                  price: "Rp. 57,000",
-                  image: "/assets/product.png",
-                },
-                {
-                  id: 3,
-                  name: "KOPI RAISA - ARUTALA KOPI ROBUSTA GAYO",
-                  price: "Rp. 57,000",
-                  image: "/assets/product.png",
-                },
-                {
-                  id: 4,
-                  name: "KOPI RAISA - ARUTALA KOPI ROBUSTA GAYO",
-                  price: "Rp. 57,000",
-                  image: "/assets/product.png",
-                },
-                {
-                  id: 5,
-                  name: "KOPI RAISA - ARUTALA KOPI ROBUSTA GAYO",
-                  price: "Rp. 57,000",
-                  image: "/assets/product.png",
-                },
-                {
-                  id: 6,
-                  name: "KOPI RAISA - ARUTALA KOPI ROBUSTA GAYO",
-                  price: "Rp. 57,000",
-                  image: "/assets/product.png",
-                },
-                {
-                  id: 7,
-                  name: "KOPI RAISA - ARUTALA KOPI ROBUSTA GAYO",
-                  price: "Rp. 57,000",
-                  image: "/assets/product.png",
-                },
-              ]}
+              productItems={products}
             />
           </div>
         </div>
@@ -248,7 +223,10 @@ const handleActivityClick = (id: number) => {
 
           {/* Auto-Slide Aktivitas */}
           <div className="mt-8 md:mt-10">
-            <ActivityCarousel activityItems={activities} onView={handleActivityClick} />
+            <ActivityCarousel
+              activityItems={activities}
+              onView={handleActivityClick}
+            />
           </div>
         </div>
       </section>

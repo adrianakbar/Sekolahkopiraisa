@@ -7,7 +7,7 @@ import "swiper/css";
 import "swiper/css/navigation";
 import "swiper/css/pagination";
 
-interface ProductCarouselProps {
+export interface ProductCarouselProps {
   id: number;
   name: string;
   price: string;
@@ -42,27 +42,24 @@ export default function ProductCarouselCard({
     >
       {productItems.map((product) => (
         <SwiperSlide key={product.id} className="h-auto">
-          <div className="bg-[#F5EDE4] rounded-xl shadow-md overflow-hidden h-full flex flex-col">
+          <div className="bg-secondary rounded-xl shadow-md overflow-hidden h-full flex flex-col">
             {/* Gambar Produk */}
-            <div className="relative aspect-square w-full">
-              <Image
+              <img
                 src={product.image}
                 alt={product.name}
-                fill
-                className="object-cover"
-                sizes="(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 33vw"
+                className="h-70 object-cover"
               />
-            </div>
+        
             {/* Informasi Produk */}
             <div className="p-4 flex flex-col flex-grow text-sm">
               <h3 className="text-gray-900 line-clamp-2 font-medium mb-1">{product.name}</h3>
-              <p className="text-gray-700 font-medium mt-auto mb-3">{product.price}</p>
+              <p className="text-gray-700 font-medium mt-auto mb-3">Rp {Number(product.price).toLocaleString("id-ID")}</p>
               {/* Tombol Beli */}
               <div className="flex gap-2 justify-between mt-auto">
-                <button className="w-full py-2 bg-[#613D2B] text-white font-medium rounded-xl hover:-translate-y-1 duration-150 ease-in">
+                <button className="w-full py-2 bg-primary text-white font-medium rounded-xl hover:-translate-y-1 duration-150 ease-in">
                   Beli Sekarang
                 </button>
-                <button className="min-w-[44px] py-2 px-2 bg-[#613D2B] text-white font-medium rounded-xl hover:-translate-y-1 duration-150 ease-in flex items-center justify-center">
+                <button className="min-w-[44px] py-2 px-2 bg-primary text-white font-medium rounded-xl hover:-translate-y-1 duration-150 ease-in flex items-center justify-center">
                   <ShoppingCart size={20} />
                 </button>
               </div>

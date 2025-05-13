@@ -44,7 +44,7 @@ export default function ConfirmModal({
           <button
             onClick={onConfirm}
             disabled={isSubmitting}
-            className="cursor-pointer bg-primary text-white font-medium py-2 px-6 rounded-xl hover:-translate-y-1 duration-150 ease-in"
+            className="cursor-pointer bg-primary text-white font-medium py-2 px-6 rounded-xl hover:-translate-y-1 duration-150 ease-in disabled:opacity-50"
           >
             {isSubmitting ? (
               <LoaderCircle className="animate-spin w-4" />

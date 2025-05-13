@@ -1,4 +1,3 @@
-import Image from "next/image";
 import { Pencil, SquarePen, Trash } from "lucide-react";
 
 export interface ProductListProps {
@@ -24,31 +23,24 @@ export default function ProductListAdmin({
     <div className="cursor-pointer rounded-xl overflow-hidden shadow-lg border border-gray-300 p-3 flex flex-col justify-between bg-white relative">
       {/* Availability Badge */}
       <div className="absolute top-3 left-3 z-10">
-        <span className={`px-2 py-1 rounded-full text-xs ${
-          stock > 0 
-            ? "bg-green-200 text-green-800" 
-            : "bg-red-200 text-red-800"
-        }`}>
+        <span
+          className={`px-2 py-1 rounded-full text-xs ${
+            stock > 0
+              ? "bg-green-200 text-green-800"
+              : "bg-red-200 text-red-800"
+          }`}
+        >
           {stock > 0 ? "Tersedia" : "Habis"}
         </span>
       </div>
 
-      <div className="relative w-full h-50">
-        <Image
-          src={image}
-          alt={name}
-          fill
-          className="object-cover rounded-lg"
-          sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
-        />
-      </div>
+      <img src={image} alt={name} className="h-50 object-cover rounded-lg" />
+
       <div className="mt-3 flex flex-col justify-between flex-grow text-sm">
         <div>
           <div className="flex justify-between items-center">
             <h2 className="font-medium text-black leading-snug">{name}</h2>
-            <p className="text-gray-500">
-              Stok: {stock}
-            </p>
+            <p className="text-gray-500">Stok: {stock}</p>
           </div>
           <p className="font-medium text-primary mt-1">
             Rp {Number(price).toLocaleString("id-ID")}
