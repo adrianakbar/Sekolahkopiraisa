@@ -44,7 +44,7 @@ export default function Popup({
             <span className="flex-1 text-sm break-words">
               {message}
             </span>
-            <button onClick={onClose} className="ml-2">
+            <button onClick={onClose} className="ml-2 cursor-pointer">
               <X size={20} />
             </button>
           </div>

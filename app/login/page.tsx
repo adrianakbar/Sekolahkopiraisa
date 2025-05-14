@@ -1,8 +1,7 @@
 "use client";
 
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import Link from "next/link";
-import Image from "next/image";
 import { ChevronLeft, Eye, EyeOff, X } from "lucide-react";
 import {
   loginUser,
@@ -52,7 +51,16 @@ export default function Login() {
     }
   };
   
-  
+  useEffect(() => {
+      const popupData = sessionStorage.getItem("popup");
+      if (popupData) {
+        const { message, type } = JSON.parse(popupData);
+        setMessage(message);
+        setPopupType(type);
+        setShowPopup(true);
+        sessionStorage.removeItem("popup");
+      }
+    }, []);
   
 
   const handleForgotPasswordSubmit = async (e: React.FormEvent) => {
@@ -145,21 +153,17 @@ export default function Login() {
       <div className="md:col-span-12 lg:col-span-6 flex justify-center items-center bg-background relative p-4 md:p-8 lg:p-10 order-2 md:order-1">
         {/* Background decoration */}
         <div className="absolute -top-13 right-0 -z-0 hidden md:block">
-          <Image
+          <img
             src="/assets/flower-top.png"
-            width={300}
-            height={300}
             alt="Flower Top"
-            className="w-20 sm:w-24 md:w-100"
+            className="w-20 sm:w-24 md:w-90"
           />
         </div>
         <div className="absolute bottom-0 left-0 -z-0 hidden md:block">
-          <Image
+          <img
             src="/assets/flower-bottom.png"
-            width={300}
-            height={300}
             alt="Flower Bottom"
-            className="w-20 sm:w-24 md:w-90"
+            className="w-20 sm:w-24 md:w-80"
           />
         </div>
 
@@ -241,7 +245,7 @@ export default function Login() {
             className="cursor-pointer w-full p-1.5 bg-gray-300 rounded-xl border-gray-400 border hover:-translate-y-1 duration-150 ease-in flex justify-center items-center gap-2 text-sm"
             onClick={loginWithGoogle}
           >
-            <Image
+            <img
               src="/assets/google-logo.png"
               alt="Google Icon"
               width={19}

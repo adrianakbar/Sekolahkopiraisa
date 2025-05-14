@@ -2,7 +2,6 @@
 
 import { useState } from "react";
 import Link from "next/link";
-import Image from "next/image";
 import { loginWithGoogle, registerUser } from "../utils/auth";
 import { ChevronLeft, Eye, EyeOff } from "lucide-react";
 import { useRouter } from "next/navigation";
@@ -31,8 +30,20 @@ export default function Signup() {
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     try {
-      await registerUser(form);
-      router.push("/login");
+      const response = await registerUser(form);
+      if (response && response.message) {
+        // Simpan ke sessionStorage
+        sessionStorage.setItem(
+          "popup",
+          JSON.stringify({
+            message: response.message,
+            type: "success",
+          })
+        );
+
+        // Langsung redirect tanpa delay
+        router.push("/login");
+      }
     } catch (error: any) {
       if (error.type === "validation") {
         setErrors(error.errors); // munculkan pesan error di bawah input
@@ -56,21 +67,17 @@ export default function Signup() {
 
       <div className="md:col-span-12 lg:col-span-6 flex justify-center items-center bg-background relative p-4 md:p-8 lg:p-10 order-2 md:order-1">
         <div className="absolute -top-13 right-0 -z-0 hidden md:block">
-          <Image
+          <img
             src="/assets/flower-top.png"
-            width={300}
-            height={300}
             alt="Flower Top"
-            className="w-20 sm:w-24 md:w-100"
+            className="w-20 sm:w-24 md:w-90"
           />
         </div>
         <div className="absolute bottom-0 left-0 -z-0 hidden md:block">
-          <Image
+          <img
             src="/assets/flower-bottom.png"
-            width={350}
-            height={300}
             alt="Flower Bottom"
-            className="w-20 sm:w-24 md:w-90"
+            className="w-20 sm:w-24 md:w-80"
           />
         </div>
 
@@ -179,7 +186,7 @@ export default function Signup() {
             className="cursor-pointer w-full p-1.5 bg-gray-300 rounded-xl border-gray-400 border hover:-translate-y-1 duration-150 ease-in flex justify-center items-center gap-2"
             onClick={loginWithGoogle}
           >
-            <Image
+            <img
               src="/assets/google-logo.png"
               alt="Google Icon"
               width={19}

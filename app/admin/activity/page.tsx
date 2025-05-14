@@ -90,6 +90,17 @@ export default function Activity() {
   }, [sortOption]);
 
   useEffect(() => {
+    const popupData = sessionStorage.getItem("popup");
+    if (popupData) {
+      const { message, type } = JSON.parse(popupData);
+      setMessage(message);
+      setPopupType(type);
+      setShowPopup(true);
+      sessionStorage.removeItem("popup");
+    }
+  }, []);
+
+  useEffect(() => {
     const getActivities = async () => {
       try {
         setLoading(true);
@@ -140,8 +151,8 @@ export default function Activity() {
         />
       )}
       <ConfirmModal
-        title="Yakin Hapus Berita?"
-        description="Apakah Anda yakin ingin menghapus berita ini?"
+        title="Yakin Hapus Kegiatan?"
+        description="Tindakan ini tidak dapat dibatalkan. Kegiatan yang dihapus akan secara permanen terhapus dari sistem."
         isOpen={showConfirmModal}
         onClose={() => {
           setShowConfirmModal(false);

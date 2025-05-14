@@ -47,6 +47,18 @@ export default function Product() {
   };
 
   useEffect(() => {
+    const popupData = sessionStorage.getItem("popup");
+    if (popupData) {
+      const { message, type } = JSON.parse(popupData);
+      setMessage(message);
+      setPopupType(type);
+      setShowPopup(true);
+      sessionStorage.removeItem("popup");
+    }
+  }, []);
+
+  
+  useEffect(() => {
     const getProducts = async () => {
       try {
         setLoading(true);
@@ -81,8 +93,8 @@ export default function Product() {
         />
       )}
       <ConfirmModal
-        title="Hapus Berita"
-        description="Apakah Anda yakin ingin menghapus berita ini?"
+        title="Yakin Menghapus Produk?"
+        description="Tindakan ini tidak dapat dibatalkan. Produk yang dihapus akan secara permanen terhapus dari sistem."
         isOpen={showConfirmModal}
         onClose={() => {
           setShowConfirmModal(false);

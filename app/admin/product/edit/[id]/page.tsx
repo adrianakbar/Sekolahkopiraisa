@@ -1,23 +1,30 @@
 "use client";
 
 import { useState, useRef, ChangeEvent, useEffect } from "react";
-import Image from "next/image";
 import { LoaderCircle } from "lucide-react";
 import { fetchAllPartner } from "@/app/utils/partner";
-import { createProduct } from "@/app/utils/product";
-import { useRouter } from "next/navigation";
+import {
+  createProduct,
+  fetchProductById,
+  updateProduct,
+} from "@/app/utils/product";
+import { useParams, useRouter } from "next/navigation";
 import Popup from "@/app/components/Popup";
 import ProductListAdmin from "@/app/components/ProductListAdmin";
+import ConfirmModal from "@/app/components/ConfirmModal";
 
-export default function CreateProductPage() {
+export default function EditProductPage() {
   // State for product data
   const [product, setProduct] = useState({
     name: "",
-    partnerName: "",
+    partnerId: "",
     description: "",
     price: "",
     stock: "",
   });
+
+  const params = useParams();
+  const productId = params?.id;
 
   const [errors, setErrors] = useState<Record<string, string>>({});
 
@@ -39,6 +46,7 @@ export default function CreateProductPage() {
   const [message, setMessage] = useState("");
   const [popupType, setPopupType] = useState<"success" | "error">("success");
   const router = useRouter();
+  const [showConfirmModal, setShowConfirmModal] = useState(false);
 
   // Handle image upload
   const handleImageUpload = (e: ChangeEvent<HTMLInputElement>) => {
@@ -79,28 +87,37 @@ export default function CreateProductPage() {
   };
 
   // Handle form submission
-  const handleSubmit = async (e: React.FormEvent) => {
-    e.preventDefault();
+  const handleSubmit = async () => {
     setIsSubmitting(true);
     setSubmitError("");
 
     try {
       const formData = new FormData();
       formData.append("name", product.name);
-      formData.append("partner_id", product.partnerName);
+      formData.append("partner_id", product.partnerId);
       formData.append("description", product.description);
       formData.append("price", product.price.toString());
       formData.append("stock", product.stock.toString());
       if (imageFile) {
         formData.append("productFile", imageFile); // ⬅️ Ini ditambahkan
       }
-      const response = await createProduct(formData);
+      const response = await updateProduct(
+        Number(productId), // Convert productId to number
+        formData
+      );
 
       if (response && response.message) {
-        setMessage(response.message);
-        setPopupType("success");
-        setShowPopup(true);
-        setTimeout(() => router.push("/admin/product"), 1500);
+        // Simpan ke sessionStorage
+        sessionStorage.setItem(
+          "popup",
+          JSON.stringify({
+            message: response.message,
+            type: "success",
+          })
+        );
+
+        // Langsung redirect tanpa delay
+        router.push("/admin/product");
       }
     } catch (error: any) {
       if (error.type === "validation") {
@@ -137,6 +154,29 @@ export default function CreateProductPage() {
     loadPartners();
   }, []);
 
+  useEffect(() => {
+    const loadProduct = async () => {
+      if (!productId) return;
+      try {
+        const response = await fetchProductById(Number(productId)); // Convert productId to number
+        const product = response.data;
+        setProduct({
+          name: product.name || "",
+          partnerId: product.partner_id?.toString() || "", // ✅ ganti ke partner_id
+          description: product.description || "",
+          price: product.price?.toString() || "",
+          stock: product.inventory?.stock?.toString() || "",
+        });
+
+        setImagePreview(product.image); // asumsi field image_url dari backend
+      } catch (error) {
+        console.error("Gagal ambil produk:", error);
+      }
+    };
+
+    loadProduct();
+  }, [productId]);
+
   return (
     <div className="container mx-auto bg-tertiary p-6 rounded-lg shadow-md">
       {showPopup && (
@@ -146,6 +186,16 @@ export default function CreateProductPage() {
           onClose={() => setShowPopup(false)}
         />
       )}
+      <ConfirmModal
+        title="Simpan Perubahan"
+        description="Apakah Anda yakin ingin mengubah produk? Pastikan informasi yang Anda masukkan sudah benar."
+        isOpen={showConfirmModal}
+        isSubmitting={isSubmitting}
+        onClose={() => {
+          setShowConfirmModal(false);
+        }}
+        onConfirm={handleSubmit}
+      />
       <h1 className="text-lg font-medium mb-4">Tambah Produk Baru</h1>
 
       <div className="flex flex-col md:flex-row gap-8">
@@ -213,8 +263,8 @@ export default function CreateProductPage() {
                 </div>
               ) : (
                 <select
-                  name="partnerName"
-                  value={product.partnerName}
+                  name="partnerId"
+                  value={product.partnerId}
                   onChange={handleInputChange}
                   className="w-full p-1.5 border border-gray-300 rounded-xl"
                 >
@@ -279,18 +329,11 @@ export default function CreateProductPage() {
             </div>
 
             <button
-              type="submit"
-              disabled={isSubmitting}
+              type="button"
+              onClick={() => setShowConfirmModal(true)}
               className="cursor-pointer w-full bg-primary text-white py-2 px-3 text-sm font-medium rounded-xl hover:-translate-y-1 duration-150 ease-in flex justify-center items-center gap-2 disabled:opacity-50"
             >
-              {isSubmitting ? (
-                <>
-                  <LoaderCircle className="animate-spin w-4 h-4" />
-                  Memproses...
-                </>
-              ) : (
-                "Simpan Produk"
-              )}
+              Simpan Produk
             </button>
           </div>
         </form>
@@ -300,7 +343,7 @@ export default function CreateProductPage() {
           <h2 className="text-lg font-medium mb-4">Pratinjau Produk</h2>
           <ProductListAdmin
             id={0} // ID sementara, karena produk belum dibuat
-            image={imagePreview || "/assets/noimage.png"} // ganti dengan URL gambar placeholder lokal jika belum ada gambar
+            image={imagePreview || "/assets/activity.png"} // ganti dengan URL gambar placeholder lokal jika belum ada gambar
             name={product.name || "Nama Produk"}
             price={product.price?.toString() || "0"}
             stock={Number(product.stock) || 0}

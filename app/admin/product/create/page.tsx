@@ -97,10 +97,17 @@ export default function CreateProductPage() {
       const response = await createProduct(formData);
 
       if (response && response.message) {
-        setMessage(response.message);
-        setPopupType("success");
-        setShowPopup(true);
-        setTimeout(() => router.push("/admin/product"), 1500);
+        // Simpan ke sessionStorage
+        sessionStorage.setItem(
+          "popup",
+          JSON.stringify({
+            message: response.message,
+            type: "success",
+          })
+        );
+
+        // Langsung redirect tanpa delay
+        router.push("/admin/activity");
       }
     } catch (error: any) {
       if (error.type === "validation") {
