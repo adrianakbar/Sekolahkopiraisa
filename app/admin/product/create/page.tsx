@@ -107,7 +107,7 @@ export default function CreateProductPage() {
         );
 
         // Langsung redirect tanpa delay
-        router.push("/admin/activity");
+        router.push("/admin/product");
       }
     } catch (error: any) {
       if (error.type === "validation") {

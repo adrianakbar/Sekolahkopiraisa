@@ -239,12 +239,12 @@ export default function Navbar({ navbarItems }: { navbarItems: NavbarItem[] }) {
         ) : (
           <>
             <Link href="/login">
-              <button className="bg-primary px-4 py-2 rounded-xl text-white hover:-translate-y-1 duration-150 ease-in">
+              <button className="bg-primary px-3 py-1.5 rounded-xl text-white hover:-translate-y-1 duration-150 ease-in">
                 Masuk
               </button>
             </Link>
             <Link href="/signup">
-              <button className="text-primary px-4 py-2 rounded-xl border border-primary hover:-translate-y-1 duration-150 ease-in">
+              <button className="text-primary px-3 py-1.5 rounded-xl border border-primary hover:-translate-y-1 duration-150 ease-in">
                 Daftar
               </button>
             </Link>
