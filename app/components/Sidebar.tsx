@@ -153,7 +153,7 @@ export default function Sidebar({ items }: { items: SidebarItemType[] }) {
                     }
                   />
                   <LinkItem
-                    href="/produk/tambah"
+                    href="/admin/partner"
                     pathname={pathname}
                     label={
                       <span className="flex items-center gap-2">
