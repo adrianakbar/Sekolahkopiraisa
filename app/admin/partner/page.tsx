@@ -43,6 +43,17 @@ export default function Partner() {
     };
 
     useEffect(() => {
+        const popupData = sessionStorage.getItem("popup");
+        if (popupData) {
+          const { message, type } = JSON.parse(popupData);
+          setMessage(message);
+          setPopupType(type);
+          setShowPopup(true);
+          sessionStorage.removeItem("popup");
+        }
+      }, []);
+
+    useEffect(() => {
         const getPartner = async () => {
             try {
                 const response = await fetchAllPartner();

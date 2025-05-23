@@ -15,6 +15,7 @@ import {
   PlusCircle,
   Package,
   Handshake,
+  NotepadText,
 } from "lucide-react";
 import clsx from "clsx";
 import { useUserStore } from "../stores/userStore";
@@ -159,6 +160,16 @@ export default function Sidebar({ items }: { items: SidebarItemType[] }) {
                       <span className="flex items-center gap-2">
                         <Handshake size={20} />
                         Mitra
+                      </span>
+                    }
+                  />
+                  <LinkItem
+                    href="/admin/order"
+                    pathname={pathname}
+                    label={
+                      <span className="flex items-center gap-2">
+                        <NotepadText size={20} />
+                        Order
                       </span>
                     }
                   />

@@ -182,7 +182,7 @@ export default function CreatePartnerPage() {
                     <div className="flex justify-end">
                         <button
                             type="submit"
-                            // disabled={isSubmitting}
+                            disabled={isSubmitting}
                             className="cursor-pointer mt-4 bg-primary text-white py-2 px-3 text-sm font-medium rounded-xl hover:-translate-y-1 duration-150 ease-in flex justify-center items-center gap-2 disabled:opacity-50"
                         >
                             {isSubmitting ? (

@@ -125,7 +125,7 @@ export default function CreatePartnerPage() {
             )}
             <ConfirmModal
                 title="Simpan Perubahan"
-                description="Apakah Anda yakin ingin mengubah produk? Pastikan informasi yang Anda masukkan sudah benar."
+                description="Apakah Anda yakin ingin mengubah mitra? Pastikan informasi yang Anda masukkan sudah benar."
                 isOpen={showConfirmModal}
                 isSubmitting={isSubmitting}
                 onClose={() => {
