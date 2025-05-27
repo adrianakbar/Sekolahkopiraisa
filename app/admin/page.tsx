@@ -92,42 +92,9 @@ export default function Dashboard() {
       </div>
 
       <div>
-        <ProductTable
-          data={[
-            {
-              id: "1",
-              name: "Produk A",
-              category: "Kategori 1",
-              qty: 10,
-              amount: "$100",
-              status: "Canceled",
-            },
-            {
-              id: "2",
-              name: "Produk B",
-              category: "Kategori 2",
-              qty: 5,
-              amount: "$50",
-              status: "Pending",
-            },
-            {
-              id: "3",
-              name: "Produk C",
-              category: "Kategori 3",
-              qty: 20,
-              amount: "$200",
-              status: "Success",
-            },
-            {
-              id: "4",
-              name: "Produk D",
-              category: "Kategori 4",
-              qty: 15,
-              amount: "$150",
-              status: "Canceled",
-            },
-          ]}
-        />
+        {/* <ProductTable */}
+          
+        
       </div>
     </main>
   );
