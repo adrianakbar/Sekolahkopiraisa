@@ -2,9 +2,9 @@
 
 import Link from "next/link";
 import Image from "next/image";
-import { useEffect, useState } from "react";
+import { use, useEffect, useState } from "react";
 import { getUser } from "../utils/user";
-import { LogOut, Menu, X } from "lucide-react";
+import { Bell, LogOut, Menu, ShoppingCart, X } from "lucide-react";
 import { logout } from "../utils/auth";
 import { useRouter, usePathname } from "next/navigation";
 import { useUserStore } from "../stores/userStore";
@@ -13,6 +13,7 @@ import { DropdownItem } from "./DropdownItem";
 import { AnimatePresence, motion } from "framer-motion";
 import clsx from "clsx";
 import ConfirmModal from "./ConfirmModal";
+import { fetchAllCart } from "../utils/cart";
 
 interface NavbarItem {
   title: string;
@@ -35,10 +36,39 @@ export default function Navbar({ navbarItems }: { navbarItems: NavbarItem[] }) {
   const pathname = usePathname();
   const router = useRouter();
   const clearUser = useUserStore((state) => state.clearUser);
+  const [cartCount, setCartCount] = useState(0);
 
   const handleLogout = () => {
     setShowConfirmModal(true);
   };
+
+  // Fungsi untuk mengambil dan menghitung item unik di keranjang
+  const fetchCartCount = async () => {
+    try {
+      const response = await fetchAllCart();
+      const rawData = response.data;
+
+      if (rawData && rawData.length > 0 && rawData[0].cartItems) {
+        const cartItems = rawData[0].cartItems;
+        const productNames = new Set(
+          cartItems.map(
+            (item: { product: { name: string } }) => item.product.name
+          )
+        );
+        setCartCount(productNames.size);
+      } else {
+        setCartCount(0);
+      }
+    } catch (error) {
+      console.error("Gagal mengambil data keranjang:", error);
+      setCartCount(0);
+    }
+  };
+
+  useEffect(() => {
+    // Panggil fungsi untuk mendapatkan jumlah item unik di keranjang
+    fetchCartCount();
+  }, []); // Hanya panggil sekali saat komponen pertama kali dimuat
 
   useEffect(() => {
     if (isMobileMenuOpen) {
@@ -134,7 +164,20 @@ export default function Navbar({ navbarItems }: { navbarItems: NavbarItem[] }) {
       {/* Desktop Auth */}
       <div className="hidden md:flex items-center space-x-4">
         {user ? (
-          <div className="relative">
+          <div className="relative flex items-center space-x-4">
+            <button className="text-primary">
+              <Bell width={20} />
+            </button>
+
+            <Link href="/cart" className="text-primary relative">
+              <ShoppingCart width={20} />
+              {cartCount > 0 && (
+                <span className="absolute -top-2 -right-2 flex h-5 w-5 items-center justify-center rounded-full bg-red-500 text-xs font-medium text-white">
+                  {cartCount}
+                </span>
+              )}
+            </Link>
+
             <button
               onClick={toggleUserDropdown}
               className="dropdown-toggle flex items-center text-primary"
@@ -313,9 +356,7 @@ export default function Navbar({ navbarItems }: { navbarItems: NavbarItem[] }) {
 
                     return (
                       <li key={index}>
-                        <Link
-                          href={item.link}
-                        >
+                        <Link href={item.link}>
                           <div
                             className={clsx(
                               "flex items-center gap-3 px-3 py-2 rounded-xl transition-all duration-200 text-sm",

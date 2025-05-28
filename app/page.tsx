@@ -1,7 +1,7 @@
 "use client";
 
 import Image from "next/image";
-import ProductCard, { ProductCarouselProps } from "./components/ProductCarousel";
+import ProductCard,{ ProductCarouselItemProps } from "./components/ProductCarousel";
 import Footer from "./components/Footer";
 import ImageAboutus from "./components/ImageAboutus";
 import { useEffect, useState } from "react";
@@ -11,6 +11,7 @@ import { useRouter } from "next/navigation";
 import ActivityCarousel from "./components/ActivityCarousel";
 import { fetchAllProduct } from "./utils/product";
 import { get } from "http";
+import { addToCart, fetchAllCart } from "./utils/cart";
 
 interface ActivityItemApi {
   id: number;
@@ -20,7 +21,7 @@ interface ActivityItemApi {
 
 export default function Home() {
   const [activities, setActivities] = useState<ActivityItemApi[]>([]);
-  const [products, setProducts] = useState<ProductCarouselProps[]>([]);
+  const [products, setProducts] = useState<ProductCarouselItemProps[]>([]);
 
   const router = useRouter();
 
@@ -68,7 +69,7 @@ export default function Home() {
     try {
       const response = await fetchAllProduct();
       const rawData = response.data;
-      const formattedData = rawData.map((item: ProductCarouselProps) => ({
+      const formattedData = rawData.map((item: ProductCarouselItemProps) => ({
         id: item.id,
         name: item.name,
         price: item.price,
@@ -77,6 +78,19 @@ export default function Home() {
       setProducts(formattedData);
     } catch (error) {
       console.error("Failed to fetch products:", error);
+    }
+  };
+
+  const handleAddToCart = async (productId: number) => {
+    try {
+      // Panggil fungsi dari cart.ts, default quantity adalah 1
+      await addToCart(productId, 1);
+      alert('Produk berhasil ditambahkan ke keranjang!');
+      // Di sini Anda bisa memanggil fungsi untuk memperbarui angka di ikon keranjang
+      // Contoh: updateNavbarCartCount();
+    } catch (error) {
+      alert(`Gagal menambahkan produk ke keranjang. Silakan coba lagi. Product ID: ${productId}`);
+      // Error sudah di-log di dalam file service, jadi di sini cukup notifikasi
     }
   };
 
@@ -159,7 +173,7 @@ export default function Home() {
               Bondowoso.
             </p>
             <Link href="/about">
-              <button className="mt-6 px-4 md:px-6 py-2 md:py-3 bg-[#C19A6B] text-white font-semibold rounded-xl hover:-translate-y-1 duration-150 ease-in">
+              <button className="mt-6 px-2 py-2 bg-[#C19A6B] text-white text-sm font-medium rounded-xl hover:-translate-y-1 duration-150 ease-in">
                 Lihat Selengkapnya
               </button>
             </Link>
@@ -205,6 +219,7 @@ export default function Home() {
           <div className="mt-8 md:mt-10">
             <ProductCard
               productItems={products}
+              onAddToCartClick={handleAddToCart}
             />
           </div>
         </div>

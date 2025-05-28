@@ -35,7 +35,7 @@ export default function Login() {
     try {
       const user = await loginUser(form);
   
-      if (user?.admin) {
+      if (user.admin) {
         router.replace("/admin");
       } else {
         router.replace("/");
