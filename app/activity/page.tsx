@@ -43,7 +43,7 @@ const formatFullDate = (dateString: string): string => {
   return `${dayName}, ${day} ${month} ${year} ${hours}:${minutes}`;
 };
 
-export default function Activity() {
+export default function ActivityPage() {
   const [activities, setActivities] = useState<ActivityItemApi[]>([]);
   const [loading, setLoading] = useState<boolean>(true);
   const [error, setError] = useState<string | null>(null);

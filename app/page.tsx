@@ -1,7 +1,9 @@
 "use client";
 
 import Image from "next/image";
-import ProductCard,{ ProductCarouselItemProps } from "./components/ProductCarousel";
+import ProductCard, {
+  ProductCarouselItemProps,
+} from "./components/ProductCarousel";
 import Footer from "./components/Footer";
 import ImageAboutus from "./components/ImageAboutus";
 import { useEffect, useState } from "react";
@@ -12,6 +14,7 @@ import ActivityCarousel from "./components/ActivityCarousel";
 import { fetchAllProduct } from "./utils/product";
 import { get } from "http";
 import { addToCart, fetchAllCart } from "./utils/cart";
+import Popup from "./components/Popup";
 
 interface ActivityItemApi {
   id: number;
@@ -22,6 +25,9 @@ interface ActivityItemApi {
 export default function Home() {
   const [activities, setActivities] = useState<ActivityItemApi[]>([]);
   const [products, setProducts] = useState<ProductCarouselItemProps[]>([]);
+  const [showPopup, setShowPopup] = useState(false);
+  const [message, setMessage] = useState("");
+  const [popupType, setPopupType] = useState<"success" | "error">("success");
 
   const router = useRouter();
 
@@ -84,12 +90,16 @@ export default function Home() {
   const handleAddToCart = async (productId: number) => {
     try {
       // Panggil fungsi dari cart.ts, default quantity adalah 1
-      await addToCart(productId, 1);
-      alert('Produk berhasil ditambahkan ke keranjang!');
+      const response = await addToCart(productId, 1);
+      setMessage(response.message);
+      setPopupType("success");
+      setShowPopup(true);
       // Di sini Anda bisa memanggil fungsi untuk memperbarui angka di ikon keranjang
       // Contoh: updateNavbarCartCount();
     } catch (error) {
-      alert(`Gagal menambahkan produk ke keranjang. Silakan coba lagi. Product ID: ${productId}`);
+      alert(
+        `Gagal menambahkan produk ke keranjang. Silakan coba lagi. Product ID: ${productId}`
+      );
       // Error sudah di-log di dalam file service, jadi di sini cukup notifikasi
     }
   };
@@ -101,6 +111,13 @@ export default function Home() {
 
   return (
     <>
+      {showPopup && (
+        <Popup
+          message={message}
+          type={popupType}
+          onClose={() => setShowPopup(false)}
+        />
+      )}
       {/* Hero Section */}
       <section
         className="relative min-h-[500px] h-screen bg-cover bg-center"
