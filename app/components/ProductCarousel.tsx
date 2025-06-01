@@ -6,7 +6,8 @@ import "swiper/css";
 import "swiper/css/navigation";
 import "swiper/css/pagination";
 
-export interface ProductCarouselItemProps { // Mengganti nama interface agar lebih jelas
+export interface ProductCarouselItemProps {
+  // Mengganti nama interface agar lebih jelas
   id: number;
   name: string;
   price: string;
@@ -17,11 +18,13 @@ export interface ProductCarouselItemProps { // Mengganti nama interface agar leb
 export interface ProductCarouselCardProps {
   productItems: ProductCarouselItemProps[];
   onAddToCartClick: (productId: number) => void; // Prop fungsi untuk handle klik
+  onBuyNowClick: (productId: number) => void; // Optional prop untuk handle beli sekarang
 }
 
-export default function ProductCarouselCard({
+export default function ProductCarousel({
   productItems,
   onAddToCartClick, // Mengambil fungsi dari props
+  onBuyNowClick,
 }: ProductCarouselCardProps) {
   return (
     <Swiper
@@ -53,17 +56,24 @@ export default function ProductCarouselCard({
               alt={product.name}
               className="h-70 object-cover"
             />
-        
+
             {/* Informasi Produk */}
             <div className="p-3 flex flex-col flex-grow text-sm">
-              <h3 className="text-gray-900 line-clamp-2 font-medium mb-1">{product.name}</h3>
-              <p className="text-gray-700 font-medium mt-auto mb-3">Rp {Number(product.price).toLocaleString("id-ID")}</p>
+              <h3 className="text-gray-900 line-clamp-2 font-medium mb-1">
+                {product.name}
+              </h3>
+              <p className="text-gray-700 font-medium mt-auto mb-3">
+                Rp {Number(product.price).toLocaleString("id-ID")}
+              </p>
               {/* Tombol Beli */}
               <div className="flex gap-2 justify-between mt-auto">
-                <button className="w-full py-2 bg-primary text-white font-medium rounded-xl hover:-translate-y-1 duration-150 ease-in">
+                <button
+                  className="w-full py-2 bg-primary text-white font-medium rounded-xl hover:-translate-y-1 duration-150 ease-in"
+                  onClick={() => onBuyNowClick(product.id)}
+                >
                   Beli Sekarang
                 </button>
-                <button 
+                <button
                   className="min-w-[44px] py-2 px-2 bg-primary text-white font-medium rounded-xl hover:-translate-y-1 duration-150 ease-in flex items-center justify-center"
                   // Menambahkan event onClick di sini
                   onClick={() => onAddToCartClick(product.id)}

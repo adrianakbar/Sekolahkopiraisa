@@ -15,6 +15,8 @@ import { fetchAllProduct } from "./utils/product";
 import { get } from "http";
 import { addToCart, fetchAllCart } from "./utils/cart";
 import Popup from "./components/Popup";
+import ProductCarouselCard from "./components/ProductCarousel";
+import ProductCarousel from "./components/ProductCarousel";
 
 interface ActivityItemApi {
   id: number;
@@ -34,6 +36,10 @@ export default function Home() {
   const handleActivityClick = (id: number) => {
     router.push(`/activity/${id}`);
   };
+
+  const handleBuyNow = (id: number) => {
+    router.push(`/product/${id}`);
+  }
 
   const getActivities = async () => {
     try {
@@ -234,9 +240,10 @@ export default function Home() {
 
           {/* Auto-Slide Produk */}
           <div className="mt-8 md:mt-10">
-            <ProductCard
+            <ProductCarousel
               productItems={products}
               onAddToCartClick={handleAddToCart}
+              onBuyNowClick={handleBuyNow}
             />
           </div>
         </div>

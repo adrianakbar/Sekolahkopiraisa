@@ -169,7 +169,7 @@ export default function ShoppingCart(): JSX.Element {
   }
 
   return (
-    <div className="bg-white p-6 md:p-8 rounded-lg shadow-lg max-w-4xl mx-auto">
+    <div className="bg-white p-6 rounded-lg shadow-lg max-w-4xl mx-auto">
       <h2 className="text-lg font-medium text-gray-800 mb-6">
         Keranjang Belanja
       </h2>

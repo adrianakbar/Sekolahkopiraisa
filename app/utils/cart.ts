@@ -1,16 +1,39 @@
 import api from "./api";
 
-/**
- * Mengambil semua data item dari keranjang belanja pengguna.
- * @returns {Promise<any>} Data keranjang dari API.
- */
+
 export const fetchAllCart = async () => {
   try {
     const response = await api.get("/api/v1/cart");
     return response.data;
-  } catch (error) {
-    console.error("Gagal mengambil data keranjang:", error);
-    throw error;
+  } catch (error: any) {
+    if (error.response) {
+      const { data } = error.response;
+
+      if (data.errors && typeof data.errors === "object") {
+        throw {
+          type: "validation",
+          message: data.message || "Validasi gagal!",
+          errors: data.errors,
+        };
+      }
+
+      if (data.errors && typeof data.errors === "string") {
+        throw {
+          type: "general",
+          message: data.errors,
+        };
+      }
+
+      throw {
+        type: "general",
+        message: data.message || "Terjadi kesalahan!",
+      };
+    }
+
+    throw {
+      type: "network",
+      message: "Tidak dapat terhubung ke server. Coba lagi nanti.",
+    };
   }
 };
 
@@ -34,19 +57,21 @@ export const addToCart = async (productId: number, quantity: number = 1) => {
     const cartItems = cartData?.data?.[0]?.cartItems || [];
 
     // 2. Cek apakah produk sudah ada
-    const existingItem = cartItems.find((item: any) => item.product.id === productId);
+    const existingItem = cartItems.find(
+      (item: any) => item.product.id === productId
+    );
 
     if (existingItem) {
       // 3a. Jika ada, update kuantitasnya
       const newQuantity = existingItem.quantity + quantity;
       // Endpoint yang lebih spesifik untuk update item biasanya lebih baik
-      const response = await api.put(`/api/v1/cart/${existingItem.id}`, { 
-        quantity: newQuantity 
+      const response = await api.put(`/api/v1/cart/${existingItem.id}`, {
+        quantity: newQuantity,
       });
       return response.data;
     } else {
       // 3b. Jika tidak ada, buat item baru
-      const response = await api.post('/api/v1/cart', {
+      const response = await api.post("/api/v1/cart", {
         productId: productId,
         quantity: quantity,
       });
@@ -64,14 +89,14 @@ export const addToCart = async (productId: number, quantity: number = 1) => {
  * @returns {Promise<any>} Respons dari API.
  */
 export const removeFromCart = async (cartItemId: number) => {
-    try {
-        const response = await api.delete(`/api/v1/cart/items/${cartItemId}`);
-        return response.data;
-    } catch (error) {
-        console.error(`Gagal menghapus item ${cartItemId} dari keranjang:`, error);
-        throw error;
-    }
-}
+  try {
+    const response = await api.delete(`/api/v1/cart/items/${cartItemId}`);
+    return response.data;
+  } catch (error) {
+    console.error(`Gagal menghapus item ${cartItemId} dari keranjang:`, error);
+    throw error;
+  }
+};
 
 /**
  * Memperbarui kuantitas satu item di keranjang secara langsung.
@@ -79,16 +104,21 @@ export const removeFromCart = async (cartItemId: number) => {
  * @param {number} quantity - Kuantitas baru.
  * @returns {Promise<any>} Respons dari API.
  */
-export const updateCartItemQuantity = async (cartItemId: number, quantity: number) => {
-    if (quantity <= 0) {
-        // Jika kuantitas 0 atau kurang, hapus item tersebut
-        return removeFromCart(cartItemId);
-    }
-    try {
-        const response = await api.put(`/api/v1/cart/items/${cartItemId}`, { quantity });
-        return response.data;
-    } catch (error) {
-        console.error(`Gagal memperbarui kuantitas item ${cartItemId}:`, error);
-        throw error;
-    }
-}
+export const updateCartItemQuantity = async (
+  cartItemId: number,
+  quantity: number
+) => {
+  if (quantity <= 0) {
+    // Jika kuantitas 0 atau kurang, hapus item tersebut
+    return removeFromCart(cartItemId);
+  }
+  try {
+    const response = await api.put(`/api/v1/cart/items/${cartItemId}`, {
+      quantity,
+    });
+    return response.data;
+  } catch (error) {
+    console.error(`Gagal memperbarui kuantitas item ${cartItemId}:`, error);
+    throw error;
+  }
+};
