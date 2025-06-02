@@ -10,6 +10,8 @@ export interface CartItemData {
   price: number;
   quantity: number;
   selected: boolean;
+  customNote?: string; // opsional
+  fromCart?: boolean;
 }
 
 // Props untuk komponen CartItem

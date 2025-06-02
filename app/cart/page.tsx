@@ -4,6 +4,9 @@ import { useEffect, useState } from "react";
 import CartItem, { CartItemData } from "../components/CartCard";
 import { formatCurrency } from "../utils/helper";
 import { fetchAllCart } from "../utils/cart";
+import { useRouter } from "next/navigation";
+import { useCartStore } from "../stores/cartStore";
+import Popup from "../components/Popup";
 
 // Define the structure of the API response for better type safety
 interface ApiProduct {
@@ -43,6 +46,28 @@ export default function ShoppingCart(): JSX.Element {
   const [loading, setLoading] = useState<boolean>(true);
   const [error, setError] = useState<string | null>(null);
 
+  const [message, setMessage] = useState("");
+    const [popupType, setPopupType] = useState<"success" | "error">("success");
+     const [showPopup, setShowPopup] = useState(false);
+
+  const router = useRouter();
+
+  const handleCheckout = () => {
+    const selectedItems = cartItems.filter((item) => item.selected);
+    useCartStore.getState().setCartItems(selectedItems);
+    router.push("/checkout");
+  };
+
+  useEffect(() => {
+    const popupData = sessionStorage.getItem("popup");
+    if (popupData) {
+      const { message, type } = JSON.parse(popupData);
+      setMessage(message);
+      setPopupType(type);
+      setShowPopup(true);
+      sessionStorage.removeItem("popup");
+    }
+  }, []);
   useEffect(() => {
     const loadCartData = async () => {
       setLoading(true);
@@ -170,6 +195,13 @@ export default function ShoppingCart(): JSX.Element {
 
   return (
     <div className="bg-white p-6 rounded-lg shadow-lg max-w-4xl mx-auto">
+      {showPopup && (
+              <Popup
+                message={message}
+                type={popupType}
+                onClose={() => setShowPopup(false)}
+              />
+            )}
       <h2 className="text-lg font-medium text-gray-800 mb-6">
         Keranjang Belanja
       </h2>
@@ -193,12 +225,14 @@ export default function ShoppingCart(): JSX.Element {
       <div className="flex flex-col sm:flex-row justify-between items-center mt-8 pt-6 border-t border-gray-200 gap-4">
         <div className="text-sm font-medium text-gray-800">
           Total ({cartItems.filter((item) => item.selected).length} item
-          {cartItems.filter((item) => item.selected).length !== 1 ? "s" : ""}):{" "}
-          {formatCurrency(totalPrice)}
+          {cartItems.filter((item) => item.selected).length !== 1
+            ? "s"
+            : ""}): {formatCurrency(totalPrice)}
         </div>
         <button
           type="submit"
           className="cursor-pointer w-30 bg-primary text-white py-2 px-3 text-sm font-medium rounded-xl hover:-translate-y-1 duration-150 ease-in flex justify-center items-center gap-2 disabled:opacity-50"
+          onClick={handleCheckout}
         >
           Checkout
         </button>

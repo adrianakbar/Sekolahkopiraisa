@@ -1,53 +1,20 @@
-// Pastikan Anda memiliki file .d.ts untuk gambar jika Anda mengimpornya langsung
-// contoh: images.d.ts
-// declare module '*.jpg';
-// declare module '*.png';
-// declare module '*.jpeg';
-// declare module '*.gif';
+"use client";
 
-import React from "react";
+import React, { useState } from "react";
+import { useCartStore } from "../stores/cartStore";
+import { createOrder } from "../utils/order";
+import Popup from "./Popup";
+import { useRouter } from "next/navigation";
 
-// Tipe untuk props OrderInformation
+// ==================== TIPE ====================
 interface OrderInformationProps {
-  orderNumber: string;
-  transactionDate: string;
-  shippingAddress: string;
+  address: string;
+  setAddress: (val: string) => void;
+  userName: string;
   phoneNumber: string;
-  userName: string; // Menambahkan userName untuk "Aulia Putri"
+  errors?: Record<string, string>;
 }
 
-// Komponen untuk menampilkan informasi pesanan
-const OrderInformation: React.FC<OrderInformationProps> = ({
-  orderNumber,
-  transactionDate,
-  shippingAddress,
-  phoneNumber,
-  userName,
-}) => (
-  <div className="mb-6 p-4 border-b">
-    <div className="mb-2">
-      <p className="text-sm text-gray-500">No. Pesanan</p>
-      <p className="font-semibold">{orderNumber}</p>
-    </div>
-    <div className="mb-2">
-      <p className="text-sm text-gray-500">Tanggal Transaksi</p>
-      <p className="font-semibold">{transactionDate}</p>
-    </div>
-    <div>
-      <div className="flex justify-between items-center">
-        <p className="text-sm text-gray-500">Alamat Pengiriman</p>
-        <button className="text-sm text-orange-500 hover:text-orange-600">
-          ubah
-        </button>
-      </div>
-      <p className="font-semibold">{userName}</p>
-      <p className="text-sm text-gray-700">{phoneNumber}</p>
-      <p className="text-sm text-gray-700">{shippingAddress}</p>
-    </div>
-  </div>
-);
-
-// Tipe untuk data produk
 interface ProductData {
   imageSrc: string;
   name: string;
@@ -56,10 +23,42 @@ interface ProductData {
   quantity: number;
 }
 
-// Tipe untuk props ProductItem
 interface ProductItemProps extends ProductData {}
+interface PaymentMethodsProps {
+  selected: string;
+  setSelected: (val: string) => void;
+}
 
-// Komponen untuk setiap item produk
+// ==================== KOMPONEN ====================
+
+const OrderInformation: React.FC<OrderInformationProps> = ({
+  address,
+  setAddress,
+  userName,
+  phoneNumber,
+  errors = {}, // default supaya tidak error jika tidak diberikan
+}) => (
+  <div className="mb-6 p-4 border-b">
+    <div className="mb-2">
+      <p className="text-sm text-gray-500">Alamat Pengiriman</p>
+      <textarea
+        className={`w-full mt-1 p-2 border rounded-md text-sm ${
+          errors.address ? "border-red-500" : ""
+        }`}
+        value={address}
+        onChange={(e) => setAddress(e.target.value)}
+        rows={3}
+        placeholder="Masukkan alamat pengiriman"
+      />
+      {errors.address && (
+        <p className="text-sm text-red-600 mt-1">{errors.address}</p>
+      )}
+    </div>
+    <p className="text-sm text-gray-700 mt-1">{userName}</p>
+    <p className="text-sm text-gray-700">{phoneNumber}</p>
+  </div>
+);
+
 const ProductItem: React.FC<ProductItemProps> = ({
   imageSrc,
   name,
@@ -81,7 +80,7 @@ const ProductItem: React.FC<ProductItemProps> = ({
       </p>
     </div>
     <div className="text-right ml-4">
-      <p className="text-sm text-gray-700"> {quantity}</p>
+      <p className="text-sm text-gray-700">{quantity}</p>
       <p className="text-sm font-semibold text-gray-800 mt-1">
         Rp {(price * quantity).toLocaleString("id-ID")}
       </p>
@@ -89,28 +88,25 @@ const ProductItem: React.FC<ProductItemProps> = ({
   </div>
 );
 
-// Komponen untuk metode pembayaran
-const PaymentMethods: React.FC = () => {
-  const paymentOptions: string[] = ["COD", "QRIS", "Transfer Bank"];
-  // Anda bisa menambahkan state untuk melacak metode pembayaran yang dipilih
-  // const [selectedMethod, setSelectedMethod] = React.useState<string>('Transfer Bank');
+const PaymentMethods: React.FC<PaymentMethodsProps> = ({
+  selected,
+  setSelected,
+}) => {
+  const options = ["COD", "QRIS", "BANK_TRANSFER"];
 
   return (
     <div className="p-4 border-b">
       <h2 className="font-semibold mb-3 text-gray-700">Metode Pembayaran</h2>
       <div className="flex space-x-2">
-        {paymentOptions.map((method, index) => (
+        {options.map((method) => (
           <button
             key={method}
-            // onClick={() => setSelectedMethod(method)}
-            className={`px-4 py-2 border rounded-md text-sm font-medium
-              ${
-                index === 2
-                  ? "bg-orange-100 text-orange-600 border-orange-300"
-                  : "bg-gray-100 text-gray-700 hover:bg-gray-200"
-              }
-              {/* Ganti logika 'index === 2' dengan 'selectedMethod === method' jika menggunakan state */}
-            `}
+            onClick={() => setSelected(method)}
+            className={`px-4 py-2 border rounded-md text-sm font-medium ${
+              selected === method
+                ? "bg-orange-100 text-orange-600 border-orange-300"
+                : "bg-gray-100 text-gray-700 hover:bg-gray-200"
+            }`}
           >
             {method}
           </button>
@@ -120,44 +116,86 @@ const PaymentMethods: React.FC = () => {
   );
 };
 
-// Komponen utama aplikasi
-export default function CheckOutPage() {
-  const products: ProductData[] = [
-    {
-      imageSrc:
-        "https://via.placeholder.com/150/FFD700/000000?Text=El%27s+Coffee+Lampung", // Ganti dengan URL gambar produk asli
-      name: "EL'S COFFEE Lampung Robusta",
-      description: "500Gr Pure Indonesia Coffee Roasted Kopi AI749",
-      price: 57000,
-      quantity: 1,
-    },
-    {
-      imageSrc:
-        "https://via.placeholder.com/150/32CD32/FFFFFF?Text=El%27s+Coffee+Aceh", // Ganti dengan URL gambar produk asli
-      name: "El's Coffee Kopi Aceh Gayo",
-      description: "Arabika 250Gr Pure Indonesia Coffee Beans KopiArabika",
-      price: 57000,
-      quantity: 1,
-    },
-  ];
+// ==================== KOMPONEN UTAMA ====================
 
-  const totalHarga: number = products.reduce(
-    (sum, product) => sum + product.price * product.quantity,
+export default function CheckOutPage() {
+  const cartItems = useCartStore((state) => state.cartItems);
+
+  const [showPopup, setShowPopup] = useState(false);
+  const [message, setMessage] = useState("");
+  const [popupType, setPopupType] = useState<"success" | "error">("success");
+  const [errors, setErrors] = useState<Record<string, string>>({});
+
+  const [address, setAddress] = useState("");
+  const [paymentMethod, setPaymentMethod] = useState("BANK_TRANSFER");
+
+  const router = useRouter();
+  const totalHarga = cartItems.reduce(
+    (sum, item) => sum + item.price * item.quantity,
     0
   );
 
+  const handleCreateOrder = async () => {
+    const cartItems = useCartStore.getState().cartItems;
+  
+    const orderPayload = {
+      items: cartItems.map((item) => ({
+        products_id: item.id,
+        quantity: item.quantity,
+        custom_note: item.customNote || "",
+        fromCart: item.fromCart || false,
+      })),
+      address,
+      paymentMethod,
+    };
+  
+    try {
+      const data = await createOrder(orderPayload);
+  
+      // Ambil link snapRedirectUrl
+      const redirectUrl = data.order?.payment?.snapRedirectUrl;
+      if (redirectUrl) {
+        window.location.href = redirectUrl; // Redirect ke halaman pembayaran Midtrans
+      } else {
+        // Jika tidak ada redirect URL, tampilkan pesan sukses biasa
+        setMessage("Pesanan berhasil dibuat!");
+        setPopupType("success");
+        setShowPopup(true);
+      }
+    } catch (error: any) {
+      if (error.type === "validation") {
+        setErrors(error.errors);
+      } else {
+        console.error("Error:", error);
+        setMessage(
+          error.message || "Terjadi kesalahan saat membuat pesanan."
+        );
+        setPopupType("error");
+        setShowPopup(true);
+      }
+    }
+  };
+  
+
   return (
     <div className="max-w-4xl mx-auto bg-white shadow-lg rounded-lg overflow-hidden">
-      {/* Bagian Informasi Pesanan */}
+      {showPopup && (
+        <Popup
+          message={message}
+          type={popupType}
+          onClose={() => setShowPopup(false)}
+        />
+      )}
+      {/* Informasi Pengiriman */}
       <OrderInformation
-        orderNumber="12345678901234567890"
-        transactionDate="12 - 092025"
+        address={address}
+        setAddress={setAddress}
         userName="Aulia Putri"
-        shippingAddress="Br Purwakertha, Jalan Leko No. 13, Gerih, Abiansemal, KAB. BADUNG - ABIANSEMAL, BALI, ID 80352"
         phoneNumber="(+62) 8123456789"
+        errors={errors}
       />
 
-      {/* Bagian Detail Produk */}
+      {/* Daftar Produk */}
       <div className="p-4">
         <div className="flex justify-between items-center mb-3">
           <h2 className="font-semibold text-gray-700">Detail Produk</h2>
@@ -166,16 +204,22 @@ export default function CheckOutPage() {
             <span>Total Harga</span>
           </div>
         </div>
-        {products.map((product, index) => (
-          <ProductItem
-            key={index} // Untuk key, lebih baik menggunakan ID unik produk jika ada
-            imageSrc={product.imageSrc}
-            name={product.name}
-            description={product.description}
-            price={product.price}
-            quantity={product.quantity}
-          />
-        ))}
+        {cartItems.length === 0 ? (
+          <p className="text-center text-gray-500">
+            Tidak ada produk di keranjang.
+          </p>
+        ) : (
+          cartItems.map((product, index) => (
+            <ProductItem
+              key={index}
+              imageSrc={product.imageUrl}
+              name={product.name}
+              description={product.description}
+              price={product.price}
+              quantity={product.quantity}
+            />
+          ))
+        )}
         <div className="text-right mt-4 pr-4">
           <p className="text-sm text-gray-500">Total</p>
           <p className="text-xl font-bold text-orange-500">
@@ -184,10 +228,10 @@ export default function CheckOutPage() {
         </div>
       </div>
 
-      {/* Bagian Metode Pembayaran */}
-      <PaymentMethods />
+      {/* Pilih Pembayaran */}
+      <PaymentMethods selected={paymentMethod} setSelected={setPaymentMethod} />
 
-      {/* Bagian Total Pembayaran dan Tombol Pesan */}
+      {/* Total & Tombol Submit */}
       <div className="p-4 bg-gray-50">
         <div className="flex justify-between items-center">
           <div>
@@ -196,7 +240,10 @@ export default function CheckOutPage() {
               Rp {totalHarga.toLocaleString("id-ID")}
             </p>
           </div>
-          <button className="bg-orange-500 hover:bg-orange-600 text-white font-bold py-3 px-6 rounded-lg shadow">
+          <button
+            onClick={handleCreateOrder}
+            className="bg-orange-500 hover:bg-orange-600 text-white font-bold py-3 px-6 rounded-lg shadow"
+          >
             Buat Pesanan
           </button>
         </div>
