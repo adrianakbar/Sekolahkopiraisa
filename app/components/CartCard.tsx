@@ -1,9 +1,11 @@
 import React, { useState, useEffect } from "react";
 import { formatCurrency } from "../utils/helper";
+import { Trash2 } from "lucide-react";
 
 // Tipe untuk data item dalam keranjang
 export interface CartItemData {
   id: number;
+  productId: number; // ID produk yang terkait
   imageUrl: string;
   name: string;
   description: string;
@@ -19,13 +21,15 @@ interface CartItemProps {
   item: CartItemData;
   onQuantityChange: (id: number, newQuantity: number) => void;
   onSelectionChange: (id: number, isSelected: boolean) => void;
+  onDelete: (id: number) => void;
 }
 
 // Komponen untuk satu item di keranjang
-export default function CartItem({
+export default function CartCard({
   item,
   onQuantityChange,
   onSelectionChange,
+  onDelete,
 }: CartItemProps): JSX.Element {
   const handleIncrease = (): void => {
     onQuantityChange(item.id, item.quantity + 1);
@@ -44,7 +48,7 @@ export default function CartItem({
   const itemTotal: number = item.price * item.quantity;
 
   return (
-    <div className="grid grid-cols-12 gap-4 items-center py-4 border-b border-gray-100">
+    <div className="grid grid-cols-13 gap-4 items-center py-4 border-b border-gray-100">
       {/* Checkbox */}
       <div className="col-span-1 flex justify-center">
         <input
@@ -103,6 +107,16 @@ export default function CartItem({
       {/* Total Harga */}
       <div className="col-span-2 text-right text-sm font-medium text-gray-900">
         {formatCurrency(itemTotal)}
+      </div>
+
+      <div className="col-span-1 flex justify-center">
+        <button
+          onClick={() => onDelete(item.productId)}
+          className="cursor-pointer p-2 text-white rounded-xl bg-red-500 hover:-translate-y-1 duration-150 ease-in"
+          title="Hapus item"
+        >
+          <Trash2 size={15} />
+        </button>
       </div>
     </div>
   );

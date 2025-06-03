@@ -1,6 +1,5 @@
 import api from "./api";
 
-
 export const fetchAllCart = async () => {
   try {
     const response = await api.get("/api/v1/cart");
@@ -83,18 +82,40 @@ export const addToCart = async (productId: number, quantity: number = 1) => {
   }
 };
 
-/**
- * Menghapus satu item dari keranjang belanja.
- * @param {number} cartItemId - ID dari item keranjang (BUKAN ID produk) yang akan dihapus.
- * @returns {Promise<any>} Respons dari API.
- */
-export const removeFromCart = async (cartItemId: number) => {
+
+export const deleteCart = async (productId: number) => {
   try {
-    const response = await api.delete(`/api/v1/cart/items/${cartItemId}`);
+    const response = await api.delete(`/api/v1/cart/${productId}`);
     return response.data;
-  } catch (error) {
-    console.error(`Gagal menghapus item ${cartItemId} dari keranjang:`, error);
-    throw error;
+  } catch (error: any) {
+    if (error.response) {
+      const { data } = error.response;
+
+      if (data.errors && typeof data.errors === "object") {
+        throw {
+          type: "validation",
+          message: data.message || "Validasi gagal!",
+          errors: data.errors,
+        };
+      }
+
+      if (data.errors && typeof data.errors === "string") {
+        throw {
+          type: "general",
+          message: data.errors,
+        };
+      }
+
+      throw {
+        type: "general",
+        message: data.message || "Terjadi kesalahan!",
+      };
+    }
+
+    throw {
+      type: "network",
+      message: "Tidak dapat terhubung ke server. Coba lagi nanti.",
+    };
   }
 };
 
@@ -110,7 +131,7 @@ export const updateCartItemQuantity = async (
 ) => {
   if (quantity <= 0) {
     // Jika kuantitas 0 atau kurang, hapus item tersebut
-    return removeFromCart(cartItemId);
+    return (cartItemId);
   }
   try {
     const response = await api.put(`/api/v1/cart/items/${cartItemId}`, {

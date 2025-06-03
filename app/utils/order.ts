@@ -10,6 +10,34 @@ export const fetchOrderById = async (id: number) => {
   return response.data;
 };
 
+export const fetchMyOrder = async () => {
+  try {
+    const response = await api.get("/api/v1/order/my-order");
+    return response.data;
+  } catch (error: any) {
+    if (error.response) {
+      const { data } = error.response;
+
+      if (data?.errors && typeof data.errors === "object") {
+        throw {
+          type: "validation",
+          message: data.message || "Validasi gagal!",
+          errors: data.errors,
+        };
+      }
+
+      throw {
+        type: "general",
+        message: data.message || "Gagal membuat pesanan!",
+      };
+    }
+
+    throw {
+      type: "network",
+      message: "Tidak dapat menghubungi server",
+    };
+  }
+};
 
 interface OrderItem {
   products_id: number;
@@ -53,18 +81,11 @@ export const createOrder = async (data: CreateOrderPayload) => {
   }
 };
 
-
-export const updatePartner = async (
-  id: number,
-  data: {
-    name: string;
-    owner_name: string;
-    phone_number: string;
-    address: string;
-  }
-) => {
+export const updateStatusOrder = async (id: number, status: string) => {
   try {
-    const response = await api.put(`/api/v1/partner/${id}`, data);
+    const response = await api.put(`/api/v1/order/${id}/update-status`, {
+      status,
+    });
     return response.data;
   } catch (error: any) {
     if (error.response) {

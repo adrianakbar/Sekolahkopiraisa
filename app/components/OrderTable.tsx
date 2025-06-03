@@ -1,32 +1,51 @@
-import { Loader, CheckCircle, XCircle, Expand, ChevronDown } from "lucide-react";
+import {
+  Loader,
+  CheckCircle,
+  XCircle,
+  Truck,
+  PackageCheck,
+  ChevronDown,
+  Expand,
+} from "lucide-react";
 import { useState } from "react";
 
-// Interface untuk setiap item pesanan (tidak berubah)
+// Interface untuk setiap item pesanan
 export interface Order {
-  id: number; // Ini adalah customerId dalam konteks data yang dikelompokkan
+  id: number;
   customerName: string;
   productName: string;
   totalQuantity: number;
   totalPrice: string;
-  status: "Pending" | "Success" | "Canceled";
-  notes?: string; // Menambahkan field notes
-  partnerName?: string; // Menambahkan field partnerName
-  price?: number; // Menambahkan field price
-  quantity?: number; // Menambahkan field quantity
+  status: "PENDING" | "PROCESSING" | "SHIPPED" | "DELIVERED" | "CANCELED";
+  notes?: string;
+  partnerName?: string;
+  price?: number;
+  quantity?: number;
 }
 
-// Tipe untuk status yang valid
-type OrderStatus = "Pending" | "Success" | "Canceled";
-const ALL_STATUSES: OrderStatus[] = ["Pending", "Success", "Canceled"];
+// ✅ Ganti tipe dan daftar status yang valid
+// ✅ Tambah status PENDING ke tipe dan daftar status
+export type OrderStatus =
+  | "PENDING"
+  | "PROCESSING"
+  | "SHIPPED"
+  | "DELIVERED"
+  | "CANCELED";
+const ALL_STATUSES: OrderStatus[] = [
+  "PENDING",
+  "PROCESSING",
+  "SHIPPED",
+  "DELIVERED",
+  "CANCELED",
+];
 
-// Props untuk OrderTable, ditambahkan onStatusChange
 interface OrderTableProps {
   order: Order[];
   onView: (id: number) => void;
-  onStatusChange: (id: number, newStatus: OrderStatus) => void; // Fungsi untuk update status
+  onStatusChange: (id: number, newStatus: OrderStatus) => void;
 }
 
-// Komponen StatusDropdown baru
+// ✅ Dropdown status
 function StatusDropdown({
   currentStatus,
   orderId,
@@ -49,15 +68,23 @@ function StatusDropdown({
   let statusIcon = null;
 
   switch (currentStatus) {
-    case "Pending":
+    case "PENDING":
+      statusColorClass = "bg-gray-100 text-gray-800";
+      statusIcon = <Loader size={14} className="mr-1.5" />;
+      break;
+    case "PROCESSING":
       statusColorClass = "bg-yellow-100 text-yellow-800";
       statusIcon = <Loader size={14} className="animate-spin mr-1.5" />;
       break;
-    case "Success":
-      statusColorClass = "bg-green-100 text-green-800";
-      statusIcon = <CheckCircle size={14} className="mr-1.5" />;
+    case "SHIPPED":
+      statusColorClass = "bg-blue-100 text-blue-800";
+      statusIcon = <Truck size={14} className="mr-1.5" />;
       break;
-    case "Canceled":
+    case "DELIVERED":
+      statusColorClass = "bg-green-100 text-green-800";
+      statusIcon = <PackageCheck size={14} className="mr-1.5" />;
+      break;
+    case "CANCELED":
       statusColorClass = "bg-red-100 text-red-800";
       statusIcon = <XCircle size={14} className="mr-1.5" />;
       break;
@@ -65,29 +92,22 @@ function StatusDropdown({
 
   return (
     <div className="relative inline-block text-left">
-      <div>
-        <button
-          type="button"
-          className={`inline-flex items-center justify-center w-full rounded-full px-3 py-1.5 text-xs font-medium focus:outline-none ${statusColorClass}`}
-          id="options-menu"
-          aria-haspopup="true"
-          aria-expanded="true"
-          onClick={() => setIsOpen(!isOpen)}
-        >
-          {statusIcon}
-          {currentStatus}
-          <ChevronDown size={16} className="ml-1 -mr-0.5" />
-        </button>
-      </div>
+      <button
+        type="button"
+        className={`inline-flex items-center justify-center w-full rounded-full px-3 py-1.5 text-xs font-medium focus:outline-none ${statusColorClass}`}
+        onClick={() => setIsOpen(!isOpen)}
+      >
+        {statusIcon}
+        {currentStatus}
+        <ChevronDown size={16} className="ml-1 -mr-0.5" />
+      </button>
 
       {isOpen && (
         <div
           className="origin-top-right absolute right-0 mt-2 w-40 rounded-md shadow-lg bg-white ring-1 ring-black ring-opacity-5 z-50"
           role="menu"
-          aria-orientation="vertical"
-          aria-labelledby="options-menu"
         >
-          <div className="py-1" role="none">
+          <div className="py-1">
             {ALL_STATUSES.map((status) => (
               <button
                 key={status}
@@ -97,9 +117,7 @@ function StatusDropdown({
                     ? "bg-gray-100 text-gray-900"
                     : "text-gray-700"
                 } group flex items-center w-full px-4 py-2 text-sm hover:bg-gray-100 hover:text-gray-900`}
-                role="menuitem"
               >
-                {/* Opsi untuk ikon di dropdown, bisa ditambahkan jika perlu */}
                 {status}
               </button>
             ))}
@@ -110,7 +128,12 @@ function StatusDropdown({
   );
 }
 
-export default function OrderTable({ order, onView, onStatusChange }: OrderTableProps) {
+// ✅ Tabel utama
+export default function OrderTable({
+  order,
+  onView,
+  onStatusChange,
+}: OrderTableProps) {
   return (
     <div className="bg-white shadow rounded-lg overflow-hidden">
       <table className="min-w-full divide-y divide-gray-200">
@@ -125,24 +148,23 @@ export default function OrderTable({ order, onView, onStatusChange }: OrderTable
           </tr>
         </thead>
         <tbody className="text-sm text-gray-700 divide-y divide-gray-200">
-          {order.map((item) => ( // Menggunakan item.id sebagai key lebih baik
+          {order.map((item) => (
             <tr key={item.id}>
               <td className="px-4 py-3">{item.customerName}</td>
               <td className="px-4 py-3">{item.productName}</td>
               <td className="px-4 py-3">{item.totalQuantity}</td>
               <td className="px-4 py-3">{item.totalPrice}</td>
               <td className="px-4 py-3">
-                {/* Mengganti StatusBadge dengan StatusDropdown */}
                 <StatusDropdown
                   currentStatus={item.status}
-                  orderId={item.id} // item.id di sini adalah customerId
+                  orderId={item.id}
                   onStatusChange={onStatusChange}
                 />
               </td>
               <td className="px-4 py-3">
                 <button
                   onClick={() => onView(item.id)}
-                  className="cursor-pointer p-2 text-white rounded-xl bg-primary hover:-translate-y-1 duration-150 ease-in" // Menggunakan bg-blue-500
+                  className="cursor-pointer p-2 text-white rounded-xl bg-primary hover:-translate-y-1 duration-150 ease-in"
                   title="View"
                 >
                   <Expand size={15} />

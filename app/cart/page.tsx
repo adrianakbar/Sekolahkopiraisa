@@ -3,10 +3,11 @@
 import { useEffect, useState } from "react";
 import CartItem, { CartItemData } from "../components/CartCard";
 import { formatCurrency } from "../utils/helper";
-import { fetchAllCart } from "../utils/cart";
+import { deleteCart, fetchAllCart } from "../utils/cart";
 import { useRouter } from "next/navigation";
 import { useCartStore } from "../stores/cartStore";
 import Popup from "../components/Popup";
+import CartCard from "../components/CartCard";
 
 // Define the structure of the API response for better type safety
 interface ApiProduct {
@@ -47,8 +48,8 @@ export default function ShoppingCart(): JSX.Element {
   const [error, setError] = useState<string | null>(null);
 
   const [message, setMessage] = useState("");
-    const [popupType, setPopupType] = useState<"success" | "error">("success");
-     const [showPopup, setShowPopup] = useState(false);
+  const [popupType, setPopupType] = useState<"success" | "error">("success");
+  const [showPopup, setShowPopup] = useState(false);
 
   const router = useRouter();
 
@@ -57,6 +58,28 @@ export default function ShoppingCart(): JSX.Element {
     useCartStore.getState().setCartItems(selectedItems);
     router.push("/checkout");
   };
+
+  const handleDelete = async (productId: number) => {
+  try {
+
+    const response = await deleteCart(productId);
+
+
+    setCartItems((currentItems) =>
+      currentItems.filter((item) => item.productId !== productId)
+    );
+
+    setMessage(response.message);
+    setPopupType("success");
+    setShowPopup(true);
+  } catch (error: any) {
+    console.error("Delete error:", error);
+    setMessage(error.message || "Terjadi kesalahan saat menghapus.");
+    setPopupType("error");
+    setShowPopup(true);
+  }
+};
+
 
   useEffect(() => {
     const popupData = sessionStorage.getItem("popup");
@@ -88,6 +111,7 @@ export default function ShoppingCart(): JSX.Element {
           const transformedItems: CartItemData[] = fetchedApiCartItems.map(
             (apiItem) => ({
               id: apiItem.id,
+              productId: apiItem.products_id, // Assuming this is the correct field for product ID
               imageUrl: apiItem.product.image,
               name: apiItem.product.name,
               description: apiItem.product.description,
@@ -194,18 +218,18 @@ export default function ShoppingCart(): JSX.Element {
   }
 
   return (
-    <div className="bg-white p-6 rounded-lg shadow-lg max-w-4xl mx-auto">
+    <div className="bg-white p-6 rounded-lg shadow-lg max-w-7xl mx-auto">
       {showPopup && (
-              <Popup
-                message={message}
-                type={popupType}
-                onClose={() => setShowPopup(false)}
-              />
-            )}
+        <Popup
+          message={message}
+          type={popupType}
+          onClose={() => setShowPopup(false)}
+        />
+      )}
       <h2 className="text-lg font-medium text-gray-800 mb-6">
         Keranjang Belanja
       </h2>
-      <div className="hidden md:grid md:grid-cols-12 md:gap-4 text-sm text-gray-500 font-medium mb-4 border-b pb-3">
+      <div className="hidden md:grid md:grid-cols-13 md:gap-4 text-sm text-gray-500 font-medium mb-4 border-b pb-3">
         <div className="col-span-1"></div>
         <div className="col-span-5">Detail Produk</div>
         <div className="col-span-2 text-center">Harga</div>
@@ -214,11 +238,12 @@ export default function ShoppingCart(): JSX.Element {
       </div>
       <div className="divide-y divide-gray-100 md:divide-y-0">
         {cartItems.map((item) => (
-          <CartItem
+          <CartCard
             key={item.id}
             item={item}
             onQuantityChange={handleQuantityChange}
             onSelectionChange={handleSelectionChange}
+            onDelete={handleDelete}
           />
         ))}
       </div>
