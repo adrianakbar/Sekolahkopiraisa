@@ -8,6 +8,7 @@ import { useRouter } from "next/navigation";
 import { useCartStore } from "../stores/cartStore";
 import Popup from "../components/Popup";
 import CartCard from "../components/CartCard";
+import { Partner } from "../types/partnerType";
 
 // Define the structure of the API response for better type safety
 interface ApiProduct {
@@ -16,6 +17,7 @@ interface ApiProduct {
   price: number;
   description: string;
   image: string;
+  partner: Partner
 }
 
 interface ApiCartItem {
@@ -114,7 +116,7 @@ export default function ShoppingCart(): JSX.Element {
               productId: apiItem.products_id, // Assuming this is the correct field for product ID
               imageUrl: apiItem.product.image,
               name: apiItem.product.name,
-              description: apiItem.product.description,
+              partnerName: apiItem.product.partner.name, // Assuming you want to keep this field
               price: apiItem.product.price,
               quantity: apiItem.quantity,
               selected: true,
@@ -194,7 +196,7 @@ export default function ShoppingCart(): JSX.Element {
   if (error) {
     return (
       <div
-        className="bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded-lg shadow-lg max-w-4xl mx-auto my-4"
+        className="bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded-xl shadow-lg max-w-4xl mx-auto my-4"
         role="alert"
       >
         <strong className="font-bold">Error:</strong>
@@ -208,7 +210,7 @@ export default function ShoppingCart(): JSX.Element {
 
   if (cartItems.length === 0) {
     return (
-      <div className="bg-white p-6 md:p-8 rounded-lg shadow-lg max-w-4xl mx-auto text-center">
+      <div className="bg-white p-6 md:p-8 rounded-xl shadow-lg max-w-4xl mx-auto text-center">
         <h2 className="text-lg font-medium text-gray-800 mb-6">
           Keranjang Belanja
         </h2>
@@ -218,7 +220,9 @@ export default function ShoppingCart(): JSX.Element {
   }
 
   return (
-    <div className="bg-white p-6 rounded-lg shadow-lg max-w-7xl mx-auto">
+    <div className="pt-25 min-h-screen bg-secondary">
+
+    <div className="bg-white p-6 rounded-xl shadow-lg max-w-7xl mx-auto">
       {showPopup && (
         <Popup
           message={message}
@@ -232,7 +236,7 @@ export default function ShoppingCart(): JSX.Element {
       <div className="hidden md:grid md:grid-cols-13 md:gap-4 text-sm text-gray-500 font-medium mb-4 border-b pb-3">
         <div className="col-span-1"></div>
         <div className="col-span-5">Detail Produk</div>
-        <div className="col-span-2 text-center">Harga</div>
+        <div className="col-span-2 text-center">Harga Satuan</div>
         <div className="col-span-2 text-center">Jumlah</div>
         <div className="col-span-2 text-right">Total Harga</div>
       </div>
@@ -263,5 +267,7 @@ export default function ShoppingCart(): JSX.Element {
         </button>
       </div>
     </div>
+    </div>
+
   );
 }

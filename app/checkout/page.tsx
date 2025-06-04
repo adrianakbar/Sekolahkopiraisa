@@ -1,6 +1,9 @@
 import CheckOutPage from "../components/CheckOutPage";
 
 export default function CheckoutPage() {
-    return (
-        <CheckOutPage /> );
-    }
+  return (
+    <div className="pt-25 min-h-screen bg-secondary">
+      <CheckOutPage />
+    </div>
+  );
+}

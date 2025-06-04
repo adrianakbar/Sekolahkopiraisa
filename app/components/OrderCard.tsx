@@ -3,9 +3,10 @@
 
 import { formatCurrency } from "../utils/helper";
 
-interface OrderItem {
+export interface OrderItem {
   productId: number;
   name: string;
+  productImage: string;
   quantity: number;
   price: number;
   subtotal: number;
@@ -35,7 +36,7 @@ interface Props {
 
 export default function OrderCard({ order }: Props) {
   return (
-    <div className="border border-gray-200 rounded-lg p-4 shadow-sm">
+    <div className="border border-gray-200 rounded-xl p-4 shadow-sm bg-white">
       {/* Header */}
       <div className="flex justify-between items-center mb-2">
         <div>
@@ -47,7 +48,7 @@ export default function OrderCard({ order }: Props) {
           </p>
         </div>
         <span
-          className={`text-xs font-semibold px-3 py-1 rounded-full ${
+          className={`text-xs font-medium px-3 py-1 rounded-full ${
             order.statusOrder === "SUCCESS"
               ? "bg-green-100 text-green-700"
               : "bg-yellow-100 text-yellow-800"
@@ -61,19 +62,26 @@ export default function OrderCard({ order }: Props) {
       <div className="space-y-2 mb-4">
         {order.items.map((item, index) => (
           <div key={index} className="border-b pb-2 last:border-none">
-            <div className="flex justify-between text-sm">
-              <div>
-                <p className="font-medium">{item.name}</p>
-                <p className="text-gray-500">{item.partner.name}</p>
-                <p className="text-gray-400 text-xs">Catatan: {item.note}</p>
-              </div>
-              <div className="text-right">
-                <p>
-                  {item.quantity} x {formatCurrency(item.price)}
-                </p>
-                <p className="text-gray-700 font-semibold">
-                  {formatCurrency(item.subtotal)}
-                </p>
+            <div className="flex items-start gap-3">
+              <img
+                src={item.productImage}
+                alt={item.name}
+                className="w-16 h-16 rounded object-cover border"
+              />
+              <div className="flex justify-between w-full text-sm">
+                <div>
+                  <p className="font-medium">{item.name}</p>
+                  <p className="text-gray-500">{item.partner.name}</p>
+                  <p className="text-gray-400 text-xs">Catatan: {item.note}</p>
+                </div>
+                <div className="text-right">
+                  <p>
+                    {item.quantity} x {formatCurrency(item.price)}
+                  </p>
+                  <p className="text-gray-700 font-medium">
+                    {formatCurrency(item.subtotal)}
+                  </p>
+                </div>
               </div>
             </div>
           </div>
@@ -91,7 +99,7 @@ export default function OrderCard({ order }: Props) {
         </div>
         <div className="text-right">
           <p className="text-sm">Total:</p>
-          <p className="text-lg font-bold text-gray-900">
+          <p className="text-lg font-medium text-gray-900">
             {formatCurrency(order.payment.amount)}
           </p>
         </div>

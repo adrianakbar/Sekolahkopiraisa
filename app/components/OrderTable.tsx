@@ -117,7 +117,7 @@ function StatusDropdown({
     <div ref={dropdownRef} className="relative inline-block text-left">
       <button
         type="button"
-        className={`inline-flex items-center justify-center w-full rounded-full px-3 py-1.5 text-xs font-medium focus:outline-none ${statusColorClass}`}
+        className={`inline-flex items-center justify-center w-full rounded-xl px-3 py-1.5 text-xs font-medium focus:outline-none ${statusColorClass}`}
         onClick={() => onToggle(orderId)}
       >
         {statusIcon}
@@ -182,10 +182,10 @@ export default function OrderTable({
 
   return (
     <>
-  <div className="bg-white shadow rounded-xl overflow-hidden">
+  <div className="bg-tertiary shadow rounded-xl overflow-hidden">
     <div className="overflow-x-auto">
       <table className="min-w-full divide-y divide-gray-200 text-sm">
-        <thead className="bg-gray-50 text-gray-700">
+        <thead className="bg-primary text-white">
           <tr>
             <th className="px-2 sm:px-4 py-3 text-left font-medium whitespace-nowrap">Nama Customer</th>
             <th className="px-2 sm:px-4 py-3 text-left font-medium whitespace-nowrap">Nama Produk</th>

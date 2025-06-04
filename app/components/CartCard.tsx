@@ -8,12 +8,13 @@ export interface CartItemData {
   productId: number; // ID produk yang terkait
   imageUrl: string;
   name: string;
-  description: string;
+  description?: string;
   price: number;
   quantity: number;
   selected: boolean;
   customNote?: string; // opsional
   fromCart?: boolean;
+  partnerName?: string;
 }
 
 // Props untuk komponen CartItem
@@ -73,7 +74,7 @@ export default function CartCard({
         />
         <div>
           <h3 className="text-sm font-medium text-gray-900">{item.name}</h3>
-          <p className="text-xs text-gray-500">{item.description}</p>
+          <p className="text-xs text-gray-500">Mitra: {item.partnerName}</p>
         </div>
       </div>
 
