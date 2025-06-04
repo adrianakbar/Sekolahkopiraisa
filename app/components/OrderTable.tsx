@@ -1,13 +1,15 @@
+"use client";
+
 import {
   Loader,
-  CheckCircle,
   XCircle,
   Truck,
   PackageCheck,
   ChevronDown,
+  ChevronUp,
   Expand,
 } from "lucide-react";
-import { useState } from "react";
+import { useEffect, useRef, useState } from "react";
 
 // Interface untuk setiap item pesanan
 export interface Order {
@@ -21,16 +23,16 @@ export interface Order {
   partnerName?: string;
   price?: number;
   quantity?: number;
+  createdAt?: string;
 }
 
-// ✅ Ganti tipe dan daftar status yang valid
-// ✅ Tambah status PENDING ke tipe dan daftar status
 export type OrderStatus =
   | "PENDING"
   | "PROCESSING"
   | "SHIPPED"
   | "DELIVERED"
   | "CANCELED";
+
 const ALL_STATUSES: OrderStatus[] = [
   "PENDING",
   "PROCESSING",
@@ -43,25 +45,46 @@ interface OrderTableProps {
   order: Order[];
   onView: (id: number) => void;
   onStatusChange: (id: number, newStatus: OrderStatus) => void;
+  onToggleStatusSort: () => void;
+  statusSortOrder: "asc" | "desc";
 }
 
-// ✅ Dropdown status
 function StatusDropdown({
   currentStatus,
   orderId,
   onStatusChange,
+  isOpen,
+  onToggle,
 }: {
   currentStatus: OrderStatus;
   orderId: number;
   onStatusChange: (id: number, newStatus: OrderStatus) => void;
+  isOpen: boolean;
+  onToggle: (id: number) => void;
 }) {
-  const [isOpen, setIsOpen] = useState(false);
+  const dropdownRef = useRef<HTMLDivElement>(null);
 
+  // ❇️ Tutup bila klik di luar
+  useEffect(() => {
+    if (!isOpen) return; // pasang listener hanya saat terbuka
+
+    const handleClickOutside = (e: MouseEvent) => {
+      if (
+        dropdownRef.current &&
+        !dropdownRef.current.contains(e.target as Node)
+      ) {
+        onToggle(-1); // tutup dropdown
+      }
+    };
+
+    document.addEventListener("mousedown", handleClickOutside);
+    return () => document.removeEventListener("mousedown", handleClickOutside);
+  }, [isOpen, onToggle]);
   const handleSelectStatus = (newStatus: OrderStatus) => {
     if (newStatus !== currentStatus) {
       onStatusChange(orderId, newStatus);
     }
-    setIsOpen(false);
+    onToggle(-1); // Tutup dropdown setelah memilih
   };
 
   let statusColorClass = "";
@@ -91,11 +114,11 @@ function StatusDropdown({
   }
 
   return (
-    <div className="relative inline-block text-left">
+    <div ref={dropdownRef} className="relative inline-block text-left">
       <button
         type="button"
         className={`inline-flex items-center justify-center w-full rounded-full px-3 py-1.5 text-xs font-medium focus:outline-none ${statusColorClass}`}
-        onClick={() => setIsOpen(!isOpen)}
+        onClick={() => onToggle(orderId)}
       >
         {statusIcon}
         {currentStatus}
@@ -104,7 +127,7 @@ function StatusDropdown({
 
       {isOpen && (
         <div
-          className="origin-top-right absolute right-0 mt-2 w-40 rounded-md shadow-lg bg-white ring-1 ring-black ring-opacity-5 z-50"
+          className="origin-top-right absolute right-0 mt-2 w-40 rounded-xl shadow-lg bg-white ring-1 ring-black ring-opacity-5 z-50"
           role="menu"
         >
           <div className="py-1">
@@ -128,40 +151,67 @@ function StatusDropdown({
   );
 }
 
-// ✅ Tabel utama
+// Komponen utama dengan pagination
 export default function OrderTable({
   order,
   onView,
   onStatusChange,
+  onToggleStatusSort,
+  statusSortOrder,
 }: OrderTableProps) {
+  const [openDropdownId, setOpenDropdownId] = useState<number | null>(null);
+  const [currentPage, setCurrentPage] = useState(1);
+  const itemsPerPage = 15;
+
+  const totalPages = Math.ceil(order.length / itemsPerPage);
+
+  const handleToggleDropdown = (id: number) => {
+    setOpenDropdownId((prev) => (prev === id ? null : id));
+  };
+
+  // Data untuk halaman sekarang saja
+  const currentData = order.slice(
+    (currentPage - 1) * itemsPerPage,
+    currentPage * itemsPerPage
+  );
+
+  const goToPage = (page: number) => {
+    if (page < 1 || page > totalPages) return;
+    setCurrentPage(page);
+  };
+
   return (
-    <div className="bg-white shadow rounded-lg overflow-hidden">
-      <table className="min-w-full divide-y divide-gray-200">
-        <thead className="bg-gray-50 text-sm text-gray-700">
+    <>
+  <div className="bg-white shadow rounded-xl overflow-hidden">
+    <div className="overflow-x-auto">
+      <table className="min-w-full divide-y divide-gray-200 text-sm">
+        <thead className="bg-gray-50 text-gray-700">
           <tr>
-            <th className="px-4 py-3 text-left font-medium">Nama Customer</th>
-            <th className="px-4 py-3 text-left font-medium">Nama Produk</th>
-            <th className="px-4 py-3 text-left font-medium">Quantity Total</th>
-            <th className="px-4 py-3 text-left font-medium">Total Harga</th>
-            <th className="px-4 py-3 text-left font-medium">Status</th>
-            <th className="px-4 py-3 text-left font-medium">Aksi</th>
+            <th className="px-2 sm:px-4 py-3 text-left font-medium whitespace-nowrap">Nama Customer</th>
+            <th className="px-2 sm:px-4 py-3 text-left font-medium whitespace-nowrap">Nama Produk</th>
+            <th className="px-2 sm:px-4 py-3 text-left font-medium whitespace-nowrap">Quantity Total</th>
+            <th className="px-2 sm:px-4 py-3 text-left font-medium whitespace-nowrap">Total Harga</th>
+            <th className="px-2 sm:px-4 py-3 text-left font-medium whitespace-nowrap">Status</th>
+            <th className="px-2 sm:px-4 py-3 text-left font-medium whitespace-nowrap">Aksi</th>
           </tr>
         </thead>
-        <tbody className="text-sm text-gray-700 divide-y divide-gray-200">
-          {order.map((item) => (
+        <tbody className="text-gray-700 divide-y divide-gray-200">
+          {currentData.map((item) => (
             <tr key={item.id}>
-              <td className="px-4 py-3">{item.customerName}</td>
-              <td className="px-4 py-3">{item.productName}</td>
-              <td className="px-4 py-3">{item.totalQuantity}</td>
-              <td className="px-4 py-3">{item.totalPrice}</td>
-              <td className="px-4 py-3">
+              <td className="px-2 sm:px-4 py-3 whitespace-nowrap">{item.customerName}</td>
+              <td className="px-2 sm:px-4 py-3 whitespace-nowrap">{item.productName}</td>
+              <td className="px-2 sm:px-4 py-3 whitespace-nowrap">{item.totalQuantity}</td>
+              <td className="px-2 sm:px-4 py-3 whitespace-nowrap">{item.totalPrice}</td>
+              <td className="px-2 sm:px-4 py-3 whitespace-nowrap">
                 <StatusDropdown
                   currentStatus={item.status}
                   orderId={item.id}
                   onStatusChange={onStatusChange}
+                  isOpen={openDropdownId === item.id}
+                  onToggle={handleToggleDropdown}
                 />
               </td>
-              <td className="px-4 py-3">
+              <td className="px-2 sm:px-4 py-3 whitespace-nowrap">
                 <button
                   onClick={() => onView(item.id)}
                   className="cursor-pointer p-2 text-white rounded-xl bg-primary hover:-translate-y-1 duration-150 ease-in"
@@ -175,5 +225,44 @@ export default function OrderTable({
         </tbody>
       </table>
     </div>
+  </div>
+
+  {/* Pagination */}
+  <div className="flex justify-center items-center flex-wrap gap-2 mt-4 px-4">
+    <button
+      onClick={() => goToPage(currentPage - 1)}
+      disabled={currentPage === 1}
+      className="px-3 py-1 rounded-xl border border-gray-300 disabled:opacity-50 disabled:cursor-not-allowed"
+    >
+      Prev
+    </button>
+
+    {[...Array(totalPages)].map((_, idx) => {
+      const page = idx + 1;
+      return (
+        <button
+          key={page}
+          onClick={() => goToPage(page)}
+          className={`px-3 py-1 rounded-xl border ${
+            page === currentPage
+              ? "bg-primary text-white border-primary"
+              : "border-gray-300 text-gray-700 hover:bg-gray-100"
+          }`}
+        >
+          {page}
+        </button>
+      );
+    })}
+
+    <button
+      onClick={() => goToPage(currentPage + 1)}
+      disabled={currentPage === totalPages}
+      className="px-3 py-1 rounded-xl border border-gray-300 disabled:opacity-50 disabled:cursor-not-allowed"
+    >
+      Next
+    </button>
+  </div>
+</>
+
   );
 }

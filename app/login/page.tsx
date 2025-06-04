@@ -248,8 +248,7 @@ export default function Login() {
             <img
               src="/assets/google-logo.png"
               alt="Google Icon"
-              width={19}
-              height={20}
+              width={15}
             />
             <span>Lanjutkan Dengan Google</span>
           </button>

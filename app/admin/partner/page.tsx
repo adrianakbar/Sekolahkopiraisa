@@ -81,7 +81,7 @@ export default function Partner() {
     }, []);
 
     return (
-        <div className="max-w-7xl mx-auto sm:p-3">
+        <div className="max-w-7xl mx-auto">
             {showPopup && (
                 <Popup
                     message={message}
