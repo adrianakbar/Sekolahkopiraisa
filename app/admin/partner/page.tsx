@@ -81,7 +81,7 @@ export default function Partner() {
     }, []);
 
     return (
-        <div className="max-w-7xl mx-auto">
+        <div className="container mx-auto">
             {showPopup && (
                 <Popup
                     message={message}
@@ -119,7 +119,7 @@ export default function Partner() {
             </div>
             <div>
                 <PartnerTable
-                    data={data}
+                    partner={data}
                     onDelete={(id: number) => {
                         setPartnerToDelete(id);
                         setShowConfirmModal(true);

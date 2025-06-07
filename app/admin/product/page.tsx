@@ -25,6 +25,10 @@ export default function Product() {
   const handleAddProduct = () => {
     router.push("/admin/product/create");
   };
+  
+  const handleViewProduct = (id: number) => {
+    router.push(`/admin/product/${id}`);
+  };
 
   const handleDeleteProduct = async (id: number) => {
     try {
@@ -84,7 +88,7 @@ export default function Product() {
   }, []);
 
   return (
-    <div className="max-w-7xl mx-auto sm:p-3">
+    <div className="container mx-auto">
       {showPopup && (
         <Popup
           message={message}
@@ -110,7 +114,7 @@ export default function Product() {
       />
       <div className="flex justify-between mb-4 sm:mb-6">
         <h1 className="text-lg font-medium text-gray-800">Daftar Produk</h1>
-        <button className="cursor-pointer bg-amber-950 text-white px-3 py-1.5 rounded-xl flex items-center gap-1 hover:-translate-y-1 duration-150 ease-in text-sm" onClick={handleAddProduct}>
+        <button className="cursor-pointer bg-amber-950 text-white px-3 py-2 rounded-xl flex items-center gap-1 hover:-translate-y-1 duration-150 ease-in text-sm" onClick={handleAddProduct}>
           <Plus size={20} />
           <span>Tambah Produk</span>
         </button>
@@ -125,6 +129,7 @@ export default function Product() {
             name={product.name}
             price={product.price}
             stock={product.stock}
+            onView={handleViewProduct}
             onEdit={handleEditProduct}
             onDelete={(id) => {
               setProductToDelete(id);

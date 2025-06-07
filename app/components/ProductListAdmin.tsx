@@ -1,4 +1,5 @@
 import { Pencil, SquarePen, Trash } from "lucide-react";
+import { formatCurrency } from "../utils/helper";
 
 export interface ProductListProps {
   id: number;
@@ -8,6 +9,7 @@ export interface ProductListProps {
   stock: number;
   onEdit: (id: number) => void;
   onDelete: (id: number) => void;
+  onView?: (id: number) => void;
 }
 
 export default function ProductListAdmin({
@@ -18,6 +20,7 @@ export default function ProductListAdmin({
   stock,
   onEdit,
   onDelete,
+  onView,
 }: ProductListProps) {
   return (
     <div className="cursor-pointer rounded-xl overflow-hidden shadow-lg border border-gray-300 p-3 flex flex-col justify-between bg-white relative">
@@ -37,13 +40,13 @@ export default function ProductListAdmin({
       <img src={image} alt={name} className="h-50 object-cover rounded-lg" />
 
       <div className="mt-3 flex flex-col justify-between flex-grow text-sm">
-        <div>
+        <div onClick={() => onView?.(id)} className="cursor-pointer">
           <div className="flex justify-between items-center">
             <h2 className="font-medium text-black leading-snug">{name}</h2>
             <p className="text-gray-500">Stok: {stock}</p>
           </div>
           <p className="font-medium text-primary mt-1">
-            Rp {Number(price).toLocaleString("id-ID")}
+            {formatCurrency(Number(price))}
           </p>
         </div>
         <div className="flex justify-end md:items-center space-x-2 mt-3 md:mt-0">
@@ -53,7 +56,7 @@ export default function ProductListAdmin({
             className="cursor-pointer p-2 text-white rounded-xl bg-blue-500 hover:-translate-y-1 duration-150 ease-in"
             title="Edit"
           >
-            <SquarePen size={18} />
+            <SquarePen size={15} />
           </button>
           {/* Delete */}
           <button
@@ -61,7 +64,7 @@ export default function ProductListAdmin({
             className="cursor-pointer p-2 text-white rounded-xl bg-red-500 hover:-translate-y-1 duration-150 ease-in"
             title="Hapus"
           >
-            <Trash size={18} />
+            <Trash size={15} />
           </button>
         </div>
       </div>

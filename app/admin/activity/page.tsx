@@ -142,7 +142,7 @@ export default function Activity() {
   }, []);
 
   return (
-    <div className="max-w-7xl mx-auto min-h-screen">
+    <div className="mx-auto min-h-screen">
       {showPopup && (
         <Popup
           message={message}
@@ -172,7 +172,7 @@ export default function Activity() {
 
         <div className="flex items-center gap-4">
           <button
-            className="bg-amber-950 text-white px-3 py-1.5 rounded-xl flex items-center gap-1 hover:-translate-y-1 duration-150 ease-in text-sm"
+            className="bg-amber-950 text-white px-3 py-2 rounded-xl flex items-center gap-1 hover:-translate-y-1 duration-150 ease-in text-sm"
             onClick={handleAddActivity}
           >
             <Plus size={20} />
@@ -183,7 +183,7 @@ export default function Activity() {
             <select
               value={sortOption}
               onChange={(e) => setSortOption(e.target.value)}
-              className="appearance-none border border-gray-500 rounded-xl px-3 py-1.5 text-sm pr-8"
+              className="appearance-none border border-gray-500 rounded-xl px-3 py-2 text-sm pr-8"
             >
               <option value="newest">Terbaru</option>
               <option value="oldest">Terlama</option>

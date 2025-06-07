@@ -88,7 +88,7 @@ export default function CreatePartnerPage() {
     };
 
     return (
-        <div className="container mx-auto bg-tertiary p-6 rounded-lg shadow-md">
+        <div className="container mx-auto bg-tertiary p-6 rounded-xl shadow-md">
             {showPopup && (
                 <Popup
                     message={message}

@@ -1,4 +1,5 @@
 import { SquarePen, Trash } from "lucide-react";
+import { useState } from "react";
 
 export interface PartnerListProps {
   id: number;
@@ -12,18 +13,33 @@ export interface PartnerListProps {
 }
 
 export default function PartnerTable({
-  data,
+  partner,
   onEdit,
   onDelete,
 }: {
-  data: PartnerListProps[];
+  partner: PartnerListProps[];
   onEdit?: (id: number) => void;
   onDelete?: (id: number) => void;
 }) {
+  const [currentPage, setCurrentPage] = useState(1);
+  const itemsPerPage = 15;
+
+  const totalPages = Math.ceil(partner.length / itemsPerPage);
+
+  // Data untuk halaman sekarang saja
+  const currentData = partner.slice(
+    (currentPage - 1) * itemsPerPage,
+    currentPage * itemsPerPage
+  );
+
+  const goToPage = (page: number) => {
+    if (page < 1 || page > totalPages) return;
+    setCurrentPage(page);
+  };
   return (
-    <div className="bg-white shadow rounded-lg overflow-hidden">
+    <div className="bg-tertiary shadow rounded-xl overflow-hidden">
       <table className="min-w-full divide-y divide-gray-200">
-        <thead className="bg-gray-50 text-sm text-gray-700">
+        <thead className="bg-primary text-sm text-white">
           <tr>
             <th className="px-4 py-3 text-left font-medium">Nama Mitra</th>
             <th className="px-4 py-3 text-left font-medium">Nama Pemilik</th>
@@ -36,7 +52,7 @@ export default function PartnerTable({
           </tr>
         </thead>
         <tbody className="text-sm text-gray-700 divide-y divide-gray-200">
-          {data.map((item, idx) => (
+          {currentData.map((item, idx) => (
             <tr key={idx}>
               <td className="px-4 py-3">
                 <div className=" text-gray-900">{item.name}</div>
@@ -60,13 +76,49 @@ export default function PartnerTable({
                   className="cursor-pointer p-2 text-white rounded-xl bg-blue-500 hover:-translate-y-1 duration-150 ease-in"
                   title="Edit"
                 >
-                  <SquarePen size={18} />
+                  <SquarePen size={15} />
                 </button>
               </td>
             </tr>
           ))}
         </tbody>
       </table>
+      {/* Pagination */}
+      <div className="flex justify-center items-center flex-wrap gap-2 mt-4 px-4">
+        <button
+          onClick={() => goToPage(currentPage - 1)}
+          disabled={currentPage === 1}
+          className="px-3 py-1 rounded-xl border border-gray-300 disabled:opacity-50 disabled:cursor-not-allowed"
+        >
+          Prev
+        </button>
+
+        {[...Array(totalPages)].map((_, idx) => {
+          const page = idx + 1;
+          return (
+            <button
+              key={page}
+              onClick={() => goToPage(page)}
+              className={`px-3 py-1 rounded-xl border ${
+                page === currentPage
+                  ? "bg-primary text-white border-primary"
+                  : "border-gray-300 text-gray-700 hover:bg-gray-100"
+              }`}
+            >
+              {page}
+            </button>
+          );
+        })}
+
+        <button
+          onClick={() => goToPage(currentPage + 1)}
+          disabled={currentPage === totalPages}
+          className="px-3 py-1 rounded-xl border border-gray-300 disabled:opacity-50 disabled:cursor-not-allowed"
+        >
+          Next
+        </button>
+      </div>
+      ;
     </div>
   );
 }

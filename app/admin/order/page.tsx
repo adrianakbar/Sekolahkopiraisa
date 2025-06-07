@@ -7,6 +7,7 @@ import OrderDetailModal from "@/app/components/OrderDetailModal";
 import { formatCurrency } from "@/app/utils/helper";
 import ConfirmModal from "@/app/components/ConfirmModal";
 import { FunnelPlus } from "lucide-react";
+import { useRouter } from "next/navigation";
 
 export default function OrderPage() {
   const [ordersData, setOrdersData] = useState<Order[]>([]);
@@ -21,6 +22,7 @@ export default function OrderPage() {
     newStatus: OrderStatus;
   } | null>(null);
   const [isSubmitting, setIsSubmitting] = useState(false);
+  const router = useRouter();
 
   const [statusSortOrder, setStatusSortOrder] = useState<"asc" | "desc">("asc");
   const [sortOption, setSortOption] = useState<"newest" | "oldest" | "az">(
@@ -125,9 +127,8 @@ export default function OrderPage() {
   });
 
   // Handler tombol lihat detail
-  const handleViewOrderDetails = (orderId: number) => {
-    setSelectedOrderId(orderId);
-    setIsModalOpen(true);
+  const handleViewOrder = (orderId: number) => {
+    router.push(`/admin/order/${orderId}`);
   };
 
   const handleCloseModal = () => {
@@ -217,7 +218,7 @@ export default function OrderPage() {
 
         <OrderTable
           order={sortedOrders}
-          onView={handleViewOrderDetails}
+          onView={handleViewOrder}
           onStatusChange={handleStatusBadge}
           onToggleStatusSort={toggleStatusSort}
           statusSortOrder={statusSortOrder}
