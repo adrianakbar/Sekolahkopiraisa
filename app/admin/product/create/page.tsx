@@ -8,6 +8,7 @@ import { createProduct } from "@/app/utils/product";
 import { useRouter } from "next/navigation";
 import Popup from "@/app/components/Popup";
 import ProductListAdmin from "@/app/components/ProductListAdmin";
+import ConfirmModal from "@/app/components/ConfirmModal";
 
 export default function CreateProductPage() {
   // State for product data
@@ -39,6 +40,7 @@ export default function CreateProductPage() {
   const [message, setMessage] = useState("");
   const [popupType, setPopupType] = useState<"success" | "error">("success");
   const router = useRouter();
+  const [showConfirmModal, setShowConfirmModal] = useState(false);
 
   // Handle image upload
   const handleImageUpload = (e: ChangeEvent<HTMLInputElement>) => {
@@ -79,8 +81,7 @@ export default function CreateProductPage() {
   };
 
   // Handle form submission
-  const handleSubmit = async (e: React.FormEvent) => {
-    e.preventDefault();
+  const handleSubmit = async () => {
     setIsSubmitting(true);
     setSubmitError("");
 
@@ -112,6 +113,7 @@ export default function CreateProductPage() {
     } catch (error: any) {
       if (error.type === "validation") {
         setErrors(error.errors); // ✅ Ambil langsung dari backend
+        setShowConfirmModal(false);
       } else {
         console.error("Error:", error);
         setMessage(error.message || "Terjadi kesalahan saat menyimpan berita.");
@@ -153,6 +155,16 @@ export default function CreateProductPage() {
           onClose={() => setShowPopup(false)}
         />
       )}
+      <ConfirmModal
+        title="Simpan Perubahan"
+        description="Apakah Anda yakin ingin mengubah produk? Pastikan informasi yang Anda masukkan sudah benar."
+        isOpen={showConfirmModal}
+        isSubmitting={isSubmitting}
+        onClose={() => {
+          setShowConfirmModal(false);
+        }}
+        onConfirm={handleSubmit}
+      />
       <h1 className="text-lg font-medium mb-4">Tambah Produk Baru</h1>
 
       <div className="flex flex-col md:flex-row gap-8">
@@ -286,18 +298,11 @@ export default function CreateProductPage() {
             </div>
 
             <button
-              type="submit"
-              disabled={isSubmitting}
+              type="button"
+              onClick={() => setShowConfirmModal(true)}
               className="cursor-pointer w-full bg-primary text-white py-2 px-3 text-sm font-medium rounded-xl hover:-translate-y-1 duration-150 ease-in flex justify-center items-center gap-2 disabled:opacity-50"
             >
-              {isSubmitting ? (
-                <>
-                  <LoaderCircle className="animate-spin w-4 h-4" />
-                  Memproses...
-                </>
-              ) : (
-                "Simpan Produk"
-              )}
+              Simpan Produk
             </button>
           </div>
         </form>

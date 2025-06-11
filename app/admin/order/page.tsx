@@ -9,7 +9,7 @@ import ConfirmModal from "@/app/components/ConfirmModal";
 import { FunnelPlus } from "lucide-react";
 import { useRouter } from "next/navigation";
 
-export default function OrderPage() {
+export default function AdminOrderPage() {
   const [ordersData, setOrdersData] = useState<Order[]>([]);
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
@@ -23,6 +23,7 @@ export default function OrderPage() {
   } | null>(null);
   const [isSubmitting, setIsSubmitting] = useState(false);
   const router = useRouter();
+  const [statusFilter, setStatusFilter] = useState<OrderStatus | "ALL">("ALL");
 
   const [statusSortOrder, setStatusSortOrder] = useState<"asc" | "desc">("asc");
   const [sortOption, setSortOption] = useState<"newest" | "oldest" | "az">(
@@ -37,10 +38,13 @@ export default function OrderPage() {
     "CANCELED",
   ];
 
+  const filteredOrders =
+    statusFilter === "ALL"
+      ? ordersData
+      : ordersData.filter((order) => order.status === statusFilter);
+
   // Fungsi map status API ke enum status frontend
-  const mapApiStatus = (
-    apiStatus: string
-  ): OrderStatus => {
+  const mapApiStatus = (apiStatus: string): OrderStatus => {
     const lower = apiStatus.toLowerCase();
     if (["pending", "created"].includes(lower)) return "PENDING";
     if (["processing"].includes(lower)) return "PROCESSING";
@@ -101,7 +105,7 @@ export default function OrderPage() {
   }, []);
 
   // Sort orders sesuai filter dropdown dan status sort
-  const sortedOrders = [...ordersData].sort((a, b) => {
+  const sortedOrders = [...filteredOrders].sort((a, b) => {
     // Sort berdasarkan pilihan filter utama (newest, oldest, az)
     if (sortOption === "newest" || sortOption === "oldest") {
       const aDate = a.createdAt ? new Date(a.createdAt).getTime() : 0;
@@ -197,22 +201,45 @@ export default function OrderPage() {
         <div className="flex justify-between items-center mb-6">
           <h1 className="text-lg font-medium ">List Order</h1>
 
-          <div className="relative hover:-translate-y-1 duration-150 ease-in">
-            <select
-              value={sortOption}  
-              onChange={(e) =>
-                setSortOption(e.target.value as "newest" | "oldest" | "az")
-              }
-              className="appearance-none border border-gray-500 rounded-xl px-4 py-1.5 text-sm pr-8"
-            >
-              <option value="newest">Terbaru</option>
-              <option value="oldest">Terlama</option>
-              <option value="az">Judul A-Z</option>
-            </select>
-            <FunnelPlus
-              className="absolute right-2 top-1/2 transform -translate-y-1/2 text-gray-500 pointer-events-none"
-              size={20}
-            />
+          <div className="flex gap-4">
+            <div className="relative">
+              <select
+                value={statusFilter}
+                onChange={(e) =>
+                  setStatusFilter(e.target.value as OrderStatus | "ALL")
+                }
+                className="appearance-none border border-gray-500 rounded-xl px-4 py-1.5 text-sm pr-8"
+              >
+                <option value="ALL">Semua Status</option>
+                <option value="PENDING">Pending</option>
+                <option value="PROCESSING">Processing</option>
+                <option value="SHIPPED">Shipped</option>
+                <option value="DELIVERED">Delivered</option>
+                <option value="CANCELED">Canceled</option>
+              </select>
+              <FunnelPlus
+                className="absolute right-2 top-1/2 transform -translate-y-1/2 text-gray-500 pointer-events-none"
+                size={20}
+              />
+            </div>
+
+            <div className="relative">
+              <select
+                value={sortOption}
+                onChange={(e) =>
+                  setSortOption(e.target.value as "newest" | "oldest" | "az")
+                }
+                className="appearance-none border border-gray-500 rounded-xl px-4 py-1.5 text-sm pr-8"
+              >
+                <option value="newest">Terbaru</option>
+                <option value="oldest">Terlama</option>
+                <option value="az">Nama A-Z</option>
+              </select>
+              <FunnelPlus
+                className="absolute right-2 top-1/2 transform -translate-y-1/2 text-gray-500 pointer-events-none"
+                size={20}
+              />
+            </div>
           </div>
         </div>
 

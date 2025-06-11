@@ -122,6 +122,7 @@ export default function EditProductPage() {
     } catch (error: any) {
       if (error.type === "validation") {
         setErrors(error.errors); // ✅ Ambil langsung dari backend
+        setShowConfirmModal(false);
       } else {
         console.error("Error:", error);
         setMessage(error.message || "Terjadi kesalahan saat menyimpan berita.");

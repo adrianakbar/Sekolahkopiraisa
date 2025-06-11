@@ -142,7 +142,7 @@ export default function Activity() {
   }, []);
 
   return (
-    <div className="mx-auto min-h-screen">
+    <div className="container mx-auto">
       {showPopup && (
         <Popup
           message={message}
@@ -183,7 +183,7 @@ export default function Activity() {
             <select
               value={sortOption}
               onChange={(e) => setSortOption(e.target.value)}
-              className="appearance-none border border-gray-500 rounded-xl px-3 py-2 text-sm pr-8"
+              className="appearance-none border border-gray-500 rounded-xl px-3 py-1.5 text-sm pr-8"
             >
               <option value="newest">Terbaru</option>
               <option value="oldest">Terlama</option>

@@ -1,4 +1,4 @@
-import { SquarePen, Trash } from "lucide-react";
+import { Phone, SquarePen, Trash } from "lucide-react";
 import { useState } from "react";
 
 export interface PartnerListProps {
@@ -10,16 +10,19 @@ export interface PartnerListProps {
   products: string;
   onEdit?: (id: string) => void;
   onDelete?: (id: string) => void;
+  onCall?: (id: string) => void;
 }
 
 export default function PartnerTable({
   partner,
   onEdit,
   onDelete,
+  onCall,
 }: {
   partner: PartnerListProps[];
   onEdit?: (id: number) => void;
   onDelete?: (id: number) => void;
+  onCall?: (id: number) => void;
 }) {
   const [currentPage, setCurrentPage] = useState(1);
   const itemsPerPage = 15;
@@ -69,7 +72,7 @@ export default function PartnerTable({
 
               <td className="px-4 py-3">{item.address}</td>
               <td className="px-4 py-3">{item.products}</td>
-              <td className="px-4 py-3">
+              <td className="px-4 py-3 flex gap-2">
                 {/* Edit */}
                 <button
                   onClick={() => onEdit?.(item.id)}
@@ -77,6 +80,13 @@ export default function PartnerTable({
                   title="Edit"
                 >
                   <SquarePen size={15} />
+                </button>
+                <button
+                  onClick={() => onCall?.(item.id)}
+                  className="cursor-pointer p-2 text-white rounded-xl bg-green-500 hover:-translate-y-1 duration-150 ease-in"
+                  title="Call"
+                >
+                  <Phone size={15} />
                 </button>
               </td>
             </tr>
