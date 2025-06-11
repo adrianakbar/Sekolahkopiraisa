@@ -26,6 +26,7 @@ export default function ProductDetailPage() {
   const [message, setMessage] = useState("");
   const [popupType, setPopupType] = useState<"success" | "error">("success");
 
+
   useEffect(() => {
     if (productIdString) {
       const loadProductData = async (idStr: string) => {

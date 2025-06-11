@@ -8,8 +8,9 @@ export interface ProductItem {
   image?: string;
   createdAt?: string;
   updatedAt?: string;
-  inventory?: string;
-  stock?: number;
+  inventory?: {
+    stock?: number;
+  }
   partner?: Partner;
   partnerName?: string;
   sold?: number;
