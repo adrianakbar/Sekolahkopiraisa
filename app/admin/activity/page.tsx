@@ -142,7 +142,7 @@ export default function Activity() {
   }, []);
 
   return (
-    <div className="max-w-7xl mx-auto min-h-screen">
+    <div className="container mx-auto">
       {showPopup && (
         <Popup
           message={message}
@@ -172,7 +172,7 @@ export default function Activity() {
 
         <div className="flex items-center gap-4">
           <button
-            className="bg-amber-950 text-white px-3 py-1.5 rounded-xl flex items-center gap-1 hover:-translate-y-1 duration-150 ease-in text-sm"
+            className="bg-amber-950 text-white px-3 py-2 rounded-xl flex items-center gap-1 hover:-translate-y-1 duration-150 ease-in text-sm"
             onClick={handleAddActivity}
           >
             <Plus size={20} />

@@ -4,22 +4,10 @@
 
 import { useEffect, useState } from "react";
 import { fetchMyOrder } from "../utils/order"; // pastikan path-nya sesuai
-import OrderCard from "../components/OrderCard";
+import OrderCard, { OrderItem } from "../components/OrderCard";
 
 type OrderStatus = "PENDING" | "PROCESSING" | "SHIPPED" | "SUCCESS" | string;
 
-interface OrderItem {
-  productId: number;
-  name: string;
-  quantity: number;
-  price: number;
-  subtotal: number;
-  partner: {
-    id: number;
-    name: string;
-  };
-  note: string;
-}
 
 interface Order {
   orderId: number;
@@ -61,8 +49,10 @@ export default function OrderPage() {
       : orders.filter((order) => order.statusOrder === "SUCCESS");
 
   return (
-    <div className="max-w-5xl mx-auto px-4 py-6">
-      <h1 className="text-xl font-semibold mb-4">Pesanan Saya</h1>
+    <div className="bg-secondary">
+
+    <div className="max-w-7xl mx-auto pt-25">
+      <h1 className="text-lg font-medium mb-4">Pesanan Saya</h1>
 
       <div className="flex space-x-4 mb-6">
         <button
@@ -103,5 +93,7 @@ export default function OrderPage() {
         </div>
       )}
     </div>
+    </div>
+
   );
 }

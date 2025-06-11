@@ -1,9 +1,6 @@
 "use client";
 
 import Image from "next/image";
-import ProductCard, {
-  ProductCarouselItemProps,
-} from "./components/ProductCarousel";
 import Footer from "./components/Footer";
 import ImageAboutus from "./components/ImageAboutus";
 import { useEffect, useState } from "react";
@@ -17,6 +14,9 @@ import { addToCart, fetchAllCart } from "./utils/cart";
 import Popup from "./components/Popup";
 import ProductCarouselCard from "./components/ProductCarousel";
 import ProductCarousel from "./components/ProductCarousel";
+import { useCartStore } from "./stores/cartStore";
+import { CartItemData } from "./components/CartCard";
+import { ProductItem } from "./types/productType";
 
 interface ActivityItemApi {
   id: number;
@@ -26,7 +26,7 @@ interface ActivityItemApi {
 
 export default function Home() {
   const [activities, setActivities] = useState<ActivityItemApi[]>([]);
-  const [products, setProducts] = useState<ProductCarouselItemProps[]>([]);
+  const [products, setProducts] = useState<ProductItem[]>([]);
   const [showPopup, setShowPopup] = useState(false);
   const [message, setMessage] = useState("");
   const [popupType, setPopupType] = useState<"success" | "error">("success");
@@ -38,8 +38,24 @@ export default function Home() {
   };
 
   const handleBuyNow = (id: number) => {
-    router.push(`/product/${id}`);
-  }
+    const selectedProduct = products.find((product) => product.id === id);
+    if (!selectedProduct) return;
+
+    const item: CartItemData = {
+      id: selectedProduct.id ?? 0, // bisa diganti ke ID unik jika diperlukan
+      productId: selectedProduct.id ?? 0,
+      imageUrl: selectedProduct.image ?? "",
+      name: selectedProduct.name ?? "",
+      partnerName: selectedProduct.partnerName,
+      price: Number(selectedProduct.price),
+      quantity: 1,
+      selected: true,
+      fromCart: false, // karena bukan dari halaman keranjang
+    };
+
+    useCartStore.getState().setCartItems([item]);
+    router.push("/checkout");
+  };
 
   const getActivities = async () => {
     try {
@@ -81,11 +97,12 @@ export default function Home() {
     try {
       const response = await fetchAllProduct();
       const rawData = response.data;
-      const formattedData = rawData.map((item: ProductCarouselItemProps) => ({
+      const formattedData = rawData.map((item: ProductItem) => ({
         id: item.id,
         name: item.name,
         price: item.price,
         image: item.image,
+        partnerName: item.partner?.name,
       }));
       setProducts(formattedData);
     } catch (error) {

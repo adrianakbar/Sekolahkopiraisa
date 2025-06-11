@@ -1,13 +1,61 @@
 import api from "./api";
 
 export const fetchAllOrder = async () => {
-  const response = await api.get("/api/v1/order");
-  return response.data;
+  try {
+    const response = await api.get("/api/v1/order");
+    return response.data;
+  } catch (error: any) {
+    if (error.response) {
+      const { data } = error.response;
+
+      if (data?.errors && typeof data.errors === "object") {
+        throw {
+          type: "validation",
+          message: data.message || "Validasi gagal!",
+          errors: data.errors,
+        };
+      }
+
+      throw {
+        type: "general",
+        message: data.message || "Gagal mengambil daftar pesanan!",
+      };
+    }
+
+    throw {
+      type: "network",
+      message: "Tidak dapat menghubungi server",
+    };
+  }
 };
 
 export const fetchOrderById = async (id: number) => {
-  const response = await api.get(`/api/v1/order/${id}/detail`);
-  return response.data;
+  try {
+    const response = await api.get(`/api/v1/order/${id}/detail`);
+    return response.data;
+  } catch (error: any) {
+    if (error.response) {
+      const { data } = error.response;
+
+      if (data?.errors && typeof data.errors === "object") {
+        throw {
+          type: "validation",
+          message: data.message || "Validasi gagal!",
+          errors: data.errors,
+        };
+      }
+
+      throw {
+        type: "general",
+        message: data.message || "Gagal mengambil detail pesanan!",
+      };
+    }
+
+    throw {
+      type: "network",
+      message: "Tidak dapat menghubungi server",
+    };
+  }
 };
 
 export const fetchMyOrder = async () => {

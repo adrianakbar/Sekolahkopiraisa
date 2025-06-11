@@ -250,7 +250,7 @@ export default function Login() {
               alt="Google Icon"
               width={15}
             />
-            <span>Lanjutkan Dengan Google</span>
+            Lanjutkan Dengan Google
           </button>
 
           <p className="text-center mt-4 text-gray-700 text-sm">

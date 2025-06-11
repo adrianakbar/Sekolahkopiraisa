@@ -122,6 +122,7 @@ export default function EditProductPage() {
     } catch (error: any) {
       if (error.type === "validation") {
         setErrors(error.errors); // ✅ Ambil langsung dari backend
+        setShowConfirmModal(false);
       } else {
         console.error("Error:", error);
         setMessage(error.message || "Terjadi kesalahan saat menyimpan berita.");
@@ -178,7 +179,7 @@ export default function EditProductPage() {
   }, [productId]);
 
   return (
-    <div className="container mx-auto bg-tertiary p-6 rounded-lg shadow-md">
+    <div className="container mx-auto bg-tertiary p-6 rounded-xl shadow-md">
       {showPopup && (
         <Popup
           message={message}
@@ -196,7 +197,7 @@ export default function EditProductPage() {
         }}
         onConfirm={handleSubmit}
       />
-      <h1 className="text-lg font-medium mb-4">Tambah Produk Baru</h1>
+      <h1 className="text-lg font-medium mb-4">Edit Produk</h1>
 
       <div className="flex flex-col md:flex-row gap-8">
         {/* Product Form */}

@@ -5,18 +5,20 @@ import { Autoplay, Navigation, Pagination } from "swiper/modules";
 import "swiper/css";
 import "swiper/css/navigation";
 import "swiper/css/pagination";
+import { ProductItem } from "../types/productType";
 
-export interface ProductCarouselItemProps {
-  // Mengganti nama interface agar lebih jelas
-  id: number;
-  name: string;
-  price: string;
-  image: string;
-}
+// export interface ProductCarouselItemProps {
+//   // Mengganti nama interface agar lebih jelas
+//   id: number;
+//   name: string;
+//   price: string;
+//   image: string;
+//   partnerName?: string; // Optional jika tidak selalu ada
+// }
 
 // Menambahkan interface untuk props komponen utama
 export interface ProductCarouselCardProps {
-  productItems: ProductCarouselItemProps[];
+  productItems: ProductItem[];
   onAddToCartClick: (productId: number) => void; // Prop fungsi untuk handle klik
   onBuyNowClick: (productId: number) => void; // Optional prop untuk handle beli sekarang
 }
@@ -68,15 +70,15 @@ export default function ProductCarousel({
               {/* Tombol Beli */}
               <div className="flex gap-2 justify-between mt-auto">
                 <button
-                  className="w-full py-2 bg-primary text-white font-medium rounded-xl hover:-translate-y-1 duration-150 ease-in"
-                  onClick={() => onBuyNowClick(product.id)}
+                  className="w-full bg-primary text-white font-medium rounded-xl hover:-translate-y-1 duration-150 ease-in"
+                  onClick={() => onBuyNowClick(product.id ?? 0)}
                 >
                   Beli Sekarang
                 </button>
                 <button
-                  className="min-w-[44px] py-2 px-2 bg-primary text-white font-medium rounded-xl hover:-translate-y-1 duration-150 ease-in flex items-center justify-center"
+                  className="w-15 py-2 bg-primary text-white font-medium rounded-xl hover:-translate-y-1 duration-150 ease-in flex items-center justify-center"
                   // Menambahkan event onClick di sini
-                  onClick={() => onAddToCartClick(product.id)}
+                  onClick={() => onAddToCartClick(product.id ?? 0)}
                 >
                   <ShoppingCart size={20} />
                 </button>

@@ -5,6 +5,7 @@ import { useCartStore } from "../stores/cartStore";
 import { createOrder } from "../utils/order";
 import Popup from "./Popup";
 import { useRouter } from "next/navigation";
+import { formatCurrency } from "../utils/helper";
 
 // ==================== TIPE ====================
 interface OrderInformationProps {
@@ -18,7 +19,7 @@ interface OrderInformationProps {
 interface ProductData {
   imageSrc: string;
   name: string;
-  description: string;
+  partnerName: string;
   price: number;
   quantity: number;
 }
@@ -62,30 +63,35 @@ const OrderInformation: React.FC<OrderInformationProps> = ({
 const ProductItem: React.FC<ProductItemProps> = ({
   imageSrc,
   name,
-  description,
+  partnerName,
   price,
   quantity,
 }) => (
-  <div className="flex items-center mb-4 p-4 border rounded-lg shadow-sm">
+  <div className="grid grid-cols-12 gap-4 items-center mb-4 p-4 border rounded-lg shadow-sm">
+  <div className="col-span-6 flex items-center">
     <img
       src={imageSrc}
       alt={name}
       className="w-20 h-20 object-cover rounded-md mr-4"
     />
-    <div className="flex-grow">
+    <div>
       <h3 className="font-semibold text-gray-800">{name}</h3>
-      <p className="text-xs text-gray-500">{description}</p>
-      <p className="text-sm font-semibold text-orange-500 mt-1">
-        Rp {price.toLocaleString("id-ID")}
-      </p>
-    </div>
-    <div className="text-right ml-4">
-      <p className="text-sm text-gray-700">{quantity}</p>
-      <p className="text-sm font-semibold text-gray-800 mt-1">
-        Rp {(price * quantity).toLocaleString("id-ID")}
+      <p className="text-xs text-gray-500">Mitra: {partnerName}</p>
+      <p className="text-sm font-medium text-primary mt-1">
+        x {quantity}
       </p>
     </div>
   </div>
+  <div className="col-span-3 text-right">
+    <p className="text-sm text-gray-700">{formatCurrency(price)}</p>
+  </div>
+  <div className="col-span-3 text-right">
+    <p className="text-sm font-semibold text-gray-800">
+      Rp {(price * quantity).toLocaleString("id-ID")}
+    </p>
+  </div>
+</div>
+
 );
 
 const PaymentMethods: React.FC<PaymentMethodsProps> = ({
@@ -178,7 +184,7 @@ export default function CheckOutPage() {
   
 
   return (
-    <div className="max-w-4xl mx-auto bg-white shadow-lg rounded-lg overflow-hidden">
+    <div className="w-7xl mx-auto bg-white shadow-lg rounded-lg overflow-hidden">
       {showPopup && (
         <Popup
           message={message}
@@ -197,13 +203,18 @@ export default function CheckOutPage() {
 
       {/* Daftar Produk */}
       <div className="p-4">
-        <div className="flex justify-between items-center mb-3">
-          <h2 className="font-semibold text-gray-700">Detail Produk</h2>
-          <div className="flex space-x-8 text-sm text-gray-500">
-            <span>Harga</span>
-            <span>Total Harga</span>
-          </div>
-        </div>
+        <div className="grid grid-cols-12 gap-4 mb-3 px-4">
+  <div className="col-span-6">
+    <h2 className="font-semibold text-gray-700">Detail Produk</h2>
+  </div>
+  <div className="col-span-3 text-sm text-gray-500 text-right">
+    Harga Satuan
+  </div>
+  <div className="col-span-3 text-sm text-gray-500 text-right">
+    Subtotal Produk
+  </div>
+</div>
+
         {cartItems.length === 0 ? (
           <p className="text-center text-gray-500">
             Tidak ada produk di keranjang.
@@ -214,15 +225,15 @@ export default function CheckOutPage() {
               key={index}
               imageSrc={product.imageUrl}
               name={product.name}
-              description={product.description}
+              partnerName={product.partnerName ?? ""}
               price={product.price}
               quantity={product.quantity}
             />
           ))
         )}
         <div className="text-right mt-4 pr-4">
-          <p className="text-sm text-gray-500">Total</p>
-          <p className="text-xl font-bold text-orange-500">
+          <p className="text-sm text-gray-500">Total Pesanan</p>
+          <p className="text-lg font-medium text-primary">
             Rp {totalHarga.toLocaleString("id-ID")}
           </p>
         </div>
@@ -242,7 +253,7 @@ export default function CheckOutPage() {
           </div>
           <button
             onClick={handleCreateOrder}
-            className="bg-orange-500 hover:bg-orange-600 text-white font-bold py-3 px-6 rounded-lg shadow"
+            className="cursor-pointer w-40 bg-primary text-white py-2 px-3 text-sm font-medium rounded-xl hover:-translate-y-1 duration-150 ease-in flex justify-center items-center gap-2 disabled:opacity-50"
           >
             Buat Pesanan
           </button>

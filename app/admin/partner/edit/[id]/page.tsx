@@ -78,6 +78,7 @@ export default function CreatePartnerPage() {
         } catch (error: any) {
             if (error.type === "validation") {
                 setErrors(error.errors);
+                setShowConfirmModal(false);
             } else {
                 console.error("Error:", error);
                 setMessage(
@@ -181,7 +182,7 @@ export default function CreatePartnerPage() {
                             No. Telepon
                         </label>
                         <input
-                            type="text"
+                            type="number"
                             name="phone_number"
                             value={partner.phone_number}
                             onChange={handleInputChange}
