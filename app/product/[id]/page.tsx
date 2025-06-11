@@ -5,7 +5,7 @@ import React, { useState, useEffect } from "react";
 import { useParams } from "next/navigation";
 // Impor fungsi fetch API dan tipe ProductItem Anda
 import { fetchProductById } from "@/app/utils/product"; // <--- SESUAIKAN PATH INI
-import { ProductItem } from "@/app/types/productType"; // <--- SESUAIKAN PATH INI
+import { ProductApi, ProductItem } from "@/app/types/productType"; // <--- SESUAIKAN PATH INI
 import { formatCurrency } from "@/app/utils/helper";
 import { ShoppingCart } from "lucide-react";
 import { addToCart } from "@/app/utils/cart";
@@ -17,7 +17,7 @@ export default function ProductDetailPage() {
     ? params.id[0]
     : (params.id as string | undefined);
 
-  const [product, setProduct] = useState<ProductItem | null>(null);
+  const [product, setProduct] = useState<ProductApi | null>(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
   const [quantity, setQuantity] = useState(1);
