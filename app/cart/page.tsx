@@ -253,10 +253,15 @@ export default function ShoppingCart(): JSX.Element {
       </div>
       <div className="flex flex-col sm:flex-row justify-between items-center mt-8 pt-6 border-t border-gray-200 gap-4">
         <div className="text-sm font-medium text-gray-800">
-          Total ({cartItems.filter((item) => item.selected).length} item
-          {cartItems.filter((item) => item.selected).length !== 1
+          Total (
+          {cartItems
+            .filter((item) => item.selected)
+            .reduce((sum, item) => sum + item.quantity, 0)}{" "}
+          item
+          {cartItems.filter((item) => item.selected).reduce((sum, item) => sum + item.quantity, 0) !== 1
             ? "s"
-            : ""}): {formatCurrency(totalPrice)}
+            : ""}
+          ): {formatCurrency(totalPrice)}
         </div>
         <button
           type="submit"

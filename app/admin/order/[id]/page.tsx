@@ -72,7 +72,7 @@ export default function OrderDetailPage() {
 
       {/* Alamat */}
       <div className="mb-4">
-        <h3 className="font-bold text-lg">Alamat</h3>
+        <h3 className="font-bold text-lg">Customer</h3>
         <p className="font-semibold">{order.namaCustomer}</p>
         <p>{order.alamatCustomer}</p>
       </div>

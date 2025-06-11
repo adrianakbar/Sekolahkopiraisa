@@ -1,11 +1,12 @@
 "use client";
 
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { useCartStore } from "../stores/cartStore";
 import { createOrder } from "../utils/order";
 import Popup from "./Popup";
 import { useRouter } from "next/navigation";
 import { formatCurrency } from "../utils/helper";
+import { getUser } from "../utils/user";
 
 // ==================== TIPE ====================
 interface OrderInformationProps {
@@ -28,6 +29,11 @@ interface ProductItemProps extends ProductData {}
 interface PaymentMethodsProps {
   selected: string;
   setSelected: (val: string) => void;
+}
+
+interface userData {
+  name: string;
+  phone_number: string;
 }
 
 // ==================== KOMPONEN ====================
@@ -80,6 +86,7 @@ const ProductItem: React.FC<ProductItemProps> = ({
       <p className="text-sm font-medium text-primary mt-1">
         x {quantity}
       </p>
+      <input type="text" className="py-1 px-2 " placeholder="catatan"/>
     </div>
   </div>
   <div className="col-span-3 text-right">
@@ -132,6 +139,8 @@ export default function CheckOutPage() {
   const [popupType, setPopupType] = useState<"success" | "error">("success");
   const [errors, setErrors] = useState<Record<string, string>>({});
 
+  const [user, setUser] = useState<userData>({} as userData);
+
   const [address, setAddress] = useState("");
   const [paymentMethod, setPaymentMethod] = useState("BANK_TRANSFER");
 
@@ -181,6 +190,19 @@ export default function CheckOutPage() {
       }
     }
   };
+
+  // Ambil data user saat komponen pertama kali dimuat
+  useEffect(() => {
+    const fetchUser = async () => {
+      const userData = await getUser();
+      if (userData) {
+        setUser(userData);
+        setAddress(userData.address || ""); // Set alamat jika ada
+      }
+    }
+    fetchUser();
+  }
+  , []);
   
 
   return (
@@ -196,11 +218,10 @@ export default function CheckOutPage() {
       <OrderInformation
         address={address}
         setAddress={setAddress}
-        userName="Aulia Putri"
-        phoneNumber="(+62) 8123456789"
+        userName={user.name}
+        phoneNumber={user.phone_number}
         errors={errors}
       />
-
       {/* Daftar Produk */}
       <div className="p-4">
         <div className="grid grid-cols-12 gap-4 mb-3 px-4">

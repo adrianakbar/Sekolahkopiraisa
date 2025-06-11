@@ -5,10 +5,14 @@ import ProductTable from "../components/ProductTable";
 import { useUserStore } from "../stores/userStore";
 import { use, useEffect, useState } from "react";
 import { fetchAllActivity } from "../utils/activity";
+import { fetchAllProduct } from "../utils/product";
+import { fetchAllPartner } from "../utils/partner";
 
 export default function Dashboard() {
   const user = useUserStore((state) => state.user);
   const [countActivity, setCountActivity] = useState(0);
+  const [counstProduct, setCountProduct] = useState(0);
+  const [countPartner, setCountPartner] = useState(0);
 
   const fetchActivityCount = async () => {
     try {
@@ -33,6 +37,36 @@ export default function Dashboard() {
     fetchActivityCount();
   }, []);
 
+  const fetchProductCount = async () => {
+    try {
+      const response = await fetchAllProduct();
+      const products = response.data;
+      setCountProduct(Array.isArray(products) ? products.length : 0);
+      console.log("Product count:", products.length);
+      console.log("Product data:", products);
+    } catch (error) {
+      console.error("Error fetching product count:", error);
+    }
+  }
+  useEffect(() => {
+    fetchProductCount();
+  }, []);
+
+  const fetchPartnerCount = async () => {
+    try {
+      const response = await fetchAllPartner();
+      const partners = response.data;
+      setCountPartner(Array.isArray(partners) ? partners.length : 0);
+      console.log("Partner count:", partners.length);
+      console.log("Partner data:", partners);
+    } catch (error) {
+      console.error("Error fetching partner count:", error);
+    }
+  }
+  useEffect(() => {
+    fetchPartnerCount();
+  }, []);
+
   return (
     <main className="p-6 min-h-screen">
       {/* Greeting */}
@@ -50,13 +84,13 @@ export default function Dashboard() {
         />
         <StatCard
           icon={<Building size={28} className="text-green-500" />}
-          title="Total Perusahaan"
-          value="8"
+          title="Total Mitra"
+          value= {countPartner.toString()}
         />
         <StatCard
           icon={<Store size={28} className="text-orange-500" />}
           title="Total Produk"
-          value="24"
+          value= {counstProduct.toString()}
         />
       </div>
 
