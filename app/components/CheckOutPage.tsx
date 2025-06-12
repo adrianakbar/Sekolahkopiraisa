@@ -7,13 +7,14 @@ import Popup from "./Popup";
 import { useRouter } from "next/navigation";
 import { formatCurrency } from "../utils/helper";
 import { getUser } from "../utils/user";
+import { UserItem } from "../types/userType";
 
 // ==================== TIPE ====================
 interface OrderInformationProps {
   address: string;
   setAddress: (val: string) => void;
   userName: string;
-  phoneNumber: string;
+  phoneNumber: number;
   errors?: Record<string, string>;
 }
 
@@ -29,11 +30,6 @@ interface ProductItemProps extends ProductData {}
 interface PaymentMethodsProps {
   selected: string;
   setSelected: (val: string) => void;
-}
-
-interface userData {
-  name: string;
-  phone_number: string;
 }
 
 // ==================== KOMPONEN ====================
@@ -74,31 +70,28 @@ const ProductItem: React.FC<ProductItemProps> = ({
   quantity,
 }) => (
   <div className="grid grid-cols-12 gap-4 items-center mb-4 p-4 border rounded-lg shadow-sm">
-  <div className="col-span-6 flex items-center">
-    <img
-      src={imageSrc}
-      alt={name}
-      className="w-20 h-20 object-cover rounded-md mr-4"
-    />
-    <div>
-      <h3 className="font-semibold text-gray-800">{name}</h3>
-      <p className="text-xs text-gray-500">Mitra: {partnerName}</p>
-      <p className="text-sm font-medium text-primary mt-1">
-        x {quantity}
+    <div className="col-span-6 flex items-center">
+      <img
+        src={imageSrc}
+        alt={name}
+        className="w-20 h-20 object-cover rounded-md mr-4"
+      />
+      <div>
+        <h3 className="font-semibold text-gray-800">{name}</h3>
+        <p className="text-xs text-gray-500">Mitra: {partnerName}</p>
+        <p className="text-sm font-medium text-primary mt-1">x {quantity}</p>
+        <input type="text" className="py-1 px-2" placeholder="catatan" />
+      </div>
+    </div>
+    <div className="col-span-3 text-right">
+      <p className="text-sm text-gray-700">{formatCurrency(price)}</p>
+    </div>
+    <div className="col-span-3 text-right">
+      <p className="text-sm font-semibold text-gray-800">
+        Rp {(price * quantity).toLocaleString("id-ID")}
       </p>
-      <input type="text" className="py-1 px-2 " placeholder="catatan"/>
     </div>
   </div>
-  <div className="col-span-3 text-right">
-    <p className="text-sm text-gray-700">{formatCurrency(price)}</p>
-  </div>
-  <div className="col-span-3 text-right">
-    <p className="text-sm font-semibold text-gray-800">
-      Rp {(price * quantity).toLocaleString("id-ID")}
-    </p>
-  </div>
-</div>
-
 );
 
 const PaymentMethods: React.FC<PaymentMethodsProps> = ({
@@ -139,7 +132,7 @@ export default function CheckOutPage() {
   const [popupType, setPopupType] = useState<"success" | "error">("success");
   const [errors, setErrors] = useState<Record<string, string>>({});
 
-  const [user, setUser] = useState<userData>({} as userData);
+  const [user, setUser] = useState<UserItem>({});
 
   const [address, setAddress] = useState("");
   const [paymentMethod, setPaymentMethod] = useState("BANK_TRANSFER");
@@ -152,7 +145,7 @@ export default function CheckOutPage() {
 
   const handleCreateOrder = async () => {
     const cartItems = useCartStore.getState().cartItems;
-  
+
     const orderPayload = {
       items: cartItems.map((item) => ({
         products_id: item.id,
@@ -163,10 +156,10 @@ export default function CheckOutPage() {
       address,
       paymentMethod,
     };
-  
+
     try {
       const data = await createOrder(orderPayload);
-  
+
       // Ambil link snapRedirectUrl
       const redirectUrl = data.order?.payment?.snapRedirectUrl;
       if (redirectUrl) {
@@ -182,9 +175,7 @@ export default function CheckOutPage() {
         setErrors(error.errors);
       } else {
         console.error("Error:", error);
-        setMessage(
-          error.message || "Terjadi kesalahan saat membuat pesanan."
-        );
+        setMessage(error.message || "Terjadi kesalahan saat membuat pesanan.");
         setPopupType("error");
         setShowPopup(true);
       }
@@ -199,11 +190,9 @@ export default function CheckOutPage() {
         setUser(userData);
         setAddress(userData.address || ""); // Set alamat jika ada
       }
-    }
+    };
     fetchUser();
-  }
-  , []);
-  
+  }, []);
 
   return (
     <div className="w-7xl mx-auto bg-white shadow-lg rounded-lg overflow-hidden">
@@ -218,23 +207,23 @@ export default function CheckOutPage() {
       <OrderInformation
         address={address}
         setAddress={setAddress}
-        userName={user.name}
-        phoneNumber={user.phone_number}
+        userName={user.name || ""}
+        phoneNumber={user.phone_number || 0}
         errors={errors}
       />
       {/* Daftar Produk */}
       <div className="p-4">
         <div className="grid grid-cols-12 gap-4 mb-3 px-4">
-  <div className="col-span-6">
-    <h2 className="font-semibold text-gray-700">Detail Produk</h2>
-  </div>
-  <div className="col-span-3 text-sm text-gray-500 text-right">
-    Harga Satuan
-  </div>
-  <div className="col-span-3 text-sm text-gray-500 text-right">
-    Subtotal Produk
-  </div>
-</div>
+          <div className="col-span-6">
+            <h2 className="font-semibold text-gray-700">Detail Produk</h2>
+          </div>
+          <div className="col-span-3 text-sm text-gray-500 text-right">
+            Harga Satuan
+          </div>
+          <div className="col-span-3 text-sm text-gray-500 text-right">
+            Subtotal Produk
+          </div>
+        </div>
 
         {cartItems.length === 0 ? (
           <p className="text-center text-gray-500">
