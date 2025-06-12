@@ -399,7 +399,7 @@ export default function EditActivityPage() {
           {/* Tombol Submit */}
           <button
             type="button"
-            className="cursor-pointer w-full bg-primary text-white py-2 px-3 text-sm font-medium rounded-xl hover:-translate-y-1 duration-150 ease-in flex justify-center items-center gap-2 disabled:opacity-50"
+            className="cursor-pointer w-full bg-primary text-white py-1.5 px-3 text-sm font-medium rounded-xl hover:-translate-y-1 duration-150 ease-in flex justify-center items-center gap-2 disabled:opacity-50"
             onClick={() => setShowConfirmModal(true)}
           >
             Perbarui Berita
