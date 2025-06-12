@@ -170,3 +170,25 @@ export const deletePartner = async (id: number) => {
   const response = await api.delete(`/api/v1/partner/${id}`);
   return response.data;
 };
+
+export const cancelOrder = async (orderId: number, reason: string) => {
+  try {
+    const response = await fetch(`/api/orders/${orderId}/cancel`, {
+      method: "PUT",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({ reason }),
+    });
+
+    const data = await response.json();
+
+    if (!response.ok) {
+      throw new Error(data.message || "Failed to cancel order");
+    }
+
+    return data;
+  } catch (error) {
+    throw error;
+  }
+};
