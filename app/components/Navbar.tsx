@@ -63,9 +63,15 @@ export default function Navbar({ navbarItems }: { navbarItems: NavbarItem[] }) {
   };
 
   useEffect(() => {
-    // Panggil fungsi untuk mendapatkan jumlah item unik di keranjang
     fetchCartCount();
-  }, []); // Hanya panggil sekali saat komponen pertama kali dimuat
+    const handleCartUpdated = () => {
+      fetchCartCount();
+    };
+    window.addEventListener("cartUpdated", handleCartUpdated);
+    return () => {
+      window.removeEventListener("cartUpdated", handleCartUpdated);
+    };
+  }, []);
 
   useEffect(() => {
     if (isMobileMenuOpen) {

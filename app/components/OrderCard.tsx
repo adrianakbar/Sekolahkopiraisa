@@ -34,7 +34,44 @@ interface Props {
   order: Order;
 }
 
+const getStatusBadge = (status: string) => {
+  switch (status) {
+    case "PENDING":
+      return {
+        style: "bg-yellow-100 text-yellow-800",
+        label: "Dibuat",
+      };
+    case "PROCESSING":
+      return {
+        style: "bg-blue-100 text-blue-800",
+        label: "Diproses",
+      };
+    case "SHIPPED":
+      return {
+        style: "bg-indigo-100 text-indigo-800",
+        label: "Dikirim",
+      };
+    case "DELIVERED":
+      return {
+        style: "bg-green-100 text-green-800",
+        label: "Diterima",
+      };
+    case "CANCELED":
+      return {
+        style: "bg-red-100 text-red-800",
+        label: "Dibatalkan",
+      };
+    default:
+      return {
+        style: "bg-gray-100 text-gray-800",
+        label: status,
+      };
+  }
+};
+
 export default function OrderCard({ order }: Props) {
+  const badge = getStatusBadge(order.statusOrder);
+
   return (
     <div className="border border-gray-200 rounded-xl p-4 shadow-sm bg-white">
       {/* Header */}
@@ -48,13 +85,9 @@ export default function OrderCard({ order }: Props) {
           </p>
         </div>
         <span
-          className={`text-xs font-medium px-3 py-1 rounded-full ${
-            order.statusOrder === "SUCCESS"
-              ? "bg-green-100 text-green-700"
-              : "bg-yellow-100 text-yellow-800"
-          }`}
+          className={`text-xs font-medium px-3 py-1 rounded-full ${badge.style}`}
         >
-          {order.statusOrder}
+          {badge.label}
         </span>
       </div>
 
