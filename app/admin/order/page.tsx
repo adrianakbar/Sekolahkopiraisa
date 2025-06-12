@@ -6,8 +6,9 @@ import { useEffect, useState } from "react";
 import OrderDetailModal from "@/app/components/OrderDetailModal";
 import { formatCurrency } from "@/app/utils/helper";
 import ConfirmModal from "@/app/components/ConfirmModal";
-import { FunnelPlus } from "lucide-react";
+import { Check, FunnelPlus, Phone } from "lucide-react";
 import { useRouter } from "next/navigation";
+import { callPartner } from "@/app/utils/partner";
 
 export default function AdminOrderPage() {
   const [ordersData, setOrdersData] = useState<Order[]>([]);
@@ -24,6 +25,7 @@ export default function AdminOrderPage() {
   const [isSubmitting, setIsSubmitting] = useState(false);
   const router = useRouter();
   const [statusFilter, setStatusFilter] = useState<OrderStatus | "ALL">("ALL");
+  const [contactedPartners, setContactedPartners] = useState<number[]>([]);
 
   const [statusSortOrder, setStatusSortOrder] = useState<"asc" | "desc">("asc");
   const [sortOption, setSortOption] = useState<"newest" | "oldest" | "az">(
@@ -42,6 +44,23 @@ export default function AdminOrderPage() {
     statusFilter === "ALL"
       ? ordersData
       : ordersData.filter((order) => order.status === statusFilter);
+
+  const handleContactPartner = async (partnerId: number) => {
+    try {
+      const response = await callPartner(partnerId); // Panggil API
+      const url = response.data?.whatsappUrl;
+
+      if (url) {
+        window.open(url, "_blank"); // Redirect ke WhatsApp
+      }
+
+      // (Opsional) Tandai partner sudah dihubungi
+      setContactedPartners((prev) => [...prev, partnerId]);
+    } catch (err: any) {
+      alert(err.message || "Gagal menghubungi partner.");
+      console.error(err);
+    }
+  };
 
   // Fungsi map status API ke enum status frontend
   const mapApiStatus = (apiStatus: string): OrderStatus => {
@@ -82,6 +101,9 @@ export default function AdminOrderPage() {
               .filter(Boolean)
               .join(", ") || "Produk tidak tersedia";
 
+          const partnerList =
+            order.orderItems?.map((item: any) => item.partner) || [];
+
           return {
             id: order.id,
             customerName: order.user?.name || "N/A",
@@ -90,6 +112,9 @@ export default function AdminOrderPage() {
             totalPrice: formatCurrency(totalPrice),
             status: mapApiStatus(order.status),
             createdAt: order.created_at,
+            partnerId: partnerList[0]?.id || null,
+            partnerName: partnerList[0]?.name || null,
+            orderItems: order.orderItems || [], // 🟢 Tambahkan ini untuk akses partner nanti
           };
         });
 
@@ -176,6 +201,24 @@ export default function AdminOrderPage() {
     setStatusSortOrder((prev) => (prev === "asc" ? "desc" : "asc"));
   }
 
+  // Function to get Indonesian label for status
+  const getStatusLabel = (status: OrderStatus): string => {
+    switch (status) {
+      case "PENDING":
+        return "Dibuat";
+      case "PROCESSING":
+        return "Diproses";
+      case "SHIPPED":
+        return "Dikirim";
+      case "DELIVERED":
+        return "Diterima";
+      case "CANCELED":
+        return "Dibatalkan";
+      default:
+        return status;
+    }
+  };
+
   if (isLoading)
     return <div className="p-4 text-center">Loading orders...</div>;
   if (error)
@@ -193,15 +236,17 @@ export default function AdminOrderPage() {
         }}
         onConfirm={confirmStatusChange}
         title="Konfirmasi Perubahan Status"
-        description={`Apakah Anda yakin ingin mengubah status pesanan menjadi "${pendingStatus?.newStatus}"?`}
+        description={`Apakah Anda yakin ingin mengubah status pesanan menjadi "${pendingStatus?.newStatus ? getStatusLabel(pendingStatus.newStatus) : ''}"?`}
         isSubmitting={isSubmitting}
       />
 
       <div className="container mx-auto">
-        <div className="flex justify-between items-center mb-6">
-          <h1 className="text-lg font-medium ">List Order</h1>
+        <div className="flex flex-wrap justify-between items-center mb-4">
+          <h1 className="text-lg font-medium">List Order</h1>
 
-          <div className="flex gap-4">
+          {/* Filters - Moved to the right */}
+          <div className="flex flex-wrap gap-4 items-center">
+            {/* Status Filter */}
             <div className="relative">
               <select
                 value={statusFilter}
@@ -211,18 +256,19 @@ export default function AdminOrderPage() {
                 className="appearance-none border border-gray-500 rounded-xl px-4 py-1.5 text-sm pr-8"
               >
                 <option value="ALL">Semua Status</option>
-                <option value="PENDING">Pending</option>
-                <option value="PROCESSING">Processing</option>
-                <option value="SHIPPED">Shipped</option>
-                <option value="DELIVERED">Delivered</option>
-                <option value="CANCELED">Canceled</option>
+                <option value="PENDING">Dibuat</option>
+                <option value="PROCESSING">Diproses</option>
+                <option value="SHIPPED">Dikirim</option>
+                <option value="DELIVERED">Diterima</option>
+                <option value="CANCELED">Dibatalkan</option>
               </select>
               <FunnelPlus
                 className="absolute right-2 top-1/2 transform -translate-y-1/2 text-gray-500 pointer-events-none"
-                size={20}
+                size={18}
               />
             </div>
 
+            {/* Sort Filter */}
             <div className="relative">
               <select
                 value={sortOption}
@@ -237,11 +283,57 @@ export default function AdminOrderPage() {
               </select>
               <FunnelPlus
                 className="absolute right-2 top-1/2 transform -translate-y-1/2 text-gray-500 pointer-events-none"
-                size={20}
+                size={18}
               />
             </div>
           </div>
         </div>
+
+        {/* Button Hubungi Mitra untuk Pending Orders */}
+        {(() => {
+          const pendingPartners = ordersData
+            .filter((o) => o.status === "PENDING")
+            .flatMap(
+              (o: any) => o.orderItems?.map((item: any) => item.partner) || []
+            )
+            .filter((p) => p && p.id)
+            .reduce((unique: any[], curr: any) => {
+              if (!unique.find((p) => p.id === curr.id)) unique.push(curr);
+              return unique;
+            }, []);
+
+          return pendingPartners.length > 0 ? (
+            <div className="mb-4 p-4 bg-secondary rounded-xl shadow-lg">
+              <h3 className="text-sm font-medium mb-3">
+                Mitra dengan Order Pending ({pendingPartners.length} mitra)
+              </h3>
+              <div className="flex flex-wrap gap-2">
+                {pendingPartners.map((partner) => (
+                  <button
+                    key={partner.id}
+                    onClick={() => handleContactPartner(partner.id)}
+                    className={`px-3 py-1.5 text-sm rounded-xl transition-colors ${
+                      contactedPartners.includes(partner.id)
+                        ? "bg-green-100 text-green-700 border border-green-300"
+                        : "bg-blue-500 text-white hover:bg-blue-600"
+                    }`}
+                    disabled={contactedPartners.includes(partner.id)}
+                  >
+                    {contactedPartners.includes(partner.id) ? (
+                      <div className="flex items-center gap-2">
+                        <Check size={15} /> {partner.name} (Dihubungi)
+                      </div>
+                    ) : (
+                      <div className="flex items-center gap-2">
+                        <Phone size={15} /> Hubungi {partner.name}
+                      </div>
+                    )}
+                  </button>
+                ))}
+              </div>
+            </div>
+          ) : null;
+        })()}
 
         <OrderTable
           order={sortedOrders}

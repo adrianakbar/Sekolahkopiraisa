@@ -156,8 +156,8 @@ export default function CreateProductPage() {
         />
       )}
       <ConfirmModal
-        title="Simpan Perubahan"
-        description="Apakah Anda yakin ingin mengubah produk? Pastikan informasi yang Anda masukkan sudah benar."
+        title="Simpan Produk"
+        description="Apakah Anda yakin ingin membuat produk baru? Pastikan informasi yang Anda masukkan sudah benar."
         isOpen={showConfirmModal}
         isSubmitting={isSubmitting}
         onClose={() => {

@@ -183,16 +183,11 @@ export default function Signup() {
           </div>
           <button
             type="button"
-            className="cursor-pointer w-full p-1.5 bg-gray-300 rounded-xl border-gray-400 border hover:-translate-y-1 duration-150 ease-in flex justify-center items-center gap-2"
+            className="cursor-pointer w-full p-1.5 bg-gray-300 border-gray-400 border rounded-xl hover:-translate-y-1 duration-150 ease-in text-sm flex items-center gap-2 justify-center"
             onClick={loginWithGoogle}
           >
-            <img
-              src="/assets/google-logo.png"
-              alt="Google Icon"
-              width={19}
-              height={20}
-            />
-            <span className="text-sm">Lanjutkan Dengan Google</span>
+            <img src="/assets/google-logo.png" alt="Google Icon" width={15} />
+            Lanjutkan Dengan Google
           </button>
           <p className="text-center mt-4 text-gray-700 text-sm">
             Sudah punya akun?

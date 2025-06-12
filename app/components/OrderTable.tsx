@@ -87,6 +87,24 @@ function StatusDropdown({
     onToggle(-1); // Tutup dropdown setelah memilih
   };
 
+  // Function to get Indonesian label for status
+  const getStatusLabel = (status: OrderStatus): string => {
+    switch (status) {
+      case "PENDING":
+        return "Dibuat";
+      case "PROCESSING":
+        return "Diproses";
+      case "SHIPPED":
+        return "Dikirim";
+      case "DELIVERED":
+        return "Diterima";
+      case "CANCELED":
+        return "Dibatalkan";
+      default:
+        return status;
+    }
+  };
+
   let statusColorClass = "";
   let statusIcon = null;
 
@@ -121,13 +139,13 @@ function StatusDropdown({
         onClick={() => onToggle(orderId)}
       >
         {statusIcon}
-        {currentStatus}
+        {getStatusLabel(currentStatus)}
         <ChevronDown size={16} className="ml-1 -mr-0.5" />
       </button>
 
       {isOpen && (
         <div
-          className="origin-top-right absolute right-0 mt-2 w-40 rounded-xl shadow-lg bg-white ring-1 ring-black ring-opacity-5 z-50"
+          className="origin-top-right absolute right-0 mt-2 w-40  shadow-lg bg-white ring-1 ring-black ring-opacity-5 z-50"
           role="menu"
         >
           <div className="py-1">
@@ -141,7 +159,7 @@ function StatusDropdown({
                     : "text-gray-700"
                 } group flex items-center w-full px-4 py-2 text-sm hover:bg-gray-100 hover:text-gray-900`}
               >
-                {status}
+                {getStatusLabel(status)}
               </button>
             ))}
           </div>
@@ -182,7 +200,7 @@ export default function OrderTable({
 
   return (
     <>
-      <div className="bg-tertiary shadow rounded-xl overflow-hidden">
+      <div className="bg-tertiary shadow-lg rounded-xl overflow-hidden">
         <div className="overflow-x-auto">
           <table className="min-w-full divide-y divide-gray-200 text-sm">
             <thead className="bg-primary text-white">
@@ -192,6 +210,9 @@ export default function OrderTable({
                 </th>
                 <th className="px-2 sm:px-4 py-3 text-left font-medium whitespace-nowrap">
                   Nama Produk
+                </th>
+                <th className="px-2 sm:px-4 py-3 text-left font-medium whitespace-nowrap">
+                  Nama Mitra
                 </th>
                 <th className="px-2 sm:px-4 py-3 text-left font-medium whitespace-nowrap">
                   Quantity Total
@@ -205,6 +226,7 @@ export default function OrderTable({
                 <th className="px-2 sm:px-4 py-3 text-left font-medium whitespace-nowrap">
                   Aksi
                 </th>
+                
               </tr>
             </thead>
             <tbody className="text-gray-700 divide-y divide-gray-200">
@@ -215,6 +237,9 @@ export default function OrderTable({
                   </td>
                   <td className="px-2 sm:px-4 py-3 whitespace-nowrap">
                     {item.productName}
+                  </td>
+                  <td className="px-2 sm:px-4 py-3 whitespace-nowrap">
+                    {item.partnerName}
                   </td>
                   <td className="px-2 sm:px-4 py-3 whitespace-nowrap">
                     {item.totalQuantity}

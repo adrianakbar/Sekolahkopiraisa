@@ -8,6 +8,7 @@ import { useRouter } from "next/navigation";
 import { formatCurrency } from "../utils/helper";
 import { getUser } from "../utils/user";
 import { UserItem } from "../types/userType";
+import { CreateOrderPayload } from "../types/orderType";
 
 // ==================== TIPE ====================
 interface OrderInformationProps {
@@ -16,6 +17,7 @@ interface OrderInformationProps {
   userName: string;
   phoneNumber: number;
   errors?: Record<string, string>;
+  setErrors: React.Dispatch<React.SetStateAction<Record<string, string>>>;
 }
 
 interface ProductData {
@@ -26,7 +28,11 @@ interface ProductData {
   quantity: number;
 }
 
-interface ProductItemProps extends ProductData {}
+interface ProductItemProps extends ProductData {
+  customNote: string;
+  onNoteChange: (val: string) => void;
+}
+
 interface PaymentMethodsProps {
   selected: string;
   setSelected: (val: string) => void;
@@ -39,28 +45,38 @@ const OrderInformation: React.FC<OrderInformationProps> = ({
   setAddress,
   userName,
   phoneNumber,
-  errors = {}, // default supaya tidak error jika tidak diberikan
-}) => (
-  <div className="mb-6 p-4 border-b">
-    <div className="mb-2">
-      <p className="text-sm text-gray-500">Alamat Pengiriman</p>
-      <textarea
-        className={`w-full mt-1 p-2 border rounded-md text-sm ${
-          errors.address ? "border-red-500" : ""
-        }`}
-        value={address}
-        onChange={(e) => setAddress(e.target.value)}
-        rows={3}
-        placeholder="Masukkan alamat pengiriman"
-      />
-      {errors.address && (
-        <p className="text-sm text-red-600 mt-1">{errors.address}</p>
-      )}
+  errors = {},
+  setErrors,
+}) => {
+  const handleAddressChange = (e: React.ChangeEvent<HTMLTextAreaElement>) => {
+    setAddress(e.target.value);
+    if (errors.address) {
+      setErrors((prev) => ({ ...prev, address: "" }));
+    }
+  };
+
+  return (
+    <div className="mb-6 p-4 border-b">
+      <div className="mb-2">
+        <p className="text-sm text-gray-500">Alamat Pengiriman</p>
+        <textarea
+          className={`w-full mt-1 p-2 border rounded-md text-sm ${
+            errors.address ? "border-red-500" : ""
+          }`}
+          value={address}
+          onChange={handleAddressChange}
+          rows={3}
+          placeholder="Masukkan alamat pengiriman"
+        />
+        {errors.address && (
+          <p className="text-sm text-red-600 mt-1">{errors.address}</p>
+        )}
+      </div>
+      <p className="text-sm text-gray-700 mt-1">{userName}</p>
+      <p className="text-sm text-gray-700">{phoneNumber}</p>
     </div>
-    <p className="text-sm text-gray-700 mt-1">{userName}</p>
-    <p className="text-sm text-gray-700">{phoneNumber}</p>
-  </div>
-);
+  );
+};
 
 const ProductItem: React.FC<ProductItemProps> = ({
   imageSrc,
@@ -68,6 +84,8 @@ const ProductItem: React.FC<ProductItemProps> = ({
   partnerName,
   price,
   quantity,
+  customNote,
+  onNoteChange,
 }) => (
   <div className="grid grid-cols-12 gap-4 items-center mb-4 p-4 border rounded-lg shadow-sm">
     <div className="col-span-6 flex items-center">
@@ -80,7 +98,13 @@ const ProductItem: React.FC<ProductItemProps> = ({
         <h3 className="font-semibold text-gray-800">{name}</h3>
         <p className="text-xs text-gray-500">Mitra: {partnerName}</p>
         <p className="text-sm font-medium text-primary mt-1">x {quantity}</p>
-        <input type="text" className="py-1 px-2" placeholder="catatan" />
+        <input
+          type="text"
+          className="py-1 px-2 text-sm mt-2 border rounded"
+          placeholder="Catatan"
+          value={customNote}
+          onChange={(e) => onNoteChange(e.target.value)}
+        />
       </div>
     </div>
     <div className="col-span-3 text-right">
@@ -136,6 +160,7 @@ export default function CheckOutPage() {
 
   const [address, setAddress] = useState("");
   const [paymentMethod, setPaymentMethod] = useState("BANK_TRANSFER");
+  const [customNotes, setCustomNotes] = useState<Record<number, string>>({});
 
   const router = useRouter();
   const totalHarga = cartItems.reduce(
@@ -143,30 +168,38 @@ export default function CheckOutPage() {
     0
   );
 
+  const handleNoteChange = (productId: number, note: string) => {
+    setCustomNotes((prev) => ({ ...prev, [productId]: note }));
+  };
+
   const handleCreateOrder = async () => {
     const cartItems = useCartStore.getState().cartItems;
+    if (cartItems.length === 0) {
+      setMessage("Keranjang kosong. Silakan tambahkan produk.");
+      setPopupType("error");
+      setShowPopup(true);
+      return;
+    }
 
-    const orderPayload = {
+    const orderPayload: CreateOrderPayload = {
       items: cartItems.map((item) => ({
         products_id: item.id,
         quantity: item.quantity,
-        custom_note: item.customNote || "",
+        custom_note: customNotes[item.id] || "",
         fromCart: item.fromCart || false,
       })),
       address,
-      paymentMethod,
+      paymentMethod: paymentMethod as CreateOrderPayload["paymentMethod"], // optional: safe typecast
     };
 
     try {
       const data = await createOrder(orderPayload);
-
-      // Ambil link snapRedirectUrl
       const redirectUrl = data.order?.payment?.snapRedirectUrl;
+
       if (redirectUrl) {
-        window.location.href = redirectUrl; // Redirect ke halaman pembayaran Midtrans
+        window.location.href = redirectUrl;
       } else {
-        // Jika tidak ada redirect URL, tampilkan pesan sukses biasa
-        setMessage("Pesanan berhasil dibuat!");
+        setMessage(message);
         setPopupType("success");
         setShowPopup(true);
       }
@@ -210,6 +243,7 @@ export default function CheckOutPage() {
         userName={user.name || ""}
         phoneNumber={user.phone_number || 0}
         errors={errors}
+        setErrors={setErrors}
       />
       {/* Daftar Produk */}
       <div className="p-4">
@@ -232,12 +266,14 @@ export default function CheckOutPage() {
         ) : (
           cartItems.map((product, index) => (
             <ProductItem
-              key={index}
+              key={product.id}
               imageSrc={product.imageUrl}
               name={product.name}
               partnerName={product.partnerName ?? ""}
               price={product.price}
               quantity={product.quantity}
+              customNote={customNotes[product.id] || ""}
+              onNoteChange={(val) => handleNoteChange(product.id, val)}
             />
           ))
         )}
