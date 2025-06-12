@@ -182,7 +182,7 @@ export default function OrderTable({
 
   return (
     <>
-      <div className="bg-tertiary shadow rounded-xl overflow-hidden">
+      <div className="bg-tertiary shadow-lg rounded-xl overflow-hidden">
         <div className="overflow-x-auto">
           <table className="min-w-full divide-y divide-gray-200 text-sm">
             <thead className="bg-primary text-white">
@@ -192,6 +192,9 @@ export default function OrderTable({
                 </th>
                 <th className="px-2 sm:px-4 py-3 text-left font-medium whitespace-nowrap">
                   Nama Produk
+                </th>
+                <th className="px-2 sm:px-4 py-3 text-left font-medium whitespace-nowrap">
+                  Nama Mitra
                 </th>
                 <th className="px-2 sm:px-4 py-3 text-left font-medium whitespace-nowrap">
                   Quantity Total
@@ -205,6 +208,7 @@ export default function OrderTable({
                 <th className="px-2 sm:px-4 py-3 text-left font-medium whitespace-nowrap">
                   Aksi
                 </th>
+                
               </tr>
             </thead>
             <tbody className="text-gray-700 divide-y divide-gray-200">
@@ -215,6 +219,9 @@ export default function OrderTable({
                   </td>
                   <td className="px-2 sm:px-4 py-3 whitespace-nowrap">
                     {item.productName}
+                  </td>
+                  <td className="px-2 sm:px-4 py-3 whitespace-nowrap">
+                    {item.partnerName}
                   </td>
                   <td className="px-2 sm:px-4 py-3 whitespace-nowrap">
                     {item.totalQuantity}

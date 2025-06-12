@@ -72,7 +72,7 @@ export default function PartnerTable({
 
               <td className="px-4 py-3">{item.address}</td>
               <td className="px-4 py-3">{item.products}</td>
-              <td className="px-4 py-3 flex gap-2">
+              <td className="px-4 py-3 ">
                 {/* Edit */}
                 <button
                   onClick={() => onEdit?.(item.id)}
@@ -80,13 +80,6 @@ export default function PartnerTable({
                   title="Edit"
                 >
                   <SquarePen size={15} />
-                </button>
-                <button
-                  onClick={() => onCall?.(item.id)}
-                  className="cursor-pointer p-2 text-white rounded-xl bg-green-500 hover:-translate-y-1 duration-150 ease-in"
-                  title="Call"
-                >
-                  <Phone size={15} />
                 </button>
               </td>
             </tr>
