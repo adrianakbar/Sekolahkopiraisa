@@ -2,7 +2,7 @@
 "use client";
 
 import React, { useState, useEffect } from "react";
-import { useParams } from "next/navigation";
+import { useParams, useRouter } from "next/navigation";
 // Impor fungsi fetch API dan tipe ProductItem Anda
 import { fetchProductById } from "@/app/utils/product"; // <--- SESUAIKAN PATH INI
 import { ProductApi, ProductItem } from "@/app/types/productType"; // <--- SESUAIKAN PATH INI
@@ -10,6 +10,8 @@ import { formatCurrency } from "@/app/utils/helper";
 import { ShoppingCart } from "lucide-react";
 import { addToCart } from "@/app/utils/cart";
 import Popup from "@/app/components/Popup";
+import { CartItemData } from "@/app/components/CartCard";
+import { useCartStore } from "@/app/stores/cartStore";
 
 export default function ProductDetailPage() {
   const params = useParams();
@@ -21,10 +23,13 @@ export default function ProductDetailPage() {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
   const [quantity, setQuantity] = useState(1);
+  const [products, setProducts] = useState<ProductItem[]>([]);
 
   const [showPopup, setShowPopup] = useState(false);
   const [message, setMessage] = useState("");
   const [popupType, setPopupType] = useState<"success" | "error">("success");
+
+  const router = useRouter();
 
 
   useEffect(() => {
@@ -111,11 +116,25 @@ export default function ProductDetailPage() {
     }
   };
 
-  const handleBuyNow = () => {
-    if (!product) return;
-    console.log(`Beli sekarang: ${product.name}, Kuantitas: ${quantity}`);
-    alert(`Anda akan membeli "${product.name}" (x${quantity})!`);
-  };
+  const handleBuyNow = (id: number) => {
+      const selectedProduct = products.find((product) => product.id === id);
+      if (!selectedProduct) return;
+  
+      const item: CartItemData = {
+        id: selectedProduct.id ?? 0, // bisa diganti ke ID unik jika diperlukan
+        productId: selectedProduct.id ?? 0,
+        imageUrl: selectedProduct.image ?? "",
+        name: selectedProduct.name ?? "",
+        partnerName: selectedProduct.partnerName,
+        price: Number(selectedProduct.price),
+        quantity: 1,
+        selected: true,
+        fromCart: false, // karena bukan dari halaman keranjang
+      };
+  
+      useCartStore.getState().setCartItems([item]);
+      router.push("/checkout");
+    };
 
   if (loading) {
     return (
@@ -268,7 +287,7 @@ export default function ProductDetailPage() {
               Masukkan Keranjang
             </button>
             <button
-              onClick={handleBuyNow}
+              onClick={() => handleBuyNow(product.id ?? 0)}
               className="cursor-pointer bg-primary text-white py-2 px-3 text-sm rounded-xl hover:-translate-y-1 duration-150 ease-in flex justify-center items-center gap-2 disabled:opacity-50"
             >
               Beli Sekarang

@@ -14,6 +14,7 @@ import { AnimatePresence, motion } from "framer-motion";
 import clsx from "clsx";
 import ConfirmModal from "./ConfirmModal";
 import { fetchAllCart } from "../utils/cart";
+import { UserItem } from "../types/userType";
 
 interface NavbarItem {
   title: string;
@@ -21,14 +22,10 @@ interface NavbarItem {
   icon?: React.ReactNode; // Add icon support for mobile view
 }
 
-interface User {
-  name: string;
-  image: string;
-  email: string;
-}
+
 
 export default function Navbar({ navbarItems }: { navbarItems: NavbarItem[] }) {
-  const [user, setUser] = useState<User | null>(null);
+  const [user, setUser] = useState<UserItem | null>(null);
   const [isDropdownOpen, setIsDropdownOpen] = useState(false);
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
   const [showConfirmModal, setShowConfirmModal] = useState(false);
@@ -197,7 +194,7 @@ export default function Navbar({ navbarItems }: { navbarItems: NavbarItem[] }) {
                     width={44}
                     height={44}
                     src={user.image || "/assets/user.png"}
-                    alt={user.name}
+                    alt={user.name ?? ""}
                   />
                 </span>
 
