@@ -20,7 +20,6 @@ export default function AdminLayout({ children }: { children: ReactNode }) {
       text: "Perusahaan",
       href: "/admin/company",
     },
-    { icon: <FileText size={20} />, text: "Laporan P4S", href: "/admin/report" },
   ];
 
   return (

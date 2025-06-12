@@ -34,7 +34,7 @@ export default function Login() {
     e.preventDefault();
     try {
       const user = await loginUser(form);
-  
+
       if (user.admin) {
         router.replace("/admin");
       } else {
@@ -50,18 +50,17 @@ export default function Login() {
       }
     }
   };
-  
+
   useEffect(() => {
-      const popupData = sessionStorage.getItem("popup");
-      if (popupData) {
-        const { message, type } = JSON.parse(popupData);
-        setMessage(message);
-        setPopupType(type);
-        setShowPopup(true);
-        sessionStorage.removeItem("popup");
-      }
-    }, []);
-  
+    const popupData = sessionStorage.getItem("popup");
+    if (popupData) {
+      const { message, type } = JSON.parse(popupData);
+      setMessage(message);
+      setPopupType(type);
+      setShowPopup(true);
+      sessionStorage.removeItem("popup");
+    }
+  }, []);
 
   const handleForgotPasswordSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -239,8 +238,19 @@ export default function Login() {
             <span className="mx-2 text-gray-500 text-sm">Atau</span>
             <hr className="flex-grow border-gray-300" />
           </div>
-
           <button
+            type="button"
+            className="cursor-pointer w-full p-1.5 bg-gray-300 border-gray-400 border rounded-xl hover:-translate-y-1 duration-150 ease-in text-sm flex items-center gap-2 justify-center"
+            onClick={loginWithGoogle}
+          >
+            <img
+              src="/assets/google-logo.png"
+              alt="Google Icon"
+              width={15}
+            />
+            Lanjutkan Dengan Google
+          </button>
+          {/* <button
             type="button"
             className="cursor-pointer w-full p-1.5 bg-gray-300 rounded-xl border-gray-400 border hover:-translate-y-1 duration-150 ease-in flex justify-center items-center gap-2 text-sm"
             onClick={loginWithGoogle}
@@ -251,7 +261,7 @@ export default function Login() {
               width={15}
             />
             Lanjutkan Dengan Google
-          </button>
+          </button> */}
 
           <p className="text-center mt-4 text-gray-700 text-sm">
             Belum punya akun?
