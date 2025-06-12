@@ -201,6 +201,24 @@ export default function AdminOrderPage() {
     setStatusSortOrder((prev) => (prev === "asc" ? "desc" : "asc"));
   }
 
+  // Function to get Indonesian label for status
+  const getStatusLabel = (status: OrderStatus): string => {
+    switch (status) {
+      case "PENDING":
+        return "Dibuat";
+      case "PROCESSING":
+        return "Diproses";
+      case "SHIPPED":
+        return "Dikirim";
+      case "DELIVERED":
+        return "Diterima";
+      case "CANCELED":
+        return "Dibatalkan";
+      default:
+        return status;
+    }
+  };
+
   if (isLoading)
     return <div className="p-4 text-center">Loading orders...</div>;
   if (error)
@@ -218,7 +236,7 @@ export default function AdminOrderPage() {
         }}
         onConfirm={confirmStatusChange}
         title="Konfirmasi Perubahan Status"
-        description={`Apakah Anda yakin ingin mengubah status pesanan menjadi "${pendingStatus?.newStatus}"?`}
+        description={`Apakah Anda yakin ingin mengubah status pesanan menjadi "${pendingStatus?.newStatus ? getStatusLabel(pendingStatus.newStatus) : ''}"?`}
         isSubmitting={isSubmitting}
       />
 
@@ -238,15 +256,15 @@ export default function AdminOrderPage() {
                 className="appearance-none border border-gray-500 rounded-xl px-4 py-1.5 text-sm pr-8"
               >
                 <option value="ALL">Semua Status</option>
-                <option value="PENDING">Pending</option>
-                <option value="PROCESSING">Processing</option>
-                <option value="SHIPPED">Shipped</option>
-                <option value="DELIVERED">Delivered</option>
-                <option value="CANCELED">Canceled</option>
+                <option value="PENDING">Dibuat</option>
+                <option value="PROCESSING">Diproses</option>
+                <option value="SHIPPED">Dikirim</option>
+                <option value="DELIVERED">Diterima</option>
+                <option value="CANCELED">Dibatalkan</option>
               </select>
               <FunnelPlus
                 className="absolute right-2 top-1/2 transform -translate-y-1/2 text-gray-500 pointer-events-none"
-                size={20}
+                size={18}
               />
             </div>
 
@@ -265,7 +283,7 @@ export default function AdminOrderPage() {
               </select>
               <FunnelPlus
                 className="absolute right-2 top-1/2 transform -translate-y-1/2 text-gray-500 pointer-events-none"
-                size={20}
+                size={18}
               />
             </div>
           </div>
@@ -286,7 +304,7 @@ export default function AdminOrderPage() {
 
           return pendingPartners.length > 0 ? (
             <div className="mb-4 p-4 bg-secondary rounded-xl shadow-lg">
-              <h3 className="text-sm font-medium text-yellow-800 mb-3">
+              <h3 className="text-sm font-medium mb-3">
                 Mitra dengan Order Pending ({pendingPartners.length} mitra)
               </h3>
               <div className="flex flex-wrap gap-2">

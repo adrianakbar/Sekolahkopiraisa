@@ -40,58 +40,71 @@ export default function PartnerTable({
     setCurrentPage(page);
   };
   return (
-    <div className="bg-tertiary shadow rounded-xl overflow-hidden">
-      <table className="min-w-full divide-y divide-gray-200">
-        <thead className="bg-primary text-sm text-white">
-          <tr>
-            <th className="px-4 py-3 text-left font-medium">Nama Mitra</th>
-            <th className="px-4 py-3 text-left font-medium">Nama Pemilik</th>
-            <th className="px-4 py-3 text-left font-medium">No. Telpon</th>
-            <th className="px-4 py-3 text-left font-medium">Alamat</th>
-            <th className="px-4 py-3 text-left font-medium">
-              Produk Terdaftar
-            </th>
-            <th className="px-4 py-3 text-left font-medium">Aksi</th>
-          </tr>
-        </thead>
-        <tbody className="text-sm text-gray-700 divide-y divide-gray-200">
-          {currentData.map((item, idx) => (
-            <tr key={idx}>
-              <td className="px-4 py-3">
-                <div className=" text-gray-900">{item.name}</div>
-                {/* <div className="text-xs text-gray-500">
-                                    {item.id}
-                                </div> */}
-              </td>
-              <td className="px-4 py-3">{item.owner_name}</td>
-              <td className="px-4 py-3">
-                <span className="inline-block bg-yellow-100 px-2 py-1 rounded-xl text-gray-900">
-                  {item.phone_number}
-                </span>
-              </td>
-
-              <td className="px-4 py-3">{item.address}</td>
-              <td className="px-4 py-3">{item.products}</td>
-              <td className="px-4 py-3 ">
-                {/* Edit */}
-                <button
-                  onClick={() => onEdit?.(item.id)}
-                  className="cursor-pointer p-2 text-white rounded-xl bg-blue-500 hover:-translate-y-1 duration-150 ease-in"
-                  title="Edit"
-                >
-                  <SquarePen size={15} />
-                </button>
-              </td>
+    <div className="bg-tertiary shadow-lg rounded-xl overflow-hidden">
+      {/* Horizontal scroll container for mobile */}
+      <div className="overflow-x-auto">
+        <table className="min-w-full divide-y divide-gray-200">
+          <thead className="bg-primary text-xs sm:text-sm text-white">
+            <tr>
+              <th className="px-2 sm:px-4 py-3 text-left font-medium whitespace-nowrap">
+                Nama Mitra
+              </th>
+              <th className="px-2 sm:px-4 py-3 text-left font-medium whitespace-nowrap">
+                Nama Pemilik
+              </th>
+              <th className="px-2 sm:px-4 py-3 text-left font-medium whitespace-nowrap">
+                No. Telpon
+              </th>
+              <th className="px-2 sm:px-4 py-3 text-left font-medium whitespace-nowrap">
+                Alamat
+              </th>
+              <th className="px-2 sm:px-4 py-3 text-left font-medium whitespace-nowrap">
+                Produk Terdaftar
+              </th>
+              <th className="px-2 sm:px-4 py-3 text-left font-medium whitespace-nowrap">
+                Aksi
+              </th>
             </tr>
-          ))}
-        </tbody>
-      </table>
+          </thead>
+          <tbody className="text-xs sm:text-sm text-gray-700 divide-y divide-gray-200">
+            {currentData.map((item, idx) => (
+              <tr key={idx}>
+                <td className="px-2 sm:px-4 py-3">
+                  <div className="text-gray-900 whitespace-nowrap">{item.name}</div>
+                  {/* <div className="text-xs text-gray-500">
+                                      {item.id}
+                                  </div> */}
+                </td>
+                <td className="px-2 sm:px-4 py-3 whitespace-nowrap">{item.owner_name}</td>
+                <td className="px-2 sm:px-4 py-3">
+                  <span className="inline-block bg-yellow-100 px-1 sm:px-2 py-1 rounded-xl text-gray-900 text-xs sm:text-sm whitespace-nowrap">
+                    {item.phone_number}
+                  </span>
+                </td>
+
+                <td className="px-2 sm:px-4 py-3 max-w-xs truncate">{item.address}</td>
+                <td className="px-2 sm:px-4 py-3 max-w-xs truncate">{item.products}</td>
+                <td className="px-2 sm:px-4 py-3 whitespace-nowrap">
+                  {/* Edit */}
+                  <button
+                    onClick={() => onEdit?.(item.id)}
+                    className="cursor-pointer p-1.5 sm:p-2 text-white rounded-xl bg-blue-500 hover:-translate-y-1 duration-150 ease-in"
+                    title="Edit"
+                  >
+                    <SquarePen size={12} className="sm:w-4 sm:h-4" />
+                  </button>
+                </td>
+              </tr>
+            ))}
+          </tbody>
+        </table>
+      </div>
       {/* Pagination */}
-      <div className="flex justify-center items-center flex-wrap gap-2 mt-4 px-4">
+      <div className="flex justify-center items-center flex-wrap gap-1 sm:gap-2 mt-4 px-2 sm:px-4 pb-4">
         <button
           onClick={() => goToPage(currentPage - 1)}
           disabled={currentPage === 1}
-          className="px-3 py-1 rounded-xl border border-gray-300 disabled:opacity-50 disabled:cursor-not-allowed"
+          className="px-2 sm:px-3 py-1 text-xs sm:text-sm rounded-xl border border-gray-300 disabled:opacity-50 disabled:cursor-not-allowed"
         >
           Prev
         </button>
@@ -102,7 +115,7 @@ export default function PartnerTable({
             <button
               key={page}
               onClick={() => goToPage(page)}
-              className={`px-3 py-1 rounded-xl border ${
+              className={`px-2 sm:px-3 py-1 text-xs sm:text-sm rounded-xl border ${
                 page === currentPage
                   ? "bg-primary text-white border-primary"
                   : "border-gray-300 text-gray-700 hover:bg-gray-100"
@@ -116,12 +129,11 @@ export default function PartnerTable({
         <button
           onClick={() => goToPage(currentPage + 1)}
           disabled={currentPage === totalPages}
-          className="px-3 py-1 rounded-xl border border-gray-300 disabled:opacity-50 disabled:cursor-not-allowed"
+          className="px-2 sm:px-3 py-1 text-xs sm:text-sm rounded-xl border border-gray-300 disabled:opacity-50 disabled:cursor-not-allowed"
         >
           Next
         </button>
       </div>
-      ;
     </div>
   );
 }

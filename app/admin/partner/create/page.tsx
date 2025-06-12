@@ -50,7 +50,7 @@ export default function CreatePartnerPage() {
         return newErrors;
       });
     }
-  };    
+  };
 
   // Handle form submission
   const handleSubmit = async () => {
@@ -88,7 +88,7 @@ export default function CreatePartnerPage() {
   };
 
   return (
-    <div className="container mx-auto bg-tertiary p-6 rounded-xl shadow-md">
+    <div className="container mx-auto bg-tertiary p-6 rounded-xl shadow-lg">
       {showPopup && (
         <Popup
           message={message}
@@ -97,15 +97,15 @@ export default function CreatePartnerPage() {
         />
       )}
       <ConfirmModal
-                      title="Yakin Menyimpan Mitra Baru?"
-                      description="Apakah Anda yakin ingin menyimpan mitra? Pastikan informasi yang Anda masukkan sudah benar."
-                      isOpen={showConfirmModal}
-                      isSubmitting={isSubmitting}
-                      onClose={() => {
-                          setShowConfirmModal(false);
-                      }}
-                      onConfirm={handleSubmit}
-                  />
+        title="Yakin Menyimpan Mitra Baru?"
+        description="Apakah Anda yakin ingin menyimpan mitra? Pastikan informasi yang Anda masukkan sudah benar."
+        isOpen={showConfirmModal}
+        isSubmitting={isSubmitting}
+        onClose={() => {
+          setShowConfirmModal(false);
+        }}
+        onConfirm={handleSubmit}
+      />
       <h1 className="text-lg font-medium mb-4">Tambah Mitra / Partner Baru</h1>
 
       <div className="flex flex-col md:flex-row gap-8">

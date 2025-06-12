@@ -87,6 +87,24 @@ function StatusDropdown({
     onToggle(-1); // Tutup dropdown setelah memilih
   };
 
+  // Function to get Indonesian label for status
+  const getStatusLabel = (status: OrderStatus): string => {
+    switch (status) {
+      case "PENDING":
+        return "Dibuat";
+      case "PROCESSING":
+        return "Diproses";
+      case "SHIPPED":
+        return "Dikirim";
+      case "DELIVERED":
+        return "Diterima";
+      case "CANCELED":
+        return "Dibatalkan";
+      default:
+        return status;
+    }
+  };
+
   let statusColorClass = "";
   let statusIcon = null;
 
@@ -121,13 +139,13 @@ function StatusDropdown({
         onClick={() => onToggle(orderId)}
       >
         {statusIcon}
-        {currentStatus}
+        {getStatusLabel(currentStatus)}
         <ChevronDown size={16} className="ml-1 -mr-0.5" />
       </button>
 
       {isOpen && (
         <div
-          className="origin-top-right absolute right-0 mt-2 w-40 rounded-xl shadow-lg bg-white ring-1 ring-black ring-opacity-5 z-50"
+          className="origin-top-right absolute right-0 mt-2 w-40  shadow-lg bg-white ring-1 ring-black ring-opacity-5 z-50"
           role="menu"
         >
           <div className="py-1">
@@ -141,7 +159,7 @@ function StatusDropdown({
                     : "text-gray-700"
                 } group flex items-center w-full px-4 py-2 text-sm hover:bg-gray-100 hover:text-gray-900`}
               >
-                {status}
+                {getStatusLabel(status)}
               </button>
             ))}
           </div>
