@@ -21,6 +21,20 @@ interface OrderData {
     };
 }
 
+export interface OrderItem {
+  productId: number;
+  name: string;
+  productImage: string;
+  quantity: number;
+  price: number;
+  subtotal: number;
+  partner: {
+    id: number;
+    name: string;
+  };
+  note: string;
+}
+
 export default function OrderDetailPage() {
     const { id } = useParams();
     const [order, setOrder] = useState<OrderData | null>(null);
