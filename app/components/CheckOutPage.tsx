@@ -23,7 +23,7 @@ interface OrderInformationProps {
   address: string;
   setAddress: (val: string) => void;
   userName: string;
-  phoneNumber: number;
+  phoneNumber: string;
   errors?: Record<string, string>;
   setErrors: React.Dispatch<React.SetStateAction<Record<string, string>>>;
 }
@@ -298,7 +298,7 @@ export default function CheckOutPage() {
             address={address}
             setAddress={setAddress}
             userName={user.name || ""}
-            phoneNumber={user.phone_number || 0}
+            phoneNumber={user.phone_number || ""}
             errors={errors}
             setErrors={setErrors}
           />

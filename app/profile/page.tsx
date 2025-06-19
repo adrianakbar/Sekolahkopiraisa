@@ -1,11 +1,12 @@
 "use client";
 
 import { useEffect, useState } from "react";
-import { getUser, updateUser } from "../utils/user";
-import Popup from "../components/Popup";
-import ConfirmModal from "../components/ConfirmModal";
-import { UserItem } from "../types/userType";
-import { Mail, Pen, Phone, User } from "lucide-react";
+
+import { Mail, Pen, Phone, TriangleAlert, User } from "lucide-react";
+import { UserItem } from "@/app/types/userType";
+import { getUser, updateUser } from "@/app/utils/user";
+import Popup from "@/app/components/Popup";
+import ConfirmModal from "@/app/components/ConfirmModal";
 
 export default function Profile() {
   const [user, setUser] = useState<UserItem | null>(null);
@@ -36,6 +37,7 @@ export default function Profile() {
   const handleCancel = () => {
     setIsEditing(false);
     setEmailErrorOnEdit(false);
+    setErrors({}); // Reset errors
     // Reset user data by fetching from server again
     const fetchUser = async () => {
       try {
@@ -106,7 +108,9 @@ export default function Profile() {
 
         {/* Header */}
         <div className="text-center mb-8">
-          <h1 className="text-lg font-medium text-gray-800 mb-2">Profil Saya</h1>
+          <h1 className="text-lg font-medium text-gray-800 mb-2">
+            Profil Saya
+          </h1>
           <p className="text-gray-600">Kelola informasi profil Anda</p>
         </div>
 
@@ -117,11 +121,7 @@ export default function Profile() {
             <div className="flex flex-col items-center space-y-4">
               <div className="relative group">
                 <div className="relative w-32 h-32 rounded-full overflow-hidden border-4 border-white shadow-lg transition-transform">
-                  <img
-                    src={imageUrl}
-                    alt="Foto Profil"
-                   
-                  />
+                  <img src={imageUrl} alt="Foto Profil" />
                 </div>
                 <div className="absolute inset-0 rounded-full  transition-all duration-200 flex items-center justify-center">
                   <span className="text-white opacity-0  transition-opacity text-sm font-medium">
@@ -183,7 +183,7 @@ export default function Profile() {
               {/* Name Field */}
               <div className="space-y-2">
                 <label className="flex items-center text-sm font-semibold text-gray-700">
-                  <User size={16} className="mr-1" />
+                  <User size={15} className="mr-1" />
                   Nama Lengkap
                 </label>
                 <input
@@ -194,14 +194,14 @@ export default function Profile() {
                   disabled={!isEditing}
                   className={`w-full border-2 rounded-xl px-4 py-3 text-sm transition-all duration-200 ${
                     isEditing
-                      ? "bg-white border-orange-200 focus:border-orange-400 focus:ring-2 focus:ring-orange-100 focus:outline-none"
+                      ? "bg-white border-gray-200 focus:border-primary"
                       : "bg-gray-50 border-gray-200 text-gray-600"
                   }`}
                   placeholder="Masukkan nama lengkap Anda"
                 />
                 {errors.name && (
                   <p className="text-red-500 text-sm flex items-center">
-                    <span className="mr-1">⚠️</span>
+                    <TriangleAlert size={15} className="mr-1" />
                     {errors.name}
                   </p>
                 )}
@@ -210,7 +210,7 @@ export default function Profile() {
               {/* Email Field */}
               <div className="space-y-2">
                 <label className="flex items-center text-sm font-semibold text-gray-700">
-                  <Mail size={16} className="mr-1" />
+                  <Mail size={15} className="mr-1" />
                   Email
                 </label>
                 <input
@@ -233,25 +233,25 @@ export default function Profile() {
               {/* Phone Field */}
               <div className="space-y-2">
                 <label className="flex items-center text-sm font-semibold text-gray-700">
-                  <Phone size={16} className="mr-1" />
+                  <Phone size={15} className="mr-1" />
                   Nomor Telepon
                 </label>
                 <input
                   name="phone_number"
-                  type="text"
+                  type="number"
                   value={user?.phone_number || ""}
                   onChange={handleChange}
                   disabled={!isEditing}
                   className={`w-full border-2 rounded-xl px-4 py-3 text-sm transition-all duration-200 ${
                     isEditing
-                      ? "bg-white border-orange-200 focus:border-orange-400 focus:ring-2 focus:ring-orange-100 focus:outline-none"
+                      ? "bg-white border-gray-200 focus:border-primary"
                       : "bg-gray-50 border-gray-200 text-gray-600"
                   }`}
                   placeholder="Contoh: +62 812 3456 7890"
                 />
                 {errors.phone_number && (
                   <p className="text-red-500 text-sm flex items-center">
-                    <span className="mr-1">⚠️</span>
+                    <TriangleAlert size={15} className="mr-1" />
                     {errors.phone_number}
                   </p>
                 )}
@@ -268,7 +268,7 @@ export default function Profile() {
                     }}
                     className="w-full py-2 bg-primary text-white rounded-xl font-semibold shadow-lg hover:from-orange-600 hover:to-amber-600 hover:-translate-y-0.5 hover:shadow-xl transition-all duration-200 flex items-center justify-center"
                   >
-                    <Pen size={16} className="mr-2" />
+                    <Pen size={15} className="mr-2" />
                     Perbarui Profil
                   </button>
                 ) : (
