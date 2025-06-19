@@ -113,26 +113,16 @@ export default function Home() {
 
   const handleAddToCart = async (productId: number) => {
     if (isAddingToCart) return; // Prevent multiple clicks
-    
+
     setIsAddingToCart(true);
     try {
       const response = await addToCart(productId, 1);
       setMessage(response.message);
       setPopupType("success");
       setShowPopup(true);
-      window.dispatchEvent(new CustomEvent('cartUpdated'));
+      window.dispatchEvent(new CustomEvent("cartUpdated"));
     } catch (error: any) {
-      console.error('Error adding to cart:', error);
-      
-      let errorMessage = "Gagal menambahkan produk ke keranjang. Silakan coba lagi.";
-      
-      if (error?.message) {
-        errorMessage = error.message;
-      } else if (error?.response?.data?.message) {
-        errorMessage = error.response.data.message;
-      }
-      
-      setMessage(errorMessage);
+      setMessage(error.message || "Terjadi kesalahan saat menghapus.");
       setPopupType("error");
       setShowPopup(true);
     } finally {
@@ -252,10 +242,7 @@ export default function Home() {
       <section className="relative py-10 md:py-16 bg-white overflow-hidden">
         {/* Gambar Bunga Pojok Kanan Atas */}
         <div className="absolute -top-5 md:-top-5 right-0 w-32 md:w-48 lg:w-64">
-          <img
-            src="/assets/flower-top.png"
-            alt="Bunga Hiasan"
-          />
+          <img src="/assets/flower-top.png" alt="Bunga Hiasan" />
         </div>
 
         {/* Gambar Bunga Pojok Kiri Bawah */}

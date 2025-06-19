@@ -57,14 +57,14 @@ export const addToCart = async (productId: number, quantity: number = 1) => {
 
     // 2. Cek apakah produk sudah ada
     const existingItem = cartItems.find(
-      (item: any) => item.product.id === productId
+      (item: any) => item.product_id === productId
     );
 
     if (existingItem) {
       // 3a. Jika ada, update kuantitasnya
       const newQuantity = existingItem.quantity + quantity;
       // Endpoint yang lebih spesifik untuk update item biasanya lebih baik
-      const response = await api.put(`/api/v1/cart/${existingItem.id}`, {
+      const response = await api.put(`/api/v1/cart/${existingItem.productId}`, {
         quantity: newQuantity,
       });
       return response.data;
