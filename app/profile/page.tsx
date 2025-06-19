@@ -1,23 +1,20 @@
 "use client";
 
 import { useEffect, useState } from "react";
-import Image from "next/image";
-import { useUserStore } from "../stores/userStore";
-import { updateUser } from "../utils/user";
+import { getUser, updateUser } from "../utils/user";
 import Popup from "../components/Popup";
 import ConfirmModal from "../components/ConfirmModal";
+import { UserItem } from "../types/userType";
+import { Mail, Pen, Phone, User } from "lucide-react";
 
 export default function Profile() {
-  const user = useUserStore((state) => state.user);
+  const [user, setUser] = useState<UserItem | null>(null);
   const [isEditing, setIsEditing] = useState(false);
-  const [formData, setFormData] = useState({
-    name: "",
-    email: "",
-    phone_number: "",
-  });
   const [emailErrorOnEdit, setEmailErrorOnEdit] = useState(false);
 
-  const [errors, setErrors] = useState<Partial<typeof formData>>({});
+  const [errors, setErrors] = useState<
+    Partial<{ name: string; email: string; phone_number: string }>
+  >({});
   const [showPopup, setShowPopup] = useState(false);
   const [message, setMessage] = useState("");
   const [popupType, setPopupType] = useState<"success" | "error">("success");
@@ -30,7 +27,7 @@ export default function Profile() {
     e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>
   ) => {
     const { name, value } = e.target;
-    setFormData((prev) => ({ ...prev, [name]: value }));
+    setUser((prev) => (prev ? { ...prev, [name]: value } : null));
 
     // Hapus error untuk field yang sedang diedit
     setErrors((prevErrors) => ({ ...prevErrors, [name]: "" }));
@@ -39,22 +36,23 @@ export default function Profile() {
   const handleCancel = () => {
     setIsEditing(false);
     setEmailErrorOnEdit(false);
-    if (user) {
-      setFormData({
-        name: user.name,
-        email: user.email,
-        phone_number: user.phone_number,
-      });
-      setImageUrl(user.image || "/assets/user.png");
-      setImageFile(null);
-    }
+    // Reset user data by fetching from server again
+    const fetchUser = async () => {
+      try {
+        const data = await getUser();
+        if (data) setUser(data);
+      } catch (error) {
+        console.error("Gagal mendapatkan user:", error);
+      }
+    };
+    fetchUser();
   };
 
   const handleSave = async () => {
     try {
       const response = await updateUser({
-        name: formData.name,
-        phone_number: formData.phone_number,
+        name: user?.name || "",
+        phone_number: user?.phone_number || "",
         file: imageFile,
       });
 
@@ -81,179 +79,237 @@ export default function Profile() {
   };
 
   useEffect(() => {
-    if (user) {
-      setFormData({
-        name: user.name,
-        email: user.email,
-        phone_number: user.phone_number,
-      });
-      setImageUrl(user.image || "/assets/user.png");
-    }
-  }, [user]);
+    const fetchUser = async () => {
+      try {
+        const data = await getUser();
+        if (data) {
+          setUser(data);
+          setImageUrl(data.image || "/assets/user.png");
+        }
+      } catch (error) {
+        console.error("Gagal mendapatkan user:", error);
+      }
+    };
+    fetchUser();
+  }, []);
 
   return (
-    <div className="max-w-2xl mx-auto px-4 py-20 md:py-35">
-      {showPopup && (
-        <Popup
-          message={message}
-          type={popupType}
-          onClose={() => setShowPopup(false)}
-        />
-      )}
-      <h1 className="text-center text-lg font-medium mb-6">Profil Saya</h1>
-
-      <div className="flex flex-col items-center space-y-3 mb-6">
-        <div className="relative w-40 h-40 rounded-full overflow-hidden border">
-          <Image
-            src={imageUrl}
-            alt="Foto Profil"
-            fill
-            className="object-cover"
-            priority
+    <div className="min-h-screen bg-secondary py-8 p-4 pt-20">
+      <div className="max-w-3xl mx-auto">
+        {showPopup && (
+          <Popup
+            message={message}
+            type={popupType}
+            onClose={() => setShowPopup(false)}
           />
-        </div>
-        <label className="inline-flex items-center px-4 py-2 bg-white border border-gray-300 text-sm rounded-xl shadow-sm cursor-pointer hover:bg-gray-100 transition">
-          <input
-            type="file"
-            className="hidden"
-            onChange={async (e) => {
-              const file = e.target.files?.[0];
-              if (file) {
-                const previewUrl = URL.createObjectURL(file);
-                setImageFile(file);
-                setImageUrl(previewUrl);
-
-                try {
-                  const response = await updateUser({
-                    name: formData.name,
-                    phone_number: formData.phone_number,
-                    file: file,
-                  });
-
-                  if (response) {
-                    setImageUrl(response.image || previewUrl);
-                    setImageFile(null);
-                    setMessage("Foto profil berhasil diperbarui!");
-                    setPopupType("success");
-                    setShowPopup(true);
-                  }
-                } catch (error: any) {
-                  if (error.type === "validation") {
-                    setErrors(error.errors); // Tampilkan error validasi
-                    // Jangan setIsEditing(false) di sini, biar user tetap bisa edit
-                  } else {
-                    setMessage(
-                      error.message ||
-                        "Terjadi kesalahan saat menyimpan profil."
-                    );
-                    setPopupType("error");
-                    setShowPopup(true);
-                  }
-                }
-              }
-            }}
-          />
-          📸 Ubah Foto
-        </label>
-      </div>
-
-      <form className="space-y-4 text-sm">
-        <div>
-          <label className="block font-medium">Nama</label>
-          <input
-            name="name"
-            type="text"
-            value={formData.name}
-            onChange={handleChange}
-            disabled={!isEditing}
-            className={`w-full border rounded-xl p-1.5 mt-1 ${
-              isEditing ? "bg-white" : "bg-gray-100"
-            }`}
-          />
-          {errors.name && (
-            <p className="text-red-500 text-sm mt-1">{errors.name}</p>
-          )}
-        </div>
-
-        <div>
-          <label className="block font-medium">Email</label>
-          <input
-            name="email"
-            type="email"
-            value={formData.email}
-            onChange={handleChange}
-            disabled={true}
-            className={`w-full border rounded-xl p-1.5 mt-1 ${
-              isEditing ? "bg-white" : "bg-gray-100"
-            }`}
-          />
-          {emailErrorOnEdit && (
-            <p className="text-red-500 text-sm mt-1">
-              {"*Maaf email tidak bisa diganti"}
-            </p>
-          )}
-        </div>
-
-        <div>
-          <label className="block font-medium">No. HP</label>
-          <input
-            name="phone_number"
-            type="text"
-            value={formData.phone_number}
-            onChange={handleChange}
-            disabled={!isEditing}
-            className={`w-full border rounded-xl p-1.5 mt-1 ${
-              isEditing ? "bg-white" : "bg-gray-100"
-            }`}
-          />
-          {errors.phone_number && (
-            <p className="text-red-500 text-sm mt-1">{errors.phone_number}</p>
-          )}
-        </div>
-
-        {!isEditing ? (
-          <button
-            type="button"
-            onClick={() => {
-              setIsEditing(true);
-              setEmailErrorOnEdit(true);
-            }}
-            className="w-full py-2 bg-[#5c2e0e] text-white rounded-xl font-medium hover:-translate-y-1 duration-150 ease-in"
-          >
-            Perbarui Profil
-          </button>
-        ) : (
-          <div className="flex justify-between space-x-4">
-            <button
-              type="button"
-              onClick={() => {
-                setShowConfirmModal(true);
-              }}
-              className="w-full py-3 bg-green-600 text-white rounded-xl font-semibold hover:bg-green-700 transition"
-            >
-              Simpan
-            </button>
-            <ConfirmModal
-              title="Simpan Perubahan"
-              description="Apakah Anda yakin ingin menyimpan perubahan ini?"
-              isOpen={showConfirmModal}
-              onClose={() => setShowConfirmModal(false)}
-              onConfirm={() => {
-                setShowConfirmModal(false);
-                handleSave();
-              }}
-            />
-
-            <button
-              type="button"
-              onClick={handleCancel}
-              className="w-full py-3 bg-gray-300 text-gray-800 rounded-xl font-semibold hover:bg-gray-400 transition"
-            >
-              Batal
-            </button>
-          </div>
         )}
-      </form>
+
+        {/* Header */}
+        <div className="text-center mb-8">
+          <h1 className="text-lg font-medium text-gray-800 mb-2">Profil Saya</h1>
+          <p className="text-gray-600">Kelola informasi profil Anda</p>
+        </div>
+
+        {/* Main Content Card */}
+        <div className="bg-white rounded-2xl shadow-lg border border-orange-100 overflow-hidden">
+          {/* Profile Image Section */}
+          <div className="bg-primary px-6 py-8">
+            <div className="flex flex-col items-center space-y-4">
+              <div className="relative group">
+                <div className="relative w-32 h-32 rounded-full overflow-hidden border-4 border-white shadow-lg transition-transform">
+                  <img
+                    src={imageUrl}
+                    alt="Foto Profil"
+                   
+                  />
+                </div>
+                <div className="absolute inset-0 rounded-full  transition-all duration-200 flex items-center justify-center">
+                  <span className="text-white opacity-0  transition-opacity text-sm font-medium">
+                    📸
+                  </span>
+                </div>
+              </div>
+
+              <label className="inline-flex items-center px-6 py-2 bg-white text-primary text-sm font-medium rounded-full shadow-md cursor-pointer hover:shadow-lg hover:-translate-y-0.5 transition-all duration-200">
+                <input
+                  type="file"
+                  className="hidden"
+                  onChange={async (e) => {
+                    const file = e.target.files?.[0];
+                    if (file) {
+                      const previewUrl = URL.createObjectURL(file);
+                      setImageFile(file);
+                      setImageUrl(previewUrl);
+
+                      try {
+                        const response = await updateUser({
+                          name: user?.name || "",
+                          phone_number: user?.phone_number || "",
+                          file: file,
+                        });
+
+                        if (response) {
+                          setImageUrl(response.image || previewUrl);
+                          setImageFile(null);
+                          setMessage("Foto profil berhasil diperbarui!");
+                          setPopupType("success");
+                          setShowPopup(true);
+                        }
+                      } catch (error: any) {
+                        if (error.type === "validation") {
+                          setErrors(error.errors); // Tampilkan error validasi
+                          // Jangan setIsEditing(false) di sini, biar user tetap bisa edit
+                        } else {
+                          setMessage(
+                            error.message ||
+                              "Terjadi kesalahan saat menyimpan profil."
+                          );
+                          setPopupType("error");
+                          setShowPopup(true);
+                        }
+                      }
+                    }
+                  }}
+                />
+                <span className="mr-2">📸</span>
+                Ubah Foto Profil
+              </label>
+            </div>
+          </div>
+
+          {/* Form Section */}
+          <div className="p-6">
+            <form className="space-y-6">
+              {/* Name Field */}
+              <div className="space-y-2">
+                <label className="flex items-center text-sm font-semibold text-gray-700">
+                  <User size={16} className="mr-1" />
+                  Nama Lengkap
+                </label>
+                <input
+                  name="name"
+                  type="text"
+                  value={user?.name || ""}
+                  onChange={handleChange}
+                  disabled={!isEditing}
+                  className={`w-full border-2 rounded-xl px-4 py-3 text-sm transition-all duration-200 ${
+                    isEditing
+                      ? "bg-white border-orange-200 focus:border-orange-400 focus:ring-2 focus:ring-orange-100 focus:outline-none"
+                      : "bg-gray-50 border-gray-200 text-gray-600"
+                  }`}
+                  placeholder="Masukkan nama lengkap Anda"
+                />
+                {errors.name && (
+                  <p className="text-red-500 text-sm flex items-center">
+                    <span className="mr-1">⚠️</span>
+                    {errors.name}
+                  </p>
+                )}
+              </div>
+
+              {/* Email Field */}
+              <div className="space-y-2">
+                <label className="flex items-center text-sm font-semibold text-gray-700">
+                  <Mail size={16} className="mr-1" />
+                  Email
+                </label>
+                <input
+                  name="email"
+                  type="email"
+                  value={user?.email || ""}
+                  onChange={handleChange}
+                  disabled={true}
+                  className="w-full border-2 bg-gray-50 border-gray-200 text-gray-600 rounded-xl px-4 py-3 text-sm"
+                  placeholder="Email Anda"
+                />
+                {emailErrorOnEdit && (
+                  <p className="text-amber-600 text-sm flex items-center bg-amber-50 p-2 rounded-lg">
+                    <span className="mr-1">ℹ️</span>
+                    Email tidak dapat diubah untuk keamanan akun
+                  </p>
+                )}
+              </div>
+
+              {/* Phone Field */}
+              <div className="space-y-2">
+                <label className="flex items-center text-sm font-semibold text-gray-700">
+                  <Phone size={16} className="mr-1" />
+                  Nomor Telepon
+                </label>
+                <input
+                  name="phone_number"
+                  type="text"
+                  value={user?.phone_number || ""}
+                  onChange={handleChange}
+                  disabled={!isEditing}
+                  className={`w-full border-2 rounded-xl px-4 py-3 text-sm transition-all duration-200 ${
+                    isEditing
+                      ? "bg-white border-orange-200 focus:border-orange-400 focus:ring-2 focus:ring-orange-100 focus:outline-none"
+                      : "bg-gray-50 border-gray-200 text-gray-600"
+                  }`}
+                  placeholder="Contoh: +62 812 3456 7890"
+                />
+                {errors.phone_number && (
+                  <p className="text-red-500 text-sm flex items-center">
+                    <span className="mr-1">⚠️</span>
+                    {errors.phone_number}
+                  </p>
+                )}
+              </div>
+
+              {/* Action Buttons */}
+              <div className="pt-4">
+                {!isEditing ? (
+                  <button
+                    type="button"
+                    onClick={() => {
+                      setIsEditing(true);
+                      setEmailErrorOnEdit(true);
+                    }}
+                    className="w-full py-2 bg-primary text-white rounded-xl font-semibold shadow-lg hover:from-orange-600 hover:to-amber-600 hover:-translate-y-0.5 hover:shadow-xl transition-all duration-200 flex items-center justify-center"
+                  >
+                    <Pen size={16} className="mr-2" />
+                    Perbarui Profil
+                  </button>
+                ) : (
+                  <div className="flex flex-col sm:flex-row gap-3">
+                    <button
+                      type="button"
+                      onClick={() => {
+                        setShowConfirmModal(true);
+                      }}
+                      className="flex-1 py-3 bg-gradient-to-r from-green-500 to-emerald-500 text-white rounded-xl font-semibold shadow-lg hover:from-green-600 hover:to-emerald-600 hover:-translate-y-0.5 hover:shadow-xl transition-all duration-200 flex items-center justify-center"
+                    >
+                      <span className="mr-2">💾</span>
+                      Simpan Perubahan
+                    </button>
+
+                    <button
+                      type="button"
+                      onClick={handleCancel}
+                      className="flex-1 py-3 bg-gradient-to-r from-gray-400 to-gray-500 text-white rounded-xl font-semibold shadow-lg hover:from-gray-500 hover:to-gray-600 hover:-translate-y-0.5 hover:shadow-xl transition-all duration-200 flex items-center justify-center"
+                    >
+                      <span className="mr-2">❌</span>
+                      Batal
+                    </button>
+                  </div>
+                )}
+              </div>
+            </form>
+          </div>
+        </div>
+
+        <ConfirmModal
+          title="Simpan Perubahan"
+          description="Apakah Anda yakin ingin menyimpan perubahan ini?"
+          isOpen={showConfirmModal}
+          onClose={() => setShowConfirmModal(false)}
+          onConfirm={() => {
+            setShowConfirmModal(false);
+            handleSave();
+          }}
+        />
+      </div>
     </div>
   );
 }

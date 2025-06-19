@@ -133,8 +133,8 @@ export default function ActivityPage() {
 
   return (
     <div className="bg-secondary">
-      <div className="px-4 md:px-8 py-4 max-w-400 mx-auto">
-        <section className="mt-20 md:mt-30">
+      <div className="p-4 py-4 max-w-400 mx-auto">
+        <section className="mt-20">
           {sliderItems.length > 0 ? (
             <ActivitySlider sliderItems={sliderItems} />
           ) : (

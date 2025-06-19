@@ -6,6 +6,8 @@ import { fetchAllProduct } from "../utils/product";
 import { ProductItem } from "../types/productType";
 import { useRouter } from "next/navigation";
 import { Box, Search } from "lucide-react";
+import Skeleton, { SkeletonTheme } from "react-loading-skeleton";
+import "react-loading-skeleton/dist/skeleton.css";
 
 export default function ProductPage() {
   const [products, setProducts] = useState<ProductItem[]>([]);
@@ -77,24 +79,58 @@ export default function ProductPage() {
 
   if (loading) {
     return (
-      <div className="min-h-screen bg-gradient-to-br from-gray-50 to-gray-100">
-        <div className="container mx-auto px-4 py-8 pt-24">
-          <div className="flex justify-center items-center min-h-[70vh]">
-            <div className="text-center">
-              <div className="relative">
-                <div className="animate-spin rounded-full h-16 w-16 border-4 border-gray-200 border-t-blue-600 mx-auto mb-6"></div>
-                <div className="absolute inset-0 rounded-full h-16 w-16 border-4 border-gray-100 mx-auto animate-pulse"></div>
+      <SkeletonTheme baseColor="#f3f4f6" highlightColor="#e5e7eb">
+        <div className="min-h-screen">
+          {/* Hero Header Section Skeleton */}
+          <div className="bg-primary text-white">
+            <div className="container mx-auto p-4 py-12 pt-32">
+              <div className="text-center mb-8">
+                <Skeleton height={28} width={250} className="mx-auto mb-4" />
+                <Skeleton height={16} width={400} className="mx-auto" />
               </div>
-              <h3 className="text-xl font-semibold text-gray-800 mb-2">
-                Memuat Produk
-              </h3>
-              <p className="text-gray-600">
-                Sedang mengambil data produk terbaru...
-              </p>
+
+              {/* Search Bar Skeleton */}
+              <div className="max-w-md mx-auto">
+                <Skeleton height={42} className="rounded-xl" />
+              </div>
+            </div>
+          </div>
+
+          {/* Stats Section Skeleton */}
+          <div className="bg-white border-b border-gray-200">
+            <div className="container mx-auto p-4 py-6">
+              <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between">
+                <div className="flex items-center space-x-4">
+                  <Skeleton height={20} width={200} />
+                </div>
+                <div className="mt-4 sm:mt-0 flex items-center space-x-3">
+                  <Skeleton height={32} width={120} className="rounded-full" />
+                </div>
+              </div>
+            </div>
+          </div>
+
+          {/* Products Grid Skeleton */}
+          <div className="container mx-auto p-4 py-8">
+            <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 2xl:grid-cols-6 gap-8">
+              {Array.from({ length: 12 }).map((_, index) => (
+                <div
+                  key={index}
+                  className="bg-white rounded-lg shadow-sm border border-gray-200 overflow-hidden"
+                >
+                  <Skeleton height={200} className="mb-4" />
+                  <div className="p-4">
+                    <Skeleton height={20} className="mb-2" />
+                    <Skeleton height={16} width="60%" className="mb-2" />
+                    <Skeleton height={24} width="40%" className="mb-3" />
+                    <Skeleton height={36} className="rounded-lg" />
+                  </div>
+                </div>
+              ))}
             </div>
           </div>
         </div>
-      </div>
+      </SkeletonTheme>
     );
   }
 

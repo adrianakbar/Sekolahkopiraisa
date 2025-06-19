@@ -272,7 +272,7 @@ export default function Navbar({ navbarItems }: { navbarItems: NavbarItem[] }) {
                         href="/order"
                         className="flex items-center font-medium gap-3 px-3 py-2 text-gray-700 rounded-lg group hover:bg-gray-100 hover:text-gray-700 "
                       >
-                        <ShoppingBasket size={23} color="#77767b" />
+                        <ShoppingBasket size={23} color="#77767b" strokeWidth={1.5} />
                         Pesanan Saya
                       </DropdownItem>
                     </li>
