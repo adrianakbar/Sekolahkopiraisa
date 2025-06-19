@@ -1,7 +1,7 @@
 "use client";
 
 import React from "react";
-import { formatCurrency } from "../utils/helper"; // Pastikan helper ini ada dan berfungsi
+import { formatCurrency } from "../utils/helper";
 import { ProductItem } from "../types/productType";
 
 export default function ProductCard({
@@ -10,62 +10,70 @@ export default function ProductCard({
   name,
   price,
   sold,
-  onView, // Tambahkan props untuk fungsi klik
+  onView,
 }: ProductItem) {
   return (
     <div
-      className="w-full bg-white rounded-lg shadow-md overflow-hidden hover:shadow-xl transition-shadow duration-300 ease-in-out flex flex-col"
+      className="w-full bg-white rounded-xl shadow-lg overflow-hidden hover:shadow-2xl transition-all duration-500 ease-out flex flex-col group cursor-pointer border border-gray-100 hover:border-gray-200 transform hover:-translate-y-1"
       onClick={() => onView?.(id ?? 0)}
     >
-      {/* Kartu sekarang memiliki 'w-full' untuk mengisi lebar kolom grid dari parent.
-        'flex flex-col' membantu mengatur layout internal secara vertikal.
-      */}
-
       {/* Gambar Produk */}
-      <div className="w-full aspect-[4/3] overflow-hidden">
-        {/* Menggunakan div sebagai container untuk gambar dengan aspect ratio tetap.
-          Ini memastikan semua kartu memiliki proporsi gambar yang sama.
-        */}
+      <div className="w-full aspect-[4/3] overflow-hidden relative bg-gray-50">
         <img
-          className="w-full h-full object-cover transition-transform duration-300 ease-in-out hover:scale-105"
+          className="w-full h-full object-cover transition-all duration-700 ease-out group-hover:scale-110 group-hover:brightness-105"
           src={image}
           alt={name}
           onError={(e) => {
             (e.target as HTMLImageElement).src =
-              "https://via.placeholder.com/320x240?text=Image+Not+Found"; // Placeholder jika gambar gagal dimuat
+              "https://via.placeholder.com/320x240?text=Image+Not+Found";
           }}
         />
+        {/* Subtle overlay on hover */}
+        <div className="absolute inset-0 bg-gradient-to-t from-black/5 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-500" />
+
+        {/* Shine effect */}
+        <div className="absolute inset-0 bg-gradient-to-r from-transparent via-white/10 to-transparent -translate-x-full group-hover:translate-x-full transition-transform duration-1000 ease-in-out" />
       </div>
 
       {/* Detail Produk */}
-      <div className="p-2 sm:p-3 flex flex-col flex-grow">
-        {/* Padding responsif: p-2 untuk layar kecil, p-3 untuk sm ke atas.
-          'flex flex-col flex-grow' membuat bagian ini mengisi sisa ruang vertikal jika ada.
-        */}
+      <div className="p-4 sm:p-5 flex flex-col flex-grow bg-gradient-to-b from-white to-gray-50/30">
         <h3
-          className="text-sm text-gray-800 mb-1 truncate"
-          title={name} // Menampilkan judul lengkap saat hover jika terpotong
+          className="text-lg font-medium text-gray-800 mb-2 line-clamp-2 group-hover:text-gray-900 transition-colors duration-300 leading-tight"
+          title={name}
         >
           {name}
         </h3>
 
-        {/* Deskripsi bisa ditambahkan di sini jika ada, contoh:
-        <p className="text-xs text-gray-600 mb-2 flex-grow h-10 overflow-hidden">
-          Ini adalah deskripsi singkat produk yang bisa cukup panjang...
-        </p> 
-        Jika ada deskripsi, 'flex-grow' di atas dan 'mt-auto' di bawah akan lebih berguna.
-        */}
+        <div className="mt-auto space-y-3">
+          {/* Sold information with better styling */}
+          <div className="flex items-center gap-2">
+            <div className="w-2 h-2 bg-green-400 rounded-full animate-pulse"></div>
+            <p className="text-sm text-gray-600 font-medium">
+              {(sold ?? 0).toLocaleString("id-ID")} terjual
+            </p>
+          </div>
 
-        <div className="mt-auto">
-          {" "}
-          {/* Mendorong elemen di bawahnya ke bagian bawah kartu jika ada ruang ekstra dari flex-grow di atas */}
-          <p className="text-xs text-gray-500 mb-1 sm:mb-2">
-            {(sold ?? 0).toLocaleString("id-ID")} terjual
-          </p>
-          <p className="text-lg font-medium text-gray-900">
-            {formatCurrency(price ?? 0)}
-            {/* Asumsi formatCurrency dari utils/helper mengembalikan string seperti "Rp57.000" */}
-          </p>
+          {/* Price with enhanced styling */}
+          <div className="flex items-center justify-between">
+            <p className="text-lg font-medium text-gray-900 group-hover:text-primary transition-colors duration-300">
+              {formatCurrency(price ?? 0)}
+            </p>
+            <div className="w-8 h-8 bg-gray-500 rounded-full flex items-center justify-center group-hover:bg-primary transition-colors duration-300">
+              <svg
+                className="w-4 h-4 text-white"
+                fill="none"
+                stroke="currentColor"
+                viewBox="0 0 24 24"
+              >
+                <path
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                  strokeWidth={2}
+                  d="M9 5l7 7-7 7"
+                />
+              </svg>
+            </div>
+          </div>
         </div>
       </div>
     </div>

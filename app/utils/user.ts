@@ -7,9 +7,32 @@ export const getUser = async () => {
       headers: { "Cache-Control": "no-store" },
     });
     return res.data.data;
-  } catch (error) {
-    console.error("Gagal fetch user:", error);
-    return null;
+  } catch (error: any) {
+    console.error("Gagal update user:", error);
+
+    // Tangani error dari server (validasi, dll)
+    if (error.response) {
+      const { data } = error.response;
+
+      if (data.errors && typeof data.errors === "object") {
+        throw {
+          type: "validation",
+          message: data.message || "Validasi gagal!",
+          errors: data.errors,
+        };
+      }
+
+      throw {
+        type: "general",
+        message: data.message || "Terjadi kesalahan!",
+      };
+    }
+
+    // Error jaringan / tidak diketahui
+    throw {
+      type: "network",
+      message: "Tidak dapat terhubung ke server.",
+    };
   }
 };
 
@@ -63,4 +86,3 @@ export const updateUser = async (formData: {
     };
   }
 };
-

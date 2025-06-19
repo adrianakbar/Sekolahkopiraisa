@@ -51,7 +51,7 @@ export default function ProductCarousel({
     >
       {productItems.map((product) => (
         <SwiperSlide key={product.id} className="h-auto">
-          <div className="bg-secondary rounded-xl shadow-md overflow-hidden h-full flex flex-col">
+          <div className="bg-secondary rounded-xl shadow-lg overflow-hidden h-full flex flex-col">
             {/* Gambar Produk */}
             <img
               src={product.image}

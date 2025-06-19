@@ -7,7 +7,7 @@ export default function Footer() {
         <div className="grid grid-cols-2 sm:grid-cols-2 md:grid-cols-4 gap-8">
           {/* Sekolah Kopi Raisa */}
           <div className="col-span-2 sm:col-span-2 md:col-span-1">
-            <h3 className="font-medium text-lg">SEKOLAH KOPI RAISA</h3>
+            <h3 className="font-medium text-lg text-primary">SEKOLAH KOPI RAISA</h3>
             <p className="text-gray-600 mt-2 text-sm">
               Races Dua, Rejo Agung, Kec. Sumberwringin, Kabupaten Bondowoso, Jawa
               Timur
@@ -16,7 +16,7 @@ export default function Footer() {
           
           {/* Fitur */}
           <div className="justify-self-start md:justify-self-center">
-            <h3 className="font-medium text-lg">FITUR</h3>
+            <h3 className="font-medium text-lg text-primary">FITUR</h3>
             <hr className="w-12 border-black my-2" />
             <ul className="text-gray-600 space-y-1 text-sm">
               <Link href="/">
@@ -36,7 +36,7 @@ export default function Footer() {
           
           {/* Media Sosial */}
           <div className="justify-self-start md:justify-self-center">
-            <h3 className="font-medium text-lg">MEDIA SOSIAL</h3>
+            <h3 className="font-medium text-lg text-primary">MEDIA SOSIAL</h3>
             <hr className="w-12 border-black my-2" />
             <ul className="text-gray-600 space-y-1 text-sm">
               <Link href="">
@@ -53,7 +53,7 @@ export default function Footer() {
           
           {/* Hubungi */}
           <div className="justify-self-start md:justify-self-center">
-            <h3 className="font-medium text-lg">HUBUNGI</h3>
+            <h3 className="font-medium text-lg text-primary">HUBUNGI</h3>
             <hr className="w-12 border-black my-2" />
             <Link href="">
               <p className="text-gray-600 hover:underline text-sm">WhatsApp</p>

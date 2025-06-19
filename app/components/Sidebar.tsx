@@ -18,7 +18,6 @@ import {
   NotepadText,
 } from "lucide-react";
 import clsx from "clsx";
-import { useUserStore } from "../stores/userStore";
 import { logout } from "../utils/auth";
 import { getUser } from "../utils/user";
 import { AnimatePresence, motion } from "framer-motion";
@@ -41,7 +40,6 @@ export default function Sidebar({ items }: { items: SidebarItemType[] }) {
   const pathname = usePathname();
   const router = useRouter();
   const [user, setUser] = useState<User | null>(null);
-  const clearUser = useUserStore((state) => state.clearUser);
 
   const [showConfirmModal, setShowConfirmModal] = useState(false);
 
@@ -221,7 +219,6 @@ export default function Sidebar({ items }: { items: SidebarItemType[] }) {
           onClose={() => setShowConfirmModal(false)}
           onConfirm={async () => {
             await logout();
-            clearUser();
             router.replace("/login");
             setShowConfirmModal(false);
           }}

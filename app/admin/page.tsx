@@ -2,7 +2,6 @@
 
 import { CalendarCheck, Building, Store } from "lucide-react";
 import ProductTable from "../components/ProductTable";
-import { useUserStore } from "../stores/userStore";
 import { use, useEffect, useState } from "react";
 import { fetchAllActivity } from "../utils/activity";
 import { fetchAllProduct } from "../utils/product";
@@ -21,6 +20,8 @@ import {
   LineElement,
 } from "chart.js";
 import { Bar, Doughnut, Line } from "react-chartjs-2";
+import { UserItem } from "../types/userType";
+import { getUser } from "../utils/user";
 
 // Register Chart.js components
 ChartJS.register(
@@ -36,7 +37,7 @@ ChartJS.register(
 );
 
 export default function Dashboard() {
-  const user = useUserStore((state) => state.user);
+  const [user, setUser] = useState<UserItem | null>(null);
   const [countActivity, setCountActivity] = useState(0);
   const [counstProduct, setCountProduct] = useState(0);
   const [countPartner, setCountPartner] = useState(0);
@@ -197,6 +198,18 @@ export default function Dashboard() {
   useEffect(() => {
     fetchRecentOrders();
   }, []);
+
+  useEffect(() => {
+      const fetchUser = async () => {
+        try {
+          const data = await getUser();
+          if (data) setUser(data);
+        } catch (error) {
+          console.error("Gagal mendapatkan user:", error);
+        }
+      };
+      fetchUser();
+    }, []);
 
   const formatTimeAgo = (dateString: string) => {
     const now = new Date();

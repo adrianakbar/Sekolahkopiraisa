@@ -4,10 +4,16 @@ import Link from "next/link";
 import Image from "next/image";
 import { use, useEffect, useState } from "react";
 import { getUser } from "../utils/user";
-import { Bell, LogOut, Menu, ShoppingBasket, ShoppingCart, X } from "lucide-react";
+import {
+  Bell,
+  LogOut,
+  Menu,
+  ShoppingBasket,
+  ShoppingCart,
+  X,
+} from "lucide-react";
 import { logout } from "../utils/auth";
 import { useRouter, usePathname } from "next/navigation";
-import { useUserStore } from "../stores/userStore";
 import { Dropdown } from "./Dropdown";
 import { DropdownItem } from "./DropdownItem";
 import { AnimatePresence, motion } from "framer-motion";
@@ -22,8 +28,6 @@ interface NavbarItem {
   icon?: React.ReactNode; // Add icon support for mobile view
 }
 
-
-
 export default function Navbar({ navbarItems }: { navbarItems: NavbarItem[] }) {
   const [user, setUser] = useState<UserItem | null>(null);
   const [isDropdownOpen, setIsDropdownOpen] = useState(false);
@@ -32,7 +36,6 @@ export default function Navbar({ navbarItems }: { navbarItems: NavbarItem[] }) {
 
   const pathname = usePathname();
   const router = useRouter();
-  const clearUser = useUserStore((state) => state.clearUser);
   const [cartCount, setCartCount] = useState(0);
 
   const handleLogout = () => {
@@ -124,7 +127,6 @@ export default function Navbar({ navbarItems }: { navbarItems: NavbarItem[] }) {
           onClose={() => setShowConfirmModal(false)}
           onConfirm={async () => {
             await logout();
-            clearUser();
             router.replace("/login");
             setShowConfirmModal(false);
           }}
@@ -270,7 +272,7 @@ export default function Navbar({ navbarItems }: { navbarItems: NavbarItem[] }) {
                         href="/order"
                         className="flex items-center font-medium gap-3 px-3 py-2 text-gray-700 rounded-lg group hover:bg-gray-100 hover:text-gray-700 "
                       >
-                        <ShoppingBasket size={23} color="#77767b"/>
+                        <ShoppingBasket size={23} color="#77767b" />
                         Pesanan Saya
                       </DropdownItem>
                     </li>
@@ -400,6 +402,21 @@ export default function Navbar({ navbarItems }: { navbarItems: NavbarItem[] }) {
               <div className="mt-auto px-4 py-4 bg-gray-100 flex items-center justify-between rounded-t-xl">
                 {user ? (
                   <>
+                    {/* Cart and Bell icons for mobile */}
+                    <div className="flex items-center gap-3">
+                      <button className="text-primary">
+                        <Bell size={20} />
+                      </button>
+                      <Link href="/cart" className="text-primary relative">
+                        <ShoppingCart size={20} />
+                        {cartCount > 0 && (
+                          <span className="absolute -top-2 -right-2 flex h-4 w-4 items-center justify-center rounded-full bg-red-500 text-xs font-medium text-white">
+                            {cartCount}
+                          </span>
+                        )}
+                      </Link>
+                    </div>
+                    
                     <div
                       className="flex items-center gap-2"
                       onClick={() => {

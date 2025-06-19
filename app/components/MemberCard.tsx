@@ -19,10 +19,9 @@ export default function MemberCard({
         className="relative aspect-[4/3] w-full max-w-sm mx-auto overflow-hidden transform group-hover:scale-[1.02] transition-transform duration-300"
         key={id}
       >
-        <Image
+        <img
           src={image}
           alt={name}
-          fill
           sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
           className="object-cover transition-transform duration-500 group-hover:scale-105"
         />

@@ -30,6 +30,7 @@ export default function Home() {
   const [showPopup, setShowPopup] = useState(false);
   const [message, setMessage] = useState("");
   const [popupType, setPopupType] = useState<"success" | "error">("success");
+  const [isAddingToCart, setIsAddingToCart] = useState(false); // Add loading state
 
   const router = useRouter();
 
@@ -111,19 +112,31 @@ export default function Home() {
   };
 
   const handleAddToCart = async (productId: number) => {
+    if (isAddingToCart) return; // Prevent multiple clicks
+    
+    setIsAddingToCart(true);
     try {
-      // Panggil fungsi dari cart.ts, default quantity adalah 1
       const response = await addToCart(productId, 1);
       setMessage(response.message);
       setPopupType("success");
       setShowPopup(true);
-      // Di sini Anda bisa memanggil fungsi untuk memperbarui angka di ikon keranjang
-      // Contoh: updateNavbarCartCount();
-    } catch (error) {
-      alert(
-        `Gagal menambahkan produk ke keranjang. Silakan coba lagi. Product ID: ${productId}`
-      );
-      // Error sudah di-log di dalam file service, jadi di sini cukup notifikasi
+      window.dispatchEvent(new CustomEvent('cartUpdated'));
+    } catch (error: any) {
+      console.error('Error adding to cart:', error);
+      
+      let errorMessage = "Gagal menambahkan produk ke keranjang. Silakan coba lagi.";
+      
+      if (error?.message) {
+        errorMessage = error.message;
+      } else if (error?.response?.data?.message) {
+        errorMessage = error.response.data.message;
+      }
+      
+      setMessage(errorMessage);
+      setPopupType("error");
+      setShowPopup(true);
+    } finally {
+      setIsAddingToCart(false);
     }
   };
 
@@ -197,23 +210,37 @@ export default function Home() {
 
           {/* Kolom Teks */}
           <div className="w-full mt-8 md:mt-0 md:ml-2">
-            <h2 className="text-lg font-medium text-gray-900 mb-4">
+            <h2 className="text-lg font-medium text-primary mb-4">
               Tentang Kami
             </h2>
             <p className="text-gray-700 leading-relaxed text-justify text-sm">
-              Pengembangan kelembagaan melalui BUMDESMA bertujuan memberdayakan
-              kelompok tani baru agar lebih efektif dalam penyediaan sarana
-              produksi, permodalan, serta pengembangan usaha dari hulu ke hilir,
-              termasuk pemasaran dan peningkatan posisi tawar.
+              Perkembangan teknologi informasi pertanian mendorong perlunya
+              edukasi cepat bagi petani agar tidak tertinggal. Oleh karena itu,
+              dibentuklah kelembagaan lintas desa melalui BUMDESMA RAISA sebagai
+              wadah kelompok tani yang lebih kuat dalam penyediaan sarana
+              produksi, permodalan, perluasan usaha tani, dan pemasaran.
+              BUMDESMA RAISA dibentuk oleh tiga desa di Kecamatan Sumberwringin
+              (Sumberwringin, Rejoagung, dan Sukorejo) pada tahun 2021 dan
+              mendirikan Sekolah Kopi RAISA Center sebagai unit usaha sosial.
+              Nama RAISA merupakan singkatan dari Raung Ijen Sumberwringin
+              Agropolitan.
             </p>
             <p className="text-gray-700 mt-4 leading-relaxed text-justify text-sm">
-              BUMDESMA RAISA mendirikan unit usaha sosial "Sekolah Kopi" sebagai
-              inovasi dalam pengelolaan kopi hulu-hilir untuk menghadapi
-              tantangan penjaminan mutu dan kualitas kopi di Kabupaten
-              Bondowoso.
+              Sekolah Kopi ini menjadi langkah strategis dalam pengelolaan kopi
+              dari hulu ke hilir demi menjawab tantangan mutu dan keberlanjutan.
+              Pembangunan Sekolah Kopi dimulai dengan peletakan batu pertama
+              pada 24 Januari 2022 dan diresmikan pada 7 Agustus 2022 oleh
+              Rektor Universitas Jember dan perwakilan PT Astra International.
+              Sekolah ini merupakan hasil kolaborasi antara Universitas Jember,
+              PT Astra International Tbk, petani kopi, dan Pemda Bondowoso.
+              Sekolah Kopi RAISA juga menjadi simbol untuk menghidupkan kembali
+              citra Bondowoso Republik Kopi (BRK). Gagasan sekolah ini berawal
+              dari proposal DSA Bondowoso pada ajang sayembara KBA-DSA Super
+              Prioritas 2021 oleh CSR PT Astra, yang akhirnya terpilih sebagai
+              pemenang, mewujudkan impian adanya ikon perkopian di Bondowoso.
             </p>
             <Link href="/about">
-              <button className="mt-6 px-2 py-2 bg-[#C19A6B] text-white text-sm font-medium rounded-xl hover:-translate-y-1 duration-150 ease-in">
+              <button className="mt-6 px-3 py-1.5 bg-primary text-white text-sm font-medium rounded-xl hover:-translate-y-1 duration-150 ease-in">
                 Lihat Selengkapnya
               </button>
             </Link>
@@ -225,29 +252,20 @@ export default function Home() {
       <section className="relative py-10 md:py-16 bg-white overflow-hidden">
         {/* Gambar Bunga Pojok Kanan Atas */}
         <div className="absolute -top-5 md:-top-5 right-0 w-32 md:w-48 lg:w-64">
-          <Image
+          <img
             src="/assets/flower-top.png"
             alt="Bunga Hiasan"
-            width={400}
-            height={300}
-            className="w-full h-auto"
           />
         </div>
 
         {/* Gambar Bunga Pojok Kiri Bawah */}
         <div className="absolute bottom-0 left-0 w-32 md:w-48 lg:w-64">
-          <Image
-            src="/assets/flower-bottom.png"
-            alt="Bunga Hiasan"
-            width={300}
-            height={300}
-            className="w-full h-auto"
-          />
+          <img src="/assets/flower-bottom.png" alt="Bunga Hiasan" />
         </div>
 
         <div className="container mx-auto px-4 relative z-10">
           {/* Judul Section */}
-          <h2 className="text-lg font-medium text-center text-gray-900">
+          <h2 className="text-lg font-medium text-center text-primary">
             Produk Kami
           </h2>
           <p className="text-center text-gray-600 mt-2 px-4 text-sm">
@@ -270,11 +288,11 @@ export default function Home() {
       <section className="py-10 md:py-16 bg-[#F5EDE4]">
         <div className="container mx-auto px-4">
           {/* Judul Section */}
-          <h2 className="text-lg font-medium text-center text-gray-900">
+          <h2 className="text-lg font-medium text-center text-primary">
             Kegiatan Terbaru
           </h2>
           <p className="text-center text-gray-600 mt-2 text-sm">
-            Cari tahu kegiatan dan info terbaru dari Kopi Raisa
+            Cari tahu kegiatan dan info terbaru dari Sekolah Kopi Raisa
           </p>
 
           {/* Auto-Slide Aktivitas */}

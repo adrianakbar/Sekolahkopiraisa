@@ -7,7 +7,7 @@ export default function About() {
   return (
     <>
       {/* Section 1 - Tentang Sekolah Kopi Raisa */}
-      <div className="py-10 px-4 md:py-16">
+      <div className="py-10 p-4">
         <section className="flex flex-col md:flex-row gap-8 items-center container mx-auto mt-10 md:mt-20">
           <div className="md:w-1/2">
             <h2 className="text-2xl md:text-3xl font-bold mb-3">

@@ -1,16 +1,18 @@
 "use client";
 
 import { use, useEffect, useState } from "react";
-import ProductCard from "../components/ProductCard"; // Pastikan path ini benar
-import { fetchAllProduct } from "../utils/product"; // Pastikan path ini benar
+import ProductCard from "../components/ProductCard";
+import { fetchAllProduct } from "../utils/product";
 import { ProductItem } from "../types/productType";
 import { useRouter } from "next/navigation";
-// Mendefinisikan tipe untuk satu item produk dari API
+import { Box, Search } from "lucide-react";
 
 export default function ProductPage() {
   const [products, setProducts] = useState<ProductItem[]>([]);
+  const [filteredProducts, setFilteredProducts] = useState<ProductItem[]>([]);
   const [loading, setLoading] = useState<boolean>(true);
   const [error, setError] = useState<string | null>(null);
+  const [searchTerm, setSearchTerm] = useState<string>("");
 
   const router = useRouter();
   const handleViewDetails = (id: number) => {
@@ -26,8 +28,10 @@ export default function ProductPage() {
 
         if (apiResult && apiResult.data) {
           setProducts(apiResult.data);
+          setFilteredProducts(apiResult.data);
         } else {
           setProducts([]);
+          setFilteredProducts([]);
           console.warn(
             "Struktur data dari fetchAllProduct tidak sesuai harapan:",
             apiResult
@@ -51,6 +55,7 @@ export default function ProductPage() {
         }
         setError(errorMessage);
         setProducts([]);
+        setFilteredProducts([]);
       } finally {
         setLoading(false);
       }
@@ -59,26 +64,75 @@ export default function ProductPage() {
     loadProducts();
   }, []);
 
+  useEffect(() => {
+    if (searchTerm) {
+      const filtered = products.filter((product) =>
+        product.name?.toLowerCase().includes(searchTerm.toLowerCase())
+      );
+      setFilteredProducts(filtered);
+    } else {
+      setFilteredProducts(products);
+    }
+  }, [searchTerm, products]);
+
   if (loading) {
     return (
-      <div className="flex justify-center items-center min-h-screen bg-gray-100 p-4">
-        <p className="text-lg text-gray-600">Memuat produk...</p>
+      <div className="min-h-screen bg-gradient-to-br from-gray-50 to-gray-100">
+        <div className="container mx-auto px-4 py-8 pt-24">
+          <div className="flex justify-center items-center min-h-[70vh]">
+            <div className="text-center">
+              <div className="relative">
+                <div className="animate-spin rounded-full h-16 w-16 border-4 border-gray-200 border-t-blue-600 mx-auto mb-6"></div>
+                <div className="absolute inset-0 rounded-full h-16 w-16 border-4 border-gray-100 mx-auto animate-pulse"></div>
+              </div>
+              <h3 className="text-xl font-semibold text-gray-800 mb-2">
+                Memuat Produk
+              </h3>
+              <p className="text-gray-600">
+                Sedang mengambil data produk terbaru...
+              </p>
+            </div>
+          </div>
+        </div>
       </div>
     );
   }
 
   if (error) {
     return (
-      <div className="flex justify-center items-center min-h-screen bg-gray-100 p-4">
-        <div
-          className="bg-red-100 border border-red-400 text-red-700 px-6 py-4 rounded-md shadow-md"
-          role="alert"
-        >
-          <strong className="font-bold">Gagal memuat produk:</strong>
-          <p>{error}</p>
-          <p className="text-sm mt-2">
-            Silakan coba lagi nanti atau hubungi dukungan.
-          </p>
+      <div className="min-h-screen bg-gradient-to-br from-red-50 to-gray-50">
+        <div className="container mx-auto px-4 py-8 pt-24">
+          <div className="flex justify-center items-center min-h-[70vh]">
+            <div className="max-w-lg w-full">
+              <div className="bg-white border border-red-200 rounded-2xl shadow-lg p-8 text-center">
+                <div className="bg-red-100 rounded-full w-20 h-20 flex items-center justify-center mx-auto mb-6">
+                  <svg
+                    className="w-10 h-10 text-red-600"
+                    fill="none"
+                    stroke="currentColor"
+                    viewBox="0 0 24 24"
+                  >
+                    <path
+                      strokeLinecap="round"
+                      strokeLinejoin="round"
+                      strokeWidth={2}
+                      d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-2.5L13.732 4c-.77-.833-1.964-.833-2.732 0L3.732 16.5c-.77.833.192 2.5 1.732 2.5z"
+                    />
+                  </svg>
+                </div>
+                <h3 className="text-2xl font-bold text-gray-900 mb-4">
+                  Oops! Terjadi Kesalahan
+                </h3>
+                <p className="text-gray-600 mb-6">{error}</p>
+                <button
+                  onClick={() => window.location.reload()}
+                  className="bg-blue-600 hover:bg-blue-700 text-white font-medium py-3 px-6 rounded-lg transition-colors duration-200"
+                >
+                  Coba Lagi
+                </button>
+              </div>
+            </div>
+          </div>
         </div>
       </div>
     );
@@ -86,46 +140,149 @@ export default function ProductPage() {
 
   if (products.length === 0) {
     return (
-      <div className="flex justify-center items-center min-h-screen bg-gray-100 p-4">
-        <p className="text-lg text-gray-600">
-          Tidak ada produk yang ditemukan.
-        </p>
+      <div className="min-h-screen bg-gradient-to-br from-gray-50 to-blue-50">
+        <div className="container mx-auto px-4 py-8 pt-24">
+          <div className="flex justify-center items-center min-h-[70vh]">
+            <div className="text-center max-w-md">
+              <div className="bg-gray-100 rounded-full w-24 h-24 flex items-center justify-center mx-auto mb-6">
+                <svg
+                  className="w-12 h-12 text-gray-400"
+                  fill="none"
+                  stroke="currentColor"
+                  viewBox="0 0 24 24"
+                >
+                  <path
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                    strokeWidth={1.5}
+                    d="M20 13V6a2 2 0 00-2-2H6a2 2 0 00-2 2v7m16 0v5a2 2 0 01-2 2H6a2 2 0 01-2-2v-5m16 0h-2.586a1 1 0 00-.707.293l-2.414 2.414a1 1 0 01-.707.293h-3.172a1 1 0 01-.707-.293l-2.414-2.414A1 1 0 006.586 13H4"
+                  />
+                </svg>
+              </div>
+              <h3 className="text-2xl font-bold text-gray-900 mb-4">
+                Belum Ada Produk
+              </h3>
+              <p className="text-gray-600 mb-6">
+                Produk sedang dalam proses persiapan. Silakan kembali lagi
+                nanti!
+              </p>
+              <button
+                onClick={() => window.location.reload()}
+                className="bg-blue-600 hover:bg-blue-700 text-white font-medium py-3 px-6 rounded-lg transition-colors duration-200"
+              >
+                Refresh Halaman
+              </button>
+            </div>
+          </div>
+        </div>
       </div>
     );
   }
 
   return (
-    <div className="p-4 pt-20 bg-gray-100 min-h-screen">
-      {/* Container utama halaman dengan padding responsif */}
-      <div className="grid grid-cols-1 xs:grid-cols-2 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 2xl:grid-cols-6 gap-4 sm:gap-6">
-        {/*
-          Grid responsif:
-          - 1 kolom secara default (untuk layar sangat kecil jika xs tidak tercapai)
-          - xs:grid-cols-2: 2 kolom untuk layar extra small (breakpoint 'xs' kustom jika ada, atau sesuaikan jika 'sm' adalah yg terkecil)
-                           Jika Anda tidak memiliki breakpoint 'xs' kustom di Tailwind, Anda bisa mulai dari 'sm'.
-                           Untuk Tailwind default, 'sm' adalah 640px. Anda bisa menggunakan grid-cols-2 langsung jika tidak ada layar lebih kecil dari itu.
-                           Saya akan asumsikan Anda mungkin ingin 2 kolom bahkan di bawah 'sm' jika memungkinkan.
-                           Jika 'xs' tidak ada di konfigurasi Tailwind Anda, 'grid-cols-2' akan menjadi default sebelum 'sm'.
-                           Untuk kejelasan, mari kita mulai dengan 2 kolom sebagai basis jika ruang memungkinkan, dan tingkatkan.
-                           Mari kita sederhanakan: mulai dari 2 kolom jika muat, lalu tingkatkan.
-        */}
-        {/* Versi Grid yang lebih umum dan standar Tailwind: */}
-        {/* <div className="grid grid-cols-2 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 2xl:grid-cols-6 gap-4 sm:gap-6"> */}
-        {/* Versi grid yang dimulai dari 1 kolom di layar terkecil: */}
-        {products.map((product) => (
-          <ProductCard
-            key={product.id}
-            id={product.id} // Menggunakan product.id untuk prop id
-            image={product.image}
-            name={product.name}
-            // Deskripsi tidak diteruskan karena ProductCard saat ini tidak menerimanya.
-            // Jika ingin menampilkan deskripsi, ProductCard perlu diubah.
-            // description={product.description}
-            sold={product.sold}
-            price={product.price}
-            onView={handleViewDetails}
-          />
-        ))}
+    <div className="min-h-screen">
+      {/* Hero Header Section */}
+      <div className="bg-primary text-white">
+        <div className="container mx-auto p-4 py-12 pt-32">
+          <div className="text-center mb-8">
+            <h1 className="text-lg font-medium mb-4">Koleksi Produk Kami</h1>
+            <p className="text-sm text-blue-100 max-w-2xl mx-auto">
+              Temukan berbagai produk berkualitas tinggi dari Sekolah Kopi Raisa
+            </p>
+          </div>
+
+          {/* Search Bar */}
+          <div className="max-w-md mx-auto">
+            <div className="relative">
+              <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
+                <svg
+                  className="h-5 w-5 text-gray-400"
+                  fill="none"
+                  stroke="currentColor"
+                  viewBox="0 0 24 24"
+                >
+                  <path
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                    strokeWidth={2}
+                    d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"
+                  />
+                </svg>
+              </div>
+              <input
+                type="text"
+                placeholder="Cari produk..."
+                value={searchTerm}
+                onChange={(e) => setSearchTerm(e.target.value)}
+                className="block w-full pl-10 pr-3 py-1.5 border border-gray-300 rounded-xl leading-5 bg-white text-gray-900 placeholder-gray-500 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-all duration-200"
+              />
+            </div>
+          </div>
+        </div>
+      </div>
+
+      {/* Stats Section */}
+      <div className="bg-white border-b border-gray-200">
+        <div className="container mx-auto p-4 py-6">
+          <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between">
+            <div className="flex items-center space-x-4">
+              <div className="flex items-center space-x-2">
+                <div className="w-2 h-2 bg-green-500 rounded-full animate-pulse"></div>
+                <span className="text-sm text-gray-600">
+                  {filteredProducts.length} dari {products.length} produk
+                  ditampilkan
+                </span>
+              </div>
+            </div>
+            <div className="mt-4 sm:mt-0 flex items-center space-x-3">
+              <span className="inline-flex items-center px-3 py-1.5 rounded-full text-sm font-medium bg-gradient-to-r from-blue-100 to-blue-200 text-blue-800 border border-blue-300 gap-2">
+                <Box width={15} className="" /> {products.length} Total Produk
+              </span>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      {/* Products Grid */}
+      <div className="container mx-auto p-4 py-8">
+        {filteredProducts.length === 0 && searchTerm ? (
+          <div className="text-center py-12">
+            <div className="bg-gray-100 rounded-full w-20 h-20 flex items-center justify-center mx-auto mb-4">
+              <Search size={15} className="text-gray-400" />
+            </div>
+            <h3 className="text-xl font-semibold text-gray-900 mb-2">
+              Tidak ditemukan
+            </h3>
+            <p className="text-gray-600 mb-4">
+              Tidak ada produk yang cocok dengan pencarian "{searchTerm}"
+            </p>
+            <button
+              onClick={() => setSearchTerm("")}
+              className="text-blue-600 hover:text-blue-700 font-medium"
+            >
+              Hapus filter pencarian
+            </button>
+          </div>
+        ) : (
+          <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 2xl:grid-cols-6 gap-8">
+            {filteredProducts.map((product, index) => (
+              <div
+                key={product.id}
+                className="transform hover:scale-105 transition-all duration-300 hover:shadow-lg"
+                style={{ animationDelay: `${index * 0.1}s` }}
+              >
+                <ProductCard
+                  id={product.id}
+                  image={product.image}
+                  name={product.name}
+                  sold={product.sold}
+                  price={product.price}
+                  onView={handleViewDetails}
+                />
+              </div>
+            ))}
+          </div>
+        )}
       </div>
     </div>
   );
