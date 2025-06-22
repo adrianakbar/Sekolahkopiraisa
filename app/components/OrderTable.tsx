@@ -169,7 +169,7 @@ function StatusDropdown({
   );
 }
 
-// Komponen utama dengan pagination
+// Komponen utama tanpa pagination
 export default function OrderTable({
   order,
   onView,
@@ -178,135 +178,81 @@ export default function OrderTable({
   statusSortOrder,
 }: OrderTableProps) {
   const [openDropdownId, setOpenDropdownId] = useState<number | null>(null);
-  const [currentPage, setCurrentPage] = useState(1);
-  const itemsPerPage = 15;
-
-  const totalPages = Math.ceil(order.length / itemsPerPage);
 
   const handleToggleDropdown = (id: number) => {
     setOpenDropdownId((prev) => (prev === id ? null : id));
   };
 
-  // Data untuk halaman sekarang saja
-  const currentData = order.slice(
-    (currentPage - 1) * itemsPerPage,
-    currentPage * itemsPerPage
-  );
-
-  const goToPage = (page: number) => {
-    if (page < 1 || page > totalPages) return;
-    setCurrentPage(page);
-  };
-
   return (
-    <>
-      <div className="bg-tertiary shadow-lg rounded-xl overflow-hidden">
-        <div className="overflow-x-auto">
-          <table className="min-w-full divide-y divide-gray-200 text-sm">
-            <thead className="bg-primary text-white">
-              <tr>
-                <th className="px-2 sm:px-4 py-3 text-left font-medium whitespace-nowrap">
-                  Nama Customer
-                </th>
-                <th className="px-2 sm:px-4 py-3 text-left font-medium whitespace-nowrap">
-                  Nama Produk
-                </th>
-                <th className="px-2 sm:px-4 py-3 text-left font-medium whitespace-nowrap">
-                  Nama Mitra
-                </th>
-                <th className="px-2 sm:px-4 py-3 text-left font-medium whitespace-nowrap">
-                  Quantity Total
-                </th>
-                <th className="px-2 sm:px-4 py-3 text-left font-medium whitespace-nowrap">
-                  Total Harga
-                </th>
-                <th className="px-2 sm:px-4 py-3 text-left font-medium whitespace-nowrap">
-                  Status
-                </th>
-                <th className="px-2 sm:px-4 py-3 text-left font-medium whitespace-nowrap">
-                  Aksi
-                </th>
-                
+    <div className="bg-tertiary shadow-lg rounded-xl overflow-hidden">
+      <div className="overflow-x-auto">
+        <table className="min-w-full divide-y divide-gray-200 text-sm">
+          <thead className="bg-primary text-white">
+            <tr>
+              <th className="px-2 sm:px-4 py-3 text-left font-medium whitespace-nowrap">
+                Nama Customer
+              </th>
+              <th className="px-2 sm:px-4 py-3 text-left font-medium whitespace-nowrap">
+                Nama Produk
+              </th>
+              <th className="px-2 sm:px-4 py-3 text-left font-medium whitespace-nowrap">
+                Nama Mitra
+              </th>
+              <th className="px-2 sm:px-4 py-3 text-left font-medium whitespace-nowrap">
+                Quantity Total
+              </th>
+              <th className="px-2 sm:px-4 py-3 text-left font-medium whitespace-nowrap">
+                Total Harga
+              </th>
+              <th className="px-2 sm:px-4 py-3 text-left font-medium whitespace-nowrap">
+                Status
+              </th>
+              <th className="px-2 sm:px-4 py-3 text-left font-medium whitespace-nowrap">
+                Aksi
+              </th>
+            </tr>
+          </thead>
+          <tbody className="text-gray-700 divide-y divide-gray-200">
+            {order.map((item) => (
+              <tr key={item.id}>
+                <td className="px-2 sm:px-4 py-3 whitespace-nowrap">
+                  {item.customerName}
+                </td>
+                <td className="px-2 sm:px-4 py-3 whitespace-nowrap">
+                  {item.productName}
+                </td>
+                <td className="px-2 sm:px-4 py-3 whitespace-nowrap">
+                  {item.partnerName}
+                </td>
+                <td className="px-2 sm:px-4 py-3 whitespace-nowrap">
+                  {item.totalQuantity}
+                </td>
+                <td className="px-2 sm:px-4 py-3 whitespace-nowrap">
+                  {item.totalPrice}
+                </td>
+                <td className="px-2 sm:px-4 py-3 whitespace-nowrap">
+                  <StatusDropdown
+                    currentStatus={item.status}
+                    orderId={item.id}
+                    onStatusChange={onStatusChange}
+                    isOpen={openDropdownId === item.id}
+                    onToggle={handleToggleDropdown}
+                  />
+                </td>
+                <td className="px-2 sm:px-4 py-3 whitespace-nowrap">
+                  <button
+                    onClick={() => onView(item.id)}
+                    className="cursor-pointer p-2 text-white rounded-xl bg-primary hover:-translate-y-1 duration-150 ease-in"
+                    title="View"
+                  >
+                    <Expand size={15} />
+                  </button>
+                </td>
               </tr>
-            </thead>
-            <tbody className="text-gray-700 divide-y divide-gray-200">
-              {currentData.map((item) => (
-                <tr key={item.id}>
-                  <td className="px-2 sm:px-4 py-3 whitespace-nowrap">
-                    {item.customerName}
-                  </td>
-                  <td className="px-2 sm:px-4 py-3 whitespace-nowrap">
-                    {item.productName}
-                  </td>
-                  <td className="px-2 sm:px-4 py-3 whitespace-nowrap">
-                    {item.partnerName}
-                  </td>
-                  <td className="px-2 sm:px-4 py-3 whitespace-nowrap">
-                    {item.totalQuantity}
-                  </td>
-                  <td className="px-2 sm:px-4 py-3 whitespace-nowrap">
-                    {item.totalPrice}
-                  </td>
-                  <td className="px-2 sm:px-4 py-3 whitespace-nowrap">
-                    <StatusDropdown
-                      currentStatus={item.status}
-                      orderId={item.id}
-                      onStatusChange={onStatusChange}
-                      isOpen={openDropdownId === item.id}
-                      onToggle={handleToggleDropdown}
-                    />
-                  </td>
-                  <td className="px-2 sm:px-4 py-3 whitespace-nowrap">
-                    <button
-                      onClick={() => onView(item.id)}
-                      className="cursor-pointer p-2 text-white rounded-xl bg-primary hover:-translate-y-1 duration-150 ease-in"
-                      title="View"
-                    >
-                      <Expand size={15} />
-                    </button>
-                  </td>
-                </tr>
-              ))}
-            </tbody>
-          </table>
-        </div>
+            ))}
+          </tbody>
+        </table>
       </div>
-
-      {/* Pagination */}
-      <div className="flex justify-center items-center flex-wrap gap-2 mt-4 px-4">
-        <button
-          onClick={() => goToPage(currentPage - 1)}
-          disabled={currentPage === 1}
-          className="px-3 py-1 rounded-xl border border-gray-300 disabled:opacity-50 disabled:cursor-not-allowed"
-        >
-          Prev
-        </button>
-
-        {[...Array(totalPages)].map((_, idx) => {
-          const page = idx + 1;
-          return (
-            <button
-              key={page}
-              onClick={() => goToPage(page)}
-              className={`px-3 py-1 rounded-xl border ${
-                page === currentPage
-                  ? "bg-primary text-white border-primary"
-                  : "border-gray-300 text-gray-700 hover:bg-gray-100"
-              }`}
-            >
-              {page}
-            </button>
-          );
-        })}
-
-        <button
-          onClick={() => goToPage(currentPage + 1)}
-          disabled={currentPage === totalPages}
-          className="px-3 py-1 rounded-xl border border-gray-300 disabled:opacity-50 disabled:cursor-not-allowed"
-        >
-          Next
-        </button>
-      </div>
-    </>
+    </div>
   );
 }

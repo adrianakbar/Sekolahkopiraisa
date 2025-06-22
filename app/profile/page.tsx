@@ -223,7 +223,7 @@ export default function Profile() {
                   placeholder="Email Anda"
                 />
                 {emailErrorOnEdit && (
-                  <p className="text-amber-600 text-sm flex items-center bg-amber-50 p-2 rounded-lg">
+                  <p className="text-amber-600 text-sm flex items-center bg-amber-50 p-2 rounded-xl">
                     <span className="mr-1">ℹ️</span>
                     Email tidak dapat diubah untuk keamanan akun
                   </p>

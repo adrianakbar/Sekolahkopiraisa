@@ -272,7 +272,11 @@ export default function Navbar({ navbarItems }: { navbarItems: NavbarItem[] }) {
                         href="/order"
                         className="flex items-center font-medium gap-3 px-3 py-2 text-gray-700 rounded-lg group hover:bg-gray-100 hover:text-gray-700 "
                       >
-                        <ShoppingBasket size={23} color="#77767b" strokeWidth={1.5} />
+                        <ShoppingBasket
+                          size={23}
+                          color="#77767b"
+                          strokeWidth={1.5}
+                        />
                         Pesanan Saya
                       </DropdownItem>
                     </li>
@@ -395,6 +399,28 @@ export default function Navbar({ navbarItems }: { navbarItems: NavbarItem[] }) {
                       </li>
                     );
                   })}
+
+                  {/* Menu Pesanan Saya - hanya tampil di mobile dan jika user login */}
+                  {user && (
+                    <li>
+                      <Link
+                        href="/order"
+                        onClick={() => setIsMobileMenuOpen(false)}
+                      >
+                        <div
+                          className={clsx(
+                            "flex items-center gap-3 px-3 py-2 rounded-xl transition-all duration-200 text-sm",
+                            pathname === "/order"
+                              ? "bg-primary text-white font-medium shadow-lg"
+                              : "text-gray-700 hover:bg-gray-100 hover:text-gray-900"
+                          )}
+                        >
+                          <ShoppingBasket size={20} />
+                          <span>Pesanan Saya</span>
+                        </div>
+                      </Link>
+                    </li>
+                  )}
                 </ul>
               </nav>
 
@@ -416,7 +442,7 @@ export default function Navbar({ navbarItems }: { navbarItems: NavbarItem[] }) {
                         )}
                       </Link>
                     </div>
-                    
+
                     <div
                       className="flex items-center gap-2"
                       onClick={() => {

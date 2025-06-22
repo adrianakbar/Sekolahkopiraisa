@@ -6,7 +6,7 @@ import { useEffect, useState } from "react";
 import OrderDetailModal from "@/app/components/OrderDetailModal";
 import { formatCurrency } from "@/app/utils/helper";
 import ConfirmModal from "@/app/components/ConfirmModal";
-import { Check, FunnelPlus, Phone } from "lucide-react";
+import { Check, ChevronLeft, ChevronRight, FunnelPlus, Phone } from "lucide-react";
 import { useRouter } from "next/navigation";
 import { callPartner } from "@/app/utils/partner";
 
@@ -31,6 +31,8 @@ export default function AdminOrderPage() {
   const [sortOption, setSortOption] = useState<"newest" | "oldest" | "az">(
     "newest"
   );
+  const [currentPage, setCurrentPage] = useState(1);
+  const [itemsPerPage] = useState(15);
 
   const statusPriority: OrderStatus[] = [
     "PENDING",
@@ -155,6 +157,67 @@ export default function AdminOrderPage() {
       : bStatusIndex - aStatusIndex;
   });
 
+  // Pagination calculations
+  const totalPages = Math.ceil(filteredOrders.length / itemsPerPage);
+  const startIndex = (currentPage - 1) * itemsPerPage;
+  const endIndex = startIndex + itemsPerPage;
+  const currentOrders = filteredOrders.slice(startIndex, endIndex);
+
+
+  // Pagination handlers
+  const goToPage = (page: number) => {
+    setCurrentPage(page);
+  };
+
+  const goToPrevious = () => {
+    setCurrentPage((prev) => Math.max(prev - 1, 1));
+  };
+
+  const goToNext = () => {
+    setCurrentPage((prev) => Math.min(prev + 1, totalPages));
+  };
+
+  // Generate page numbers for pagination
+  const getPageNumbers = () => {
+    const pages = [];
+    const maxVisiblePages = 5;
+
+    if (totalPages <= maxVisiblePages) {
+      for (let i = 1; i <= totalPages; i++) {
+        pages.push(i);
+      }
+    } else {
+      if (currentPage <= 3) {
+        for (let i = 1; i <= 4; i++) {
+          pages.push(i);
+        }
+        pages.push("...");
+        pages.push(totalPages);
+      } else if (currentPage >= totalPages - 2) {
+        pages.push(1);
+        pages.push("...");
+        for (let i = totalPages - 3; i <= totalPages; i++) {
+          pages.push(i);
+        }
+      } else {
+        pages.push(1);
+        pages.push("...");
+        for (let i = currentPage - 1; i <= currentPage + 1; i++) {
+          pages.push(i);
+        }
+        pages.push("...");
+        pages.push(totalPages);
+      }
+    }
+
+    return pages;
+  };
+
+  // Reset to page 1 when filters change
+  useEffect(() => {
+    setCurrentPage(1);
+  }, [statusFilter, sortOption, statusSortOrder]);
+
   // Handler tombol lihat detail
   const handleViewOrder = (orderId: number) => {
     router.push(`/admin/order/${orderId}`);
@@ -236,7 +299,11 @@ export default function AdminOrderPage() {
         }}
         onConfirm={confirmStatusChange}
         title="Konfirmasi Perubahan Status"
-        description={`Apakah Anda yakin ingin mengubah status pesanan menjadi "${pendingStatus?.newStatus ? getStatusLabel(pendingStatus.newStatus) : ''}"?`}
+        description={`Apakah Anda yakin ingin mengubah status pesanan menjadi "${
+          pendingStatus?.newStatus
+            ? getStatusLabel(pendingStatus.newStatus)
+            : ""
+        }"?`}
         isSubmitting={isSubmitting}
       />
 
@@ -336,12 +403,68 @@ export default function AdminOrderPage() {
         })()}
 
         <OrderTable
-          order={sortedOrders}
+          order={currentOrders}
           onView={handleViewOrder}
           onStatusChange={handleStatusBadge}
           onToggleStatusSort={toggleStatusSort}
           statusSortOrder={statusSortOrder}
         />
+
+        {/* Pagination */}
+        {totalPages > 1 && (
+          <div className="flex flex-col items-center space-y-4 mt-5">
+            {/* Pagination Info */}
+            <div className="text-sm text-gray-600">
+              Menampilkan {startIndex + 1}-
+              {Math.min(endIndex, filteredOrders.length)} dari{" "}
+              {filteredOrders.length} pesanan
+            </div>
+
+            {/* Pagination Controls */}
+            <div className="flex items-center space-x-1">
+              {/* Previous Button */}
+              <button
+                onClick={goToPrevious}
+                disabled={currentPage === 1}
+                className="p-2 rounded-lg border border-gray-300 hover:bg-gray-100 disabled:opacity-50 disabled:cursor-not-allowed"
+              >
+                <ChevronLeft size={20} />
+              </button>
+
+              {/* Page Numbers */}
+              <div className="flex items-center space-x-1">
+                {getPageNumbers().map((page, index) =>
+                  page === "..." ? (
+                    <span key={index} className="px-3 py-2 text-gray-500">
+                      ...
+                    </span>
+                  ) : (
+                    <button
+                      key={index}
+                      onClick={() => goToPage(page as number)}
+                      className={`w-8 h-8 rounded-full border flex items-center justify-center text-sm ${
+                        currentPage === page
+                          ? "bg-primary text-white border-primary"
+                          : "border-gray-300 hover:bg-gray-100"
+                      }`}
+                    >
+                      {page}
+                    </button>
+                  )
+                )}
+              </div>
+
+              {/* Next Button */}
+              <button
+                onClick={goToNext}
+                disabled={currentPage === totalPages}
+                className="p-2 rounded-xl border border-gray-300 hover:bg-gray-100 disabled:opacity-50 disabled:cursor-not-allowed"
+              >
+                <ChevronRight size={20} />
+              </button>
+            </div>
+          </div>
+        )}
       </div>
 
       <OrderDetailModal
