@@ -232,13 +232,13 @@ export default function ShoppingCart(): JSX.Element {
 
   const CartSkeleton = () => {
     return (
-      <div className="pt-25 min-h-screen bg-secondary">
+      <div className="pt-25 min-h-screen bg-secondary p-4">
         <div className="bg-white p-6 rounded-xl shadow-lg max-w-7xl mx-auto">
           {/* Header skeleton */}
           <Skeleton width={192} height={24} className="mb-6" />
           
           {/* Table header skeleton */}
-          <div className="hidden md:grid md:grid-cols-13 md:gap-4 text-sm mb-4 border-b pb-3">
+          <div className="hidden md:grid md:grid-cols-13 md:gap-4 text-sm mb-4 border-b border-b-gray-200 pb-3">
             <div className="col-span-1"></div>
             <div className="col-span-5">
               <Skeleton width={96} height={16} />
@@ -321,7 +321,7 @@ export default function ShoppingCart(): JSX.Element {
   }
 
   return (
-    <div className="pt-25 min-h-screen bg-secondary">
+    <div className="pt-25 min-h-screen bg-secondary p-4">
 
     <div className="bg-white p-6 rounded-xl shadow-lg max-w-7xl mx-auto">
       {showPopup && (
@@ -334,7 +334,7 @@ export default function ShoppingCart(): JSX.Element {
       <h2 className="text-lg font-medium text-gray-800 mb-6">
         Keranjang Belanja
       </h2>
-      <div className="hidden md:grid md:grid-cols-13 md:gap-4 text-sm text-gray-500 font-medium mb-4 border-b pb-3">
+      <div className="hidden md:grid md:grid-cols-13 md:gap-4 text-sm text-gray-500 font-medium mb-4 border-b border-b-gray-200 pb-3">
         <div className="col-span-1"></div>
         <div className="col-span-5">Detail Produk</div>
         <div className="col-span-2 text-center">Harga Satuan</div>
@@ -366,7 +366,7 @@ export default function ShoppingCart(): JSX.Element {
         </div>
         <button
           type="submit"
-          className="cursor-pointer w-30 bg-primary text-white py-1.5 px-3 text-sm font-medium rounded-xl hover:-translate-y-1 duration-150 ease-in flex justify-center items-center gap-2 disabled:opacity-50"
+          className="cursor-pointer w-30 bg-primary text-white py-2 px-3 text-sm font-medium rounded-xl hover:-translate-y-1 duration-150 ease-in flex justify-center items-center gap-2 disabled:opacity-50"
           onClick={handleCheckout}
         >
           Checkout

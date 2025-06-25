@@ -24,7 +24,7 @@ export default function ConfirmModal({
 
   return (
     <div className="fixed inset-0 z-50 flex items-center justify-center backdrop-blur-lg">
-      <div className="bg-white rounded-xl p-6 md:p-8 max-w-md w-full shadow-xl relative mx-4">
+      <div className="bg-white rounded-xl p-6 md:p-8 max-w-md w-full shadow-lg relative mx-4">
         {/* Tombol close */}
         <button
           onClick={onClose}

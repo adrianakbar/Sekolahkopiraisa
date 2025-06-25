@@ -107,7 +107,7 @@ const ProductItem: React.FC<ProductItemProps> = ({
   customNote,
   onNoteChange,
 }) => (
-  <div className="bg-white border border-gray-200 rounded-xl p-4 md:p-6 mb-4 shadow-sm hover:shadow-lg transition-all duration-200">
+  <div className="bg-tertiary border border-gray-200 rounded-xl p-4 md:p-6 mb-4 shadow-sm hover:shadow-lg transition-all duration-200">
     <div className="grid grid-cols-1 lg:grid-cols-12 gap-4 lg:gap-6 items-center">
       <div className="lg:col-span-6 flex flex-col sm:flex-row items-center sm:items-start">
         <div className="relative mb-3 sm:mb-0">
@@ -125,12 +125,12 @@ const ProductItem: React.FC<ProductItemProps> = ({
             {name}
           </h3>
           <p className="text-sm text-gray-500 mb-2 flex items-center justify-center sm:justify-start gap-1">
-            <Store size={15} />
+            <Store size={18} />
             Mitra: {partnerName}
           </p>
           <input
             type="text"
-            className="w-full py-1.5 px-3 text-sm border border-gray-200 rounded-xl focus:ring-2 focus:ring-orange-100 focus:border-orange-500 transition-all duration-200"
+            className="w-full py-2 px-3 text-sm border border-gray-300 rounded-xl focus:ring-2 focus:ring-orange-100 focus:border-orange-500 transition-all duration-200"
             placeholder="Tambahkan catatan khusus..."
             value={customNote}
             onChange={(e) => onNoteChange(e.target.value)}
@@ -271,7 +271,7 @@ export default function CheckOutPage() {
   }, []);
 
   return (
-    <div className="max-w-7xl mx-auto p-4 lg:px-0">
+    <div className="max-w-7xl mx-auto p-4">
       <div className="bg-white shadow-lg rounded-xl overflow-hidden">
         {showPopup && (
           <Popup
@@ -374,9 +374,9 @@ export default function CheckOutPage() {
               </div>
               <button
                 onClick={handleCreateOrder}
-                className="cursor-pointer w-full sm:w-auto bg-primary text-white py-2 md:py-1.5 px-4 md:px-3 text-sm font-medium rounded-xl hover:-translate-y-1 duration-150 ease-in flex justify-center items-center gap-2 disabled:opacity-50 min-w-[140px]"
+                className="cursor-pointer w-full sm:w-auto bg-primary text-white py-2 px-4 text-sm font-medium rounded-xl hover:-translate-y-1 duration-150 ease-in flex justify-center items-center gap-2 disabled:opacity-50 min-w-[140px]"
               >
-                <Check size={15} />
+                <Check size={18} />
                 Buat Pesanan
               </button>
             </div>

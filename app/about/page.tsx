@@ -12,7 +12,7 @@ export default function AboutPage() {
               <span className="inline-block px-4 py-2 bg-primary text-white text-sm font-medium rounded-full">
                 Tentang Kami
               </span>
-              <h1 className="text-xl font-bold text-gray-900 leading-tight">
+              <h1 className="text-xl font-medium text-gray-900 leading-tight">
                 Sekolah Kopi <span className="text-amber-600">Raisa</span>
               </h1>
             </div>
@@ -58,7 +58,7 @@ export default function AboutPage() {
             <span className="inline-block px-4 py-2 bg-secondary text-sm font-medium rounded-full mb-4">
               Video Profil
             </span>
-            <h2 className="text-xl font-bold text-gray-900 mb-6">
+            <h2 className="text-xl font-medium text-gray-900 mb-6">
               Mengenal Lebih Dekat <br />
               <span className="text-amber-600">Sekolah Kopi Raisa</span>
             </h2>
@@ -104,7 +104,7 @@ export default function AboutPage() {
               <div className="bg-white rounded-xl p-8 shadow-lg border border-gray-100">
                 <div className="flex items-center mb-4">
                   <div className="w-3 h-8 bg-gradient-to-b from-amber-400 to-orange-500 rounded mr-4"></div>
-                  <h3 className="text-xl font-bold text-gray-900">
+                  <h3 className="text-xl font-medium text-gray-900">
                     VISI
                   </h3>
                 </div>
@@ -119,7 +119,7 @@ export default function AboutPage() {
               <div className="bg-white rounded-xl p-8 shadow-lg border border-gray-100">
                 <div className="flex items-center mb-6">
                   <div className="w-3 h-8 bg-gradient-to-b from-emerald-400 to-green-500 rounded mr-4"></div>
-                  <h3 className="text-xl font-bold text-gray-900">
+                  <h3 className="text-xl font-medium text-gray-900">
                     MISI
                   </h3>
                 </div>
@@ -150,7 +150,7 @@ export default function AboutPage() {
           <span className="inline-block px-4 py-2 bg-secondary text-sm font-medium rounded-full mb-4">
             Organisasi
           </span>
-          <h2 className="text-xl font-bold text-gray-900 mb-6">
+          <h2 className="text-xl font-medium text-gray-900 mb-6">
             Struktur Kelembagaan
           </h2>
           <p className=" text-gray-600 max-w-2xl mx-auto">
@@ -175,7 +175,7 @@ export default function AboutPage() {
               <span className="inline-block px-4 py-2 bg-primary text-white text-sm font-medium rounded-full mb-4">
                 Tim Kami
               </span>
-              <h2 className="text-xl font-bold text-gray-900 mb-4">
+              <h2 className="text-xl font-medium text-gray-900 mb-4">
                 Pengurus Inti
               </h2>
               <p className=" text-gray-600">
@@ -213,7 +213,7 @@ export default function AboutPage() {
           {/* Bagian Pokja */}
           <div>
             <div className="text-center mb-12">
-              <h3 className="text-xl font-bold text-gray-900 mb-4">
+              <h3 className="text-xl font-medium text-gray-900 mb-4">
                 Bagian Pokja
               </h3>
               <p className=" text-gray-600">

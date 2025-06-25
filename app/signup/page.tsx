@@ -170,7 +170,7 @@ export default function Signup() {
             </p>
             <button
               type="submit"
-              className="cursor-pointer w-full p-1.5 bg-primary text-white rounded-xl hover:-translate-y-1 duration-150 ease-in"
+              className="cursor-pointer w-full p-2 bg-primary text-white rounded-xl hover:-translate-y-1 duration-150 ease-in"
             >
               Buat Akun
             </button>
@@ -183,7 +183,7 @@ export default function Signup() {
           </div>
           <button
             type="button"
-            className="cursor-pointer w-full p-1.5 bg-gray-300 border-gray-400 border rounded-xl hover:-translate-y-1 duration-150 ease-in text-sm flex items-center gap-2 justify-center"
+            className="cursor-pointer w-full p-2 bg-gray-300 border-gray-400 border rounded-xl hover:-translate-y-1 duration-150 ease-in text-sm flex items-center gap-2 justify-center"
             onClick={loginWithGoogle}
           >
             <img src="/assets/google-logo.png" alt="Google Icon" width={15} />

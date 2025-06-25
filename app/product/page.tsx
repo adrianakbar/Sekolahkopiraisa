@@ -216,7 +216,7 @@ export default function ProductPage() {
   }
 
   return (
-    <div className="min-h-screen">
+    <div className="min-h-screen bg-secondary">
       {/* Hero Header Section */}
       <div className="bg-primary text-white">
         <div className="container mx-auto p-4 py-12 pt-32">
@@ -250,7 +250,7 @@ export default function ProductPage() {
                 placeholder="Cari produk..."
                 value={searchTerm}
                 onChange={(e) => setSearchTerm(e.target.value)}
-                className="block w-full pl-10 pr-3 py-1.5 border border-gray-300 rounded-xl leading-5 bg-white text-gray-900 placeholder-gray-500 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-all duration-200"
+                className="block w-full pl-10 pr-3 py-2 border border-gray-300 rounded-xl leading-5 bg-white text-gray-900 placeholder-gray-500 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-all duration-200"
               />
             </div>
           </div>
@@ -258,7 +258,7 @@ export default function ProductPage() {
       </div>
 
       {/* Stats Section */}
-      <div className="bg-white border-b border-gray-200">
+      <div className=" border-b border-gray-300">
         <div className="container mx-auto p-4 py-6">
           <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between">
             <div className="flex items-center space-x-4">

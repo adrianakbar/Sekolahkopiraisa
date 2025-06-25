@@ -34,8 +34,9 @@ export default function Login() {
     e.preventDefault();
     try {
       const user = await loginUser(form);
+      console.log("User logged in:", user);
 
-      if (user.admin) {
+      if (user.user.admin) {
         router.replace("/admin");
       } else {
         router.replace("/");
@@ -227,7 +228,7 @@ export default function Login() {
 
             <button
               type="submit"
-              className="cursor-pointer w-full p-1.5 bg-primary text-white rounded-xl mt-4 hover:-translate-y-1 duration-150 ease-in text-sm"
+              className="cursor-pointer w-full p-2 bg-primary text-white rounded-xl mt-4 hover:-translate-y-1 duration-150 ease-in text-sm"
             >
               Masuk
             </button>
@@ -240,7 +241,7 @@ export default function Login() {
           </div>
           <button
             type="button"
-            className="cursor-pointer w-full p-1.5 bg-gray-300 border-gray-400 border rounded-xl hover:-translate-y-1 duration-150 ease-in text-sm flex items-center gap-2 justify-center"
+            className="cursor-pointer w-full p-2 bg-gray-300 border-gray-400 border rounded-xl hover:-translate-y-1 duration-150 ease-in text-sm flex items-center gap-2 justify-center"
             onClick={loginWithGoogle}
           >
             <img

@@ -51,6 +51,29 @@ export const registerUser = async (formData: {
   }
 };
 
+// Token utilities for frontend
+export const setToken = (token: string) => {
+  if (typeof window !== 'undefined') {
+    localStorage.setItem('token', token);
+    // Also set in document.cookie for middleware access
+    document.cookie = `token=${token}; path=/; max-age=${24 * 60 * 60}`;
+  }
+};
+
+export const getToken = () => {
+  if (typeof window !== 'undefined') {
+    return localStorage.getItem('token');
+  }
+  return null;
+};
+
+export const removeToken = () => {
+  if (typeof window !== 'undefined') {
+    localStorage.removeItem('token');
+    document.cookie = 'token=; path=/; expires=Thu, 01 Jan 1970 00:00:01 GMT';
+  }
+};
+
 // Login
 export const loginUser = async (formData: {
   emailOrPhone: string;
@@ -58,7 +81,9 @@ export const loginUser = async (formData: {
 }) => {
   try {
     const res = await api.post("/api/v1/auth/login", formData);
-    return res.data.data.user;
+    const { token } = res.data.data; // Fix: token is inside res.data.data, not res.data
+    setToken(token); // Set token in localStorage and cookie
+    return res.data.data;
   } catch (error: any) {
     if (error.response) {
       const { data } = error.response;
