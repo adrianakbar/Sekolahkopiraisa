@@ -29,4 +29,5 @@ export interface ProductApi {
   partner?: Partner;
   partnerName?: string;
   sold?: number;
+  weight?: number; // Tambahkan berat produk
 }

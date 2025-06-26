@@ -15,6 +15,7 @@ export interface CartItemData {
   customNote?: string; // opsional
   fromCart?: boolean;
   partnerName?: string;
+  weight?: number; // berat produk, jika diperlukan
 }
 
 // Props untuk komponen CartItem

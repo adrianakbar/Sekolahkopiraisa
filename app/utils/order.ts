@@ -192,3 +192,66 @@ export const cancelOrder = async (orderId: number, reason: string) => {
     throw error;
   }
 };
+
+export const searchAddress = async (search: string) => {
+  try {
+    const response = await api.get(`/api/v1/order/search-address?search=${encodeURIComponent(search)}`);
+    return response.data;
+  } catch (error: any) {
+    if (error.response) {
+      const { data } = error.response;
+
+      if (data?.errors && typeof data.errors === "object") {
+        throw {
+          type: "validation",
+          message: data.message || "Validasi gagal!",
+          errors: data.errors,
+        };
+      }
+
+      throw {
+        type: "general",
+        message: data.message || "Gagal mencari alamat!",
+      };
+    }
+
+    throw {
+      type: "network",
+      message: "Tidak dapat menghubungi server",
+    };
+  }
+}
+
+export const searchCost = async (destinationId: number, weight: number) => {
+  try {
+    const formData = new FormData();
+    formData.append('destination', destinationId.toString());
+    formData.append('weight', weight.toString());
+
+    const response = await api.post('/api/v1/order/search-cost', formData);
+    return response.data;
+  } catch (error: any) {
+    if (error.response) {
+      const { data } = error.response;
+
+      if (data?.errors && typeof data.errors === "object") {
+        throw {
+          type: "validation",
+          message: data.message || "Validasi gagal!",
+          errors: data.errors,
+        };
+      }
+
+      throw {
+        type: "general",
+        message: data.message || "Gagal menghitung biaya pengiriman!",
+      };
+    }
+
+    throw {
+      type: "network",
+      message: "Tidak dapat menghubungi server",
+    };
+  }
+}
+

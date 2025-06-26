@@ -2,7 +2,7 @@
 
 import React, { useEffect, useState } from "react";
 import { useCartStore } from "../stores/cartStore";
-import { createOrder } from "../utils/order";
+import { createOrder, searchAddress, searchCost } from "../utils/order";
 import Popup from "./Popup";
 import { useRouter } from "next/navigation";
 import { formatCurrency } from "../utils/helper";
@@ -22,10 +22,17 @@ import {
 interface OrderInformationProps {
   address: string;
   setAddress: (val: string) => void;
+  addressLabel: string;
+  setAddressLabel: (val: string) => void;
   userName: string;
   phoneNumber: string;
+  totalWeight: number;
+  shippingCost: number;
+  onAddressSearch: (query: string) => void;
+  addressSuggestions: any[];
   errors?: Record<string, string>;
   setErrors: React.Dispatch<React.SetStateAction<Record<string, string>>>;
+  onAddressSelect: (addressId: number) => void;
 }
 
 interface ProductData {
@@ -51,16 +58,47 @@ interface PaymentMethodsProps {
 const OrderInformation: React.FC<OrderInformationProps> = ({
   address,
   setAddress,
+  addressLabel,
+  setAddressLabel,
   userName,
   phoneNumber,
+  totalWeight,
+  shippingCost,
+  onAddressSearch,
+  addressSuggestions,
   errors = {},
   setErrors,
+  onAddressSelect,
 }) => {
+  const [showSuggestions, setShowSuggestions] = useState(false);
+
+  const handleAddressLabelChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const value = e.target.value;
+    setAddressLabel(value);
+    if (errors.addressLabel) {
+      setErrors((prev) => ({ ...prev, addressLabel: "" }));
+    }
+    
+    // Check if input has at least 4 characters
+    if (value.trim().length >= 4) {
+      onAddressSearch(value);
+      setShowSuggestions(true);
+    } else {
+      setShowSuggestions(false);
+    }
+  };
+
   const handleAddressChange = (e: React.ChangeEvent<HTMLTextAreaElement>) => {
     setAddress(e.target.value);
     if (errors.address) {
       setErrors((prev) => ({ ...prev, address: "" }));
     }
+  };
+
+  const handleSuggestionClick = (suggestion: any) => {
+    setAddressLabel(suggestion.label);
+    setShowSuggestions(false);
+    onAddressSelect(suggestion.id);
   };
 
   return (
@@ -69,12 +107,48 @@ const OrderInformation: React.FC<OrderInformationProps> = ({
         <MapPin size={18} className="text-blue-500" />
         Informasi Pengiriman
       </h2>
+      
+      <div className="mb-4 relative">
+        <label className="block text-sm font-medium text-gray-700 mb-2">
+          Label Alamat
+        </label>
+        <input
+          type="text"
+          className={`w-full p-3 border-2 rounded-xl text-sm transition-all duration-200 ${
+            errors.addressLabel
+              ? "border-red-500 bg-red-50"
+              : "border-gray-200 bg-white hover:border-gray-300"
+          }`}
+          value={addressLabel}
+          onChange={handleAddressLabelChange}
+          placeholder="Ketik minimal 4 karakter untuk mencari alamat..."
+        />
+        {showSuggestions && addressSuggestions.length > 0 && (
+          <div className="absolute z-10 w-full mt-1 bg-white border border-gray-300 rounded-xl shadow-lg max-h-40 overflow-y-auto">
+            {addressSuggestions.map((suggestion, index) => (
+              <div
+                key={index}
+                className="p-3 hover:bg-gray-100 cursor-pointer text-sm border-b border-gray-100 last:border-b-0"
+                onClick={() => handleSuggestionClick(suggestion)}
+              >
+                {suggestion.label}
+              </div>
+            ))}
+          </div>
+        )}
+        {errors.addressLabel && (
+          <p className="text-sm text-red-600 mt-2 flex items-center">
+            {errors.addressLabel}
+          </p>
+        )}
+      </div>
+
       <div className="mb-4">
         <label className="block text-sm font-medium text-gray-700 mb-2">
-          Alamat Pengiriman
+          Alamat Lengkap
         </label>
         <textarea
-          className={`w-full p-3 border-2 rounded-xl text-sm resize-none transition-all duration-200 focus:ring-4 focus:ring-blue-100 focus:border-blue-500 ${
+          className={`w-full p-3 border-2 rounded-xl text-sm resize-none transition-all duration-200 ${
             errors.address
               ? "border-red-500 bg-red-50"
               : "border-gray-200 bg-white hover:border-gray-300"
@@ -82,7 +156,7 @@ const OrderInformation: React.FC<OrderInformationProps> = ({
           value={address}
           onChange={handleAddressChange}
           rows={3}
-          placeholder="Masukkan alamat lengkap pengiriman..."
+          placeholder="Masukkan detail alamat lengkap (nama jalan, nomor rumah, patokan, dll)..."
         />
         {errors.address && (
           <p className="text-sm text-red-600 mt-2 flex items-center">
@@ -90,9 +164,21 @@ const OrderInformation: React.FC<OrderInformationProps> = ({
           </p>
         )}
       </div>
-      <div className="bg-white p-4 rounded-xl border border-gray-100">
+      <div className="bg-white p-4 rounded-xl border border-gray-100 mb-4">
         <p className="text-sm font-medium text-gray-800 mb-1">{userName}</p>
         <p className="text-sm text-gray-600">{phoneNumber}</p>
+      </div>
+      <div className="grid grid-cols-2 gap-4">
+        <div className="bg-white p-4 rounded-xl border border-gray-100">
+          <p className="text-sm font-medium text-gray-700 mb-1">Total Berat</p>
+          <p className="text-sm text-gray-600">{totalWeight.toFixed(2)} kg</p>
+        </div>
+        <div className="bg-white p-4 rounded-xl border border-gray-100">
+          <p className="text-sm font-medium text-gray-700 mb-1">Biaya Kirim</p>
+          <p className="text-sm text-gray-600">
+            {shippingCost > 0 ? `Rp ${shippingCost.toLocaleString('id-ID')}` : 'Menghitung...'}
+          </p>
+        </div>
       </div>
     </div>
   );
@@ -202,12 +288,22 @@ export default function CheckOutPage() {
   const [user, setUser] = useState<UserItem>({});
 
   const [address, setAddress] = useState("");
+  const [addressLabel, setAddressLabel] = useState("");
   const [paymentMethod, setPaymentMethod] = useState("BANK_TRANSFER");
   const [customNotes, setCustomNotes] = useState<Record<number, string>>({});
+  const [addressSuggestions, setAddressSuggestions] = useState<any[]>([]);
+  const [shippingCost, setShippingCost] = useState(0);
+  const [selectedAddressId, setSelectedAddressId] = useState<number | null>(null); // Add this state
+  const [destination, setDestination] = useState(0);
 
   const router = useRouter();
   const totalHarga = cartItems.reduce(
     (sum, item) => sum + item.price * item.quantity,
+    0
+  );
+
+  const totalWeight = cartItems.reduce(
+    (sum, item) => sum + (item.weight || 0) * item.quantity,
     0
   );
 
@@ -258,6 +354,49 @@ export default function CheckOutPage() {
     }
   };
 
+  const handleAddressSearch = async (query: string) => {
+    // Only search if query has at least 4 characters
+    if (query.trim().length >= 4) {
+      try {
+        console.log("Searching address:", query);
+        const response = await searchAddress(query);
+        setAddressSuggestions(response.data || []);
+        console.log("Address suggestions:", response.data);
+      } catch (error) {
+        console.error('Error searching address:', error);
+        setAddressSuggestions([]);
+      }
+    } else {
+      setAddressSuggestions([]);
+    }
+  };
+
+  const calculateShippingCost = async () => {
+    if (destination && totalWeight > 0) {
+      try {
+        const response = await searchCost(destination, totalWeight);
+        // Get the first shipping option's cost
+        const firstShippingOption = response.data?.data?.[0];
+        const cost = firstShippingOption?.cost || 0;
+        setShippingCost(cost);
+        console.log("Shipping cost:", cost);
+      } catch (error) {
+        console.error('Error calculating shipping cost:', error);
+        setShippingCost(0);
+      }
+    }
+  };
+
+  const handleAddressSelect = (addressId: number) => {
+    setDestination(addressId);
+  };
+
+  useEffect(() => {
+    if (destination && totalWeight > 0) {
+      calculateShippingCost();
+    }
+  }, [destination, totalWeight]);
+
   // Ambil data user saat komponen pertama kali dimuat
   useEffect(() => {
     const fetchUser = async () => {
@@ -297,10 +436,17 @@ export default function CheckOutPage() {
           <OrderInformation
             address={address}
             setAddress={setAddress}
+            addressLabel={addressLabel}
+            setAddressLabel={setAddressLabel}
             userName={user.name || ""}
             phoneNumber={user.phone_number || ""}
+            totalWeight={totalWeight}
+            shippingCost={shippingCost}
+            onAddressSearch={handleAddressSearch}
+            addressSuggestions={addressSuggestions}
             errors={errors}
             setErrors={setErrors}
+            onAddressSelect={handleAddressSelect}
           />
 
           {/* Daftar Produk */}
@@ -369,7 +515,10 @@ export default function CheckOutPage() {
               <div className="text-center sm:text-left">
                 <p className="mb-1 text-sm md:text-base">Total Pembayaran:</p>
                 <p className="text-base md:text-lg font-medium">
-                  {formatCurrency(totalHarga)}
+                  {formatCurrency(totalHarga + shippingCost)}
+                </p>
+                <p className="text-xs text-gray-500">
+                  (Produk: {formatCurrency(totalHarga)} + Ongkir: {formatCurrency(shippingCost)})
                 </p>
               </div>
               <button

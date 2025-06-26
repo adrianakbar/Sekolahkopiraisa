@@ -140,6 +140,7 @@ export default function ProductDetailPage() {
       quantity: quantity, // Use the selected quantity
       selected: true,
       fromCart: false,
+      weight: product.weight ?? 0, // Tambahkan berat jika ada
     };
 
     useCartStore.getState().setCartItems([item]);
