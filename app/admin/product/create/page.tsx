@@ -17,6 +17,7 @@ export default function CreateProductPage() {
     partnerName: "",
     description: "",
     price: "",
+    weight: "",
     stock: "",
   });
 
@@ -91,6 +92,10 @@ export default function CreateProductPage() {
       formData.append("partner_id", product.partnerName);
       formData.append("description", product.description);
       formData.append("price", product.price.toString());
+      formData.append(
+        "weight",
+        product.weight ? Number(product.weight).toString() : "0"
+      );
       formData.append("stock", product.stock.toString());
       if (imageFile) {
         formData.append("productFile", imageFile); // ⬅️ Ini ditambahkan
@@ -278,6 +283,22 @@ export default function CreateProductPage() {
               />
               {errors.price && (
                 <p className="text-sm text-red-600 mt-1">{errors.price}</p>
+              )}
+            </div>
+
+            <div>
+              <label className="block text-sm font-medium text-gray-700 mb-1">
+                Berat (gram)
+              </label>
+              <input
+                type="number"
+                name="weight"
+                value={product.weight || ""}
+                onChange={handleInputChange}
+                className="w-full p-1.5 border border-gray-300 rounded-xl"
+              />
+              {errors.weight && (
+                <p className="text-sm text-red-600 mt-1">{errors.weight}</p>
               )}
             </div>
 
