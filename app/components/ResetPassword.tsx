@@ -157,7 +157,7 @@ export default function ResetPassword() {
 
             <button
               type="submit"
-              className="w-full p-2 bg-primary text-white rounded-xl mt-4 hover:-translate-y-1 duration-150 ease-in"
+              className="cursor-pointer w-full p-2 bg-primary text-white rounded-xl mt-4 hover:-translate-y-1 duration-150 ease-in"
             >
               Reset Password
             </button>

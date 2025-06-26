@@ -44,7 +44,7 @@ export default function Home() {
 
     const item: CartItemData = {
       id: selectedProduct.id ?? 0, // bisa diganti ke ID unik jika diperlukan
-      productId: selectedProduct.id ?? 0,
+      products_id: selectedProduct.id ?? 0,
       imageUrl: selectedProduct.image ?? "",
       name: selectedProduct.name ?? "",
       partnerName: selectedProduct.partnerName,
@@ -230,7 +230,7 @@ export default function Home() {
               pemenang, mewujudkan impian adanya ikon perkopian di Bondowoso.
             </p>
             <Link href="/about">
-              <button className="mt-6 px-3 py-1.5 bg-primary text-white text-sm font-medium rounded-xl hover:-translate-y-1 duration-150 ease-in">
+              <button className="mt-6 px-4 py-2 bg-primary text-white text-sm font-medium rounded-xl hover:-translate-y-1 duration-150 ease-in">
                 Lihat Selengkapnya
               </button>
             </Link>

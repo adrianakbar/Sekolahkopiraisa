@@ -226,7 +226,7 @@ export default function CheckOutPage() {
 
     const orderPayload: CreateOrderPayload = {
       items: cartItems.map((item) => ({
-        products_id: item.id,
+        products_id: item.products_id,
         quantity: item.quantity,
         custom_note: customNotes[item.id] || "",
         fromCart: item.fromCart || false,

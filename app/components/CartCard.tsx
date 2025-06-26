@@ -5,7 +5,7 @@ import { Trash2 } from "lucide-react";
 // Tipe untuk data item dalam keranjang
 export interface CartItemData {
   id: number;
-  productId: number; // ID produk yang terkait
+  products_id: number; // ID produk yang terkait
   imageUrl: string;
   name: string;
   description?: string;
@@ -104,7 +104,7 @@ export default function CartCard({
             </div>
             
             <button
-              onClick={() => onDelete(item.productId)}
+              onClick={() => onDelete(item.products_id)}
               className="cursor-pointer p-2 text-white rounded-lg bg-red-500 hover:-translate-y-1 duration-150 ease-in"
               title="Hapus item"
             >
@@ -177,7 +177,7 @@ export default function CartCard({
 
       <div className="hidden sm:flex col-span-1 justify-center">
         <button
-          onClick={() => onDelete(item.productId)}
+          onClick={() => onDelete(item.products_id)}
           className="cursor-pointer p-2 text-white rounded-xl bg-red-500 hover:-translate-y-1 duration-150 ease-in"
           title="Hapus item"
         >

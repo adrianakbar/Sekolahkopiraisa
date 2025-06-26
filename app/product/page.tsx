@@ -8,6 +8,7 @@ import { useRouter } from "next/navigation";
 import { Box, Search } from "lucide-react";
 import Skeleton, { SkeletonTheme } from "react-loading-skeleton";
 import "react-loading-skeleton/dist/skeleton.css";
+import Footer from "../components/Footer";
 
 export default function ProductPage() {
   const [products, setProducts] = useState<ProductItem[]>([]);
@@ -300,11 +301,11 @@ export default function ProductPage() {
             </button>
           </div>
         ) : (
-          <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 2xl:grid-cols-6 gap-8">
+          <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-8">
             {filteredProducts.map((product, index) => (
               <div
                 key={product.id}
-                className="transform hover:scale-105 transition-all duration-300 hover:shadow-lg"
+                className=""
                 style={{ animationDelay: `${index * 0.1}s` }}
               >
                 <ProductCard
@@ -320,6 +321,7 @@ export default function ProductPage() {
           </div>
         )}
       </div>
+      <Footer />
     </div>
   );
 }

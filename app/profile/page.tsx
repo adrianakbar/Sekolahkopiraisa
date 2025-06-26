@@ -183,7 +183,7 @@ export default function Profile() {
               {/* Name Field */}
               <div className="space-y-2">
                 <label className="flex items-center text-sm font-semibold text-gray-700">
-                  <User size={15} className="mr-1" />
+                  <User size={18} className="mr-1" />
                   Nama Lengkap
                 </label>
                 <input
@@ -210,7 +210,7 @@ export default function Profile() {
               {/* Email Field */}
               <div className="space-y-2">
                 <label className="flex items-center text-sm font-semibold text-gray-700">
-                  <Mail size={15} className="mr-1" />
+                  <Mail size={18} className="mr-1" />
                   Email
                 </label>
                 <input
@@ -233,7 +233,7 @@ export default function Profile() {
               {/* Phone Field */}
               <div className="space-y-2">
                 <label className="flex items-center text-sm font-semibold text-gray-700">
-                  <Phone size={15} className="mr-1" />
+                  <Phone size={18} className="mr-1" />
                   Nomor Telepon
                 </label>
                 <input
@@ -268,7 +268,7 @@ export default function Profile() {
                     }}
                     className="w-full py-2 bg-primary text-white rounded-xl font-semibold shadow-lg hover:from-orange-600 hover:to-amber-600 hover:-translate-y-0.5 hover:shadow-xl transition-all duration-200 flex items-center justify-center"
                   >
-                    <Pen size={15} className="mr-2" />
+                    <Pen size={18} className="mr-2" />
                     Perbarui Profil
                   </button>
                 ) : (
@@ -278,7 +278,7 @@ export default function Profile() {
                       onClick={() => {
                         setShowConfirmModal(true);
                       }}
-                      className="flex-1 py-3 bg-gradient-to-r from-green-500 to-emerald-500 text-white rounded-xl font-semibold shadow-lg hover:from-green-600 hover:to-emerald-600 hover:-translate-y-0.5 hover:shadow-xl transition-all duration-200 flex items-center justify-center"
+                      className="flex-1 py-2 bg-gradient-to-r from-green-500 to-emerald-500 text-white rounded-xl font-semibold shadow-lg hover:from-green-600 hover:to-emerald-600 hover:-translate-y-0.5 hover:shadow-xl transition-all duration-200 flex items-center justify-center"
                     >
                       <span className="mr-2">💾</span>
                       Simpan Perubahan
@@ -287,7 +287,7 @@ export default function Profile() {
                     <button
                       type="button"
                       onClick={handleCancel}
-                      className="flex-1 py-3 bg-gradient-to-r from-gray-400 to-gray-500 text-white rounded-xl font-semibold shadow-lg hover:from-gray-500 hover:to-gray-600 hover:-translate-y-0.5 hover:shadow-xl transition-all duration-200 flex items-center justify-center"
+                      className="flex-1 py-2 bg-gradient-to-r from-gray-400 to-gray-500 text-white rounded-xl font-semibold shadow-lg hover:from-gray-500 hover:to-gray-600 hover:-translate-y-0.5 hover:shadow-xl transition-all duration-200 flex items-center justify-center"
                     >
                       <span className="mr-2">❌</span>
                       Batal

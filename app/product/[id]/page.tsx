@@ -3,15 +3,24 @@
 
 import React, { useState, useEffect } from "react";
 import { useParams, useRouter } from "next/navigation";
+import Skeleton, { SkeletonTheme } from "react-loading-skeleton";
+import "react-loading-skeleton/dist/skeleton.css";
 // Impor fungsi fetch API dan tipe ProductItem Anda
 import { fetchProductById } from "@/app/utils/product"; // <--- SESUAIKAN PATH INI
 import { ProductApi, ProductItem } from "@/app/types/productType"; // <--- SESUAIKAN PATH INI
 import { formatCurrency } from "@/app/utils/helper";
-import { ShoppingCart } from "lucide-react";
+import {
+  Lightbulb,
+  NotebookPen,
+  Package,
+  ShoppingCart,
+  Wallet,
+} from "lucide-react";
 import { addToCart } from "@/app/utils/cart";
 import Popup from "@/app/components/Popup";
 import { CartItemData } from "@/app/components/CartCard";
 import { useCartStore } from "@/app/stores/cartStore";
+import Footer from "@/app/components/Footer";
 
 export default function ProductDetailPage() {
   const params = useParams();
@@ -23,14 +32,14 @@ export default function ProductDetailPage() {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
   const [quantity, setQuantity] = useState(1);
-  const [products, setProducts] = useState<ProductItem[]>([]);
 
   const [showPopup, setShowPopup] = useState(false);
   const [message, setMessage] = useState("");
   const [popupType, setPopupType] = useState<"success" | "error">("success");
 
-  const router = useRouter();
+  const [isAddingToCart, setIsAddingToCart] = useState(false); // Add loading state
 
+  const router = useRouter();
 
   useEffect(() => {
     if (productIdString) {
@@ -100,46 +109,128 @@ export default function ProductDetailPage() {
     setQuantity((prev) => Math.min(product?.inventory?.stock || 99, prev + 1));
 
   const handleAddToCart = async (productId: number) => {
+    if (isAddingToCart) return; // Prevent multiple clicks
+
+    setIsAddingToCart(true);
     try {
-      // Panggil fungsi dari cart.ts, default quantity adalah 1
-      const response = await addToCart(productId, quantity);
+      const response = await addToCart(productId, 1);
       setMessage(response.message);
       setPopupType("success");
       setShowPopup(true);
-      // Di sini Anda bisa memanggil fungsi untuk memperbarui angka di ikon keranjang
-      // Contoh: updateNavbarCartCount();
-    } catch (error) {
-      alert(
-        `Gagal menambahkan produk ke keranjang. Silakan coba lagi. Product ID: ${productId}`
-      );
-      // Error sudah di-log di dalam file service, jadi di sini cukup notifikasi
+      window.dispatchEvent(new CustomEvent("cartUpdated"));
+    } catch (error: any) {
+      setMessage(error.message || "Terjadi kesalahan saat menghapus.");
+      setPopupType("error");
+      setShowPopup(true);
+    } finally {
+      setIsAddingToCart(false);
     }
   };
 
-  const handleBuyNow = (id: number) => {
-      const selectedProduct = products.find((product) => product.id === id);
-      if (!selectedProduct) return;
-  
-      const item: CartItemData = {
-        id: selectedProduct.id ?? 0, // bisa diganti ke ID unik jika diperlukan
-        productId: selectedProduct.id ?? 0,
-        imageUrl: selectedProduct.image ?? "",
-        name: selectedProduct.name ?? "",
-        partnerName: selectedProduct.partnerName,
-        price: Number(selectedProduct.price),
-        quantity: 1,
-        selected: true,
-        fromCart: false, // karena bukan dari halaman keranjang
-      };
-  
-      useCartStore.getState().setCartItems([item]);
-      router.push("/checkout");
+  const handleBuyNow = () => {
+    if (!product) return;
+
+    const item: CartItemData = {
+      id: product.id ?? 0,
+      products_id: product.id ?? 0,
+      imageUrl: product.image ?? "",
+      name: product.name ?? "",
+      partnerName: product.partner?.name ?? "",
+      price: Number(product.price),
+      quantity: quantity, // Use the selected quantity
+      selected: true,
+      fromCart: false,
     };
+
+    useCartStore.getState().setCartItems([item]);
+    router.push("/checkout");
+  };
 
   if (loading) {
     return (
-      <div className="flex justify-center items-center min-h-screen bg-gray-100 p-4">
-        <p className="text-lg text-gray-600">Memuat detail produk...</p>
+      <div className="min-h-screen bg-secondary">
+        <div className="container mx-auto p-4 py-8 pt-24">
+          <div className="max-w-7xl mx-auto">
+            <SkeletonTheme baseColor="#f3f4f6" highlightColor="#e5e7eb">
+              <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 lg:gap-12">
+                {/* Skeleton untuk Gambar Produk */}
+                <div className="space-y-4">
+                  <div className="relative group">
+                    <div className="bg-white rounded-2xl shadow-lg overflow-hidden border border-gray-200">
+                      <div className="aspect-square relative">
+                        <Skeleton height="100%" />
+                      </div>
+                    </div>
+                  </div>
+                </div>
+
+                {/* Skeleton untuk Info Produk */}
+                <div className="space-y-6">
+                  {/* Header Produk Skeleton */}
+                  <div className="space-y-3">
+                    <div className="flex items-center gap-2">
+                      <Skeleton width={30} height={20} />
+                      <Skeleton width={120} height={28} className="rounded-full" />
+                    </div>
+                    
+                    <Skeleton height={32} count={2} />
+                    
+                    <div className="flex items-center gap-4">
+                      <Skeleton width={120} height={28} />
+                      <Skeleton width={100} height={28} className="rounded-full" />
+                    </div>
+                  </div>
+
+                  {/* Deskripsi Skeleton */}
+                  <div className="bg-white rounded-xl p-6 shadow-lg border border-gray-200">
+                    <div className="flex items-center gap-2 mb-3">
+                      <Skeleton width={24} height={24} />
+                      <Skeleton width={150} height={24} />
+                    </div>
+                    <Skeleton height={20} count={4} />
+                  </div>
+
+                  {/* Stok Info Skeleton */}
+                  <div className="bg-amber-50 border border-amber-200 rounded-xl p-4">
+                    <div className="flex items-center gap-2">
+                      <Skeleton width={24} height={24} />
+                      <Skeleton width={180} height={20} />
+                    </div>
+                  </div>
+
+                  {/* Quantity Selector Skeleton */}
+                  <div className="bg-white rounded-xl p-6 shadow-lg border border-gray-200">
+                    <Skeleton width={120} height={24} className="mb-4" />
+                    <div className="flex items-center justify-between">
+                      <Skeleton width={180} height={50} className="rounded-xl" />
+                      <div className="text-right">
+                        <Skeleton width={80} height={16} className="mb-1" />
+                        <Skeleton width={100} height={24} />
+                      </div>
+                    </div>
+                  </div>
+
+                  {/* Action Buttons Skeleton */}
+                  <div className="space-y-3">
+                    <Skeleton height={48} className="rounded-xl" />
+                    <Skeleton height={48} className="rounded-xl" />
+                  </div>
+
+                  {/* Additional Info Skeleton */}
+                  <div className="bg-blue-50 border border-blue-200 rounded-xl p-4">
+                    <div className="flex items-start gap-3">
+                      <Skeleton width={24} height={24} />
+                      <div className="flex-1">
+                        <Skeleton width={150} height={16} className="mb-2" />
+                        <Skeleton height={14} count={3} />
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </SkeletonTheme>
+          </div>
+        </div>
       </div>
     );
   }
@@ -148,10 +239,10 @@ export default function ProductDetailPage() {
     return (
       <div className="flex justify-center items-center min-h-screen bg-gray-100 p-4">
         <div
-          className="bg-red-100 border border-red-400 text-red-700 px-6 py-4 rounded-md shadow-md"
+          className="bg-red-100 border border-red-400 text-red-700 px-6 py-4 rounded-md shadow-lg"
           role="alert"
         >
-          <strong className="font-bold">Gagal Memuat Produk:</strong>
+          <strong className="font-medium">Gagal Memuat Produk:</strong>
           <p>{error}</p>
           <p className="text-sm mt-2">
             Silakan coba lagi nanti atau hubungi dukungan.
@@ -171,130 +262,172 @@ export default function ProductDetailPage() {
 
   // --- Mulai JSX untuk tampilan produk ---
   return (
-    
-    <div className="container mx-auto p-4 pt-20 bg-white">
+    <div className="min-h-screen bg-secondary">
       {showPopup && (
-              <Popup
-                message={message}
-                type={popupType}
-                onClose={() => setShowPopup(false)}
-              />
-            )}
-      <div className="md:grid md:grid-cols-12 md:gap-6 lg:gap-8">
-        {/* Kolom Kiri: Gambar Produk Utama & Info Tambahan Statis */}
-        <div className="md:col-span-7 lg:col-span-7">
-          <div className="relative border border-gray-200 rounded-lg overflow-hidden mb-4">
-            <img
-              src={
-                product.image ||
-                "https://via.placeholder.com/600x450.png?text=Gambar+Utama"
-              }
-              alt={product.name || "Gambar Produk"}
-              className="w-full h-auto object-contain aspect-[4/3]"
-            />
-            <div className="absolute top-3 right-3 flex flex-col items-end gap-2">
-              <button
-                className="py-1 px-2 bg-black bg-opacity-40 text-white rounded-md hover:bg-opacity-60 text-xs font-semibold"
-                title="Perbesar Gambar"
-              >
-                ZOOM
-              </button>
-              <div
-                className="p-1.5 bg-green-600 text-white rounded-md text-xs font-bold w-10 h-10 flex items-center justify-center"
-                title="Produk Halal"
-              >
-                HALAL
+        <Popup
+          message={message}
+          type={popupType}
+          onClose={() => setShowPopup(false)}
+        />
+      )}
+
+      <div className="container mx-auto p-4 py-8 pt-24">
+        <div className="max-w-7xl mx-auto">
+          <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 lg:gap-12">
+            {/* Kolom Kiri: Gambar Produk */}
+            <div className="space-y-4">
+              <div className="relative group">
+                <div className="bg-white rounded-2xl shadow-lg overflow-hidden border border-gray-200">
+                  <div className="aspect-square relative">
+                    <img
+                      src={
+                        product.image ||
+                        "https://via.placeholder.com/600x600.png?text=Gambar+Produk"
+                      }
+                      alt={product.name || "Gambar Produk"}
+                      className="w-full h-full object-cover transition-transform duration-300 group-hover:scale-105"
+                    />
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            {/* Kolom Kanan: Info Produk */}
+            <div className="space-y-6">
+              {/* Header Produk */}
+              <div className="space-y-3">
+                {product.partner?.name && (
+                  <div className="flex items-center gap-2">
+                    <span className="text-sm text-gray-500">Oleh</span>
+                    <span className="bg-blue-100 text-blue-800 px-3 py-1 rounded-full text-sm font-medium">
+                      {product.partner.name}
+                    </span>
+                  </div>
+                )}
+
+                <h1 className="text-lg font-medium text-gray-900 leading-tight">
+                  {product.name || "Nama Produk Tidak Tersedia"}
+                </h1>
+
+                <div className="flex items-center gap-4">
+                  <div className="text-lg font-medium text-green-600">
+                    {typeof product.price === "number"
+                      ? formatCurrency(product.price)
+                      : "Harga Tidak Tersedia"}
+                  </div>
+                  {typeof product.sold === "number" && (
+                    <div className="bg-gray-100 text-gray-600 px-3 py-1 rounded-full text-sm font-medium">
+                      {product.sold.toLocaleString("id-ID")} terjual
+                    </div>
+                  )}
+                </div>
+              </div>
+
+              {/* Deskripsi */}
+              <div className="bg-white rounded-xl p-6 shadow-lg border border-gray-200">
+                <h2 className="text-lg font-medium text-gray-900 mb-3 flex items-center gap-2">
+                  <NotebookPen size={18} /> Deskripsi Produk
+                </h2>
+                <div className="prose prose-gray max-w-none">
+                  <p className="text-gray-700 leading-relaxed whitespace-pre-line">
+                    {product.description || "Deskripsi tidak tersedia."}
+                  </p>
+                </div>
+              </div>
+
+              {/* Stok Info */}
+              {typeof product.inventory?.stock === "number" && (
+                <div className="bg-amber-50 border border-amber-200 rounded-xl p-4">
+                  <div className="flex items-center gap-2">
+                    <Package size={18} className="text-amber-600" />
+                    <span className="text-amber-800 font-medium">
+                      Stok tersedia: {product.inventory.stock} unit
+                    </span>
+                  </div>
+                </div>
+              )}
+
+              {/* Quantity Selector */}
+              <div className="bg-white rounded-xl p-6 shadow-lg border border-gray-200">
+                <h3 className="text-lg font-medium text-gray-900 mb-4">
+                  Pilih Jumlah
+                </h3>
+                <div className="flex items-center justify-between">
+                  <div className="flex items-center border-2 border-gray-300 rounded-xl overflow-hidden">
+                    <button
+                      onClick={handleDecrementQuantity}
+                      disabled={quantity <= 1}
+                      className="px-4 py-3 text-lg font-medium text-gray-700 hover:bg-gray-100 disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
+                      aria-label="Kurangi Kuantitas"
+                    >
+                      −
+                    </button>
+                    <div className="px-6 py-3 bg-gray-50 border-l border-r border-gray-300 min-w-[80px] text-center">
+                      <span className="text-lg font-medium text-gray-900">
+                        {quantity}
+                      </span>
+                    </div>
+                    <button
+                      onClick={handleIncrementQuantity}
+                      disabled={quantity >= (product.inventory?.stock || 99)}
+                      className="px-4 py-3 text-lg font-medium text-gray-700 hover:bg-gray-100 disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
+                      aria-label="Tambah Kuantitas"
+                    >
+                      +
+                    </button>
+                  </div>
+                  <div className="text-right">
+                    <div className="text-sm text-gray-500">Total Harga</div>
+                    <div className="text-lg font-medium text-green-600">
+                      {typeof product.price === "number"
+                        ? formatCurrency(product.price * quantity)
+                        : "−"}
+                    </div>
+                  </div>
+                </div>
+              </div>
+
+              {/* Action Buttons */}
+              <div className="space-y-3">
+                <button
+                  onClick={handleBuyNow}
+                  className="cursor-pointer w-full p-2 bg-primary text-white rounded-xl  hover:-translate-y-1 duration-150 ease-in flex items-center justify-center gap-3"
+                >
+                  <Wallet size={18} />
+                  Beli Sekarang
+                </button>
+
+                <button
+                  onClick={() => handleAddToCart(product.id ?? 0)}
+                  className="cursor-pointer w-full p-2 border border-primary  rounded-xl hover:-translate-y-1 duration-150 ease-in flex items-center justify-center gap-3"
+                >
+                  <ShoppingCart size={18} />
+                  Masukkan Keranjang
+                </button>
+              </div>
+
+              {/* Additional Info */}
+              <div className="bg-blue-50 border border-blue-200 rounded-xl p-4">
+                <div className="flex items-start gap-3">
+                  <Lightbulb size={18} className="text-blue-600" />
+                  <div className="text-blue-800 text-sm">
+                    <p className="font-medium mb-1">Informasi Pembelian:</p>
+                    <ul className="space-y-1 text-xs">
+                      <li>
+                        • Gratis ongkir untuk pembelian di atas Rp 100.000
+                      </li>
+                      <li>• Garansi kualitas produk terjamin</li>
+                      <li>• Customer service siap membantu 24/7</li>
+                    </ul>
+                  </div>
+                </div>
               </div>
             </div>
           </div>
         </div>
-
-        {/* Kolom Kanan: Info Produk */}
-        <div className="md:col-span-5 lg:col-span-5 mt-6 md:mt-0">
-          {product.partner?.name && (
-            <p className="text-sm text-gray-500 mb-1">
-              by {product.partner.name}
-            </p>
-          )}
-          <h1 className="text-xl sm:text-2xl font-semibold text-gray-800 mb-2 leading-tight">
-            {product.name || "Nama Produk Tidak Tersedia"}
-          </h1>
-
-          <div className="flex items-center mb-4">
-            <p className="text-2xl sm:text-3xl font-bold text-amber-700 mr-3">
-              {typeof product.price === "number"
-                ? formatCurrency(product.price)
-                : "Harga Tidak Tersedia"}
-            </p>
-            {typeof product.sold === "number" && (
-              <span className="text-xs text-gray-500 bg-gray-100 px-2 py-0.5 rounded">
-                {product.sold.toLocaleString("id-ID")} terjual
-              </span>
-            )}
-          </div>
-
-          <div className="mb-6">
-            <h2 className="text-md font-semibold text-gray-700 mb-1">
-              Deskripsi Produk
-            </h2>
-            <div className="prose prose-sm text-gray-600 max-w-none">
-              <p className="whitespace-pre-line">
-                {product.description || "Deskripsi tidak tersedia."}
-              </p>
-            </div>
-          </div>
-
-          <div className="mb-6">
-            <p className="text-sm font-medium text-gray-700 mb-1">Jumlah</p>
-            <div className="flex items-center border border-gray-300 rounded w-max">
-              <button
-                onClick={handleDecrementQuantity}
-                disabled={quantity <= 1}
-                className="px-4 py-2 text-lg text-gray-700 hover:bg-gray-100 disabled:opacity-50 disabled:cursor-not-allowed"
-                aria-label="Kurangi Kuantitas"
-              >
-                -
-              </button>
-              <input
-                type="text"
-                readOnly
-                value={quantity}
-                className="w-12 text-center border-l border-r border-gray-300 py-2 focus:outline-none bg-white"
-                aria-label="Kuantitas Saat Ini"
-              />
-              <button
-                onClick={handleIncrementQuantity}
-                disabled={quantity >= (product.inventory?.stock || 99)}
-                className="px-4 py-2 text-lg text-gray-700 hover:bg-gray-100 disabled:opacity-50 disabled:cursor-not-allowed"
-                aria-label="Tambah Kuantitas"
-              >
-                +
-              </button>
-            </div>
-            {typeof product.inventory?.stock === "number" && (
-              <p className="text-xs text-gray-500 mt-1">
-                Stok tersedia: {product.inventory.stock}
-              </p>
-            )}
-          </div>
-
-          <div className="flex flex-col sm:flex-row gap-4">
-            <button
-              onClick={() => handleAddToCart(product.id ?? 0)}
-              className="cursor-pointer bg-primary text-white py-2 px-3 text-sm rounded-xl hover:-translate-y-1 duration-150 ease-in flex justify-center gap-2 disabled:opacity-50"
-            >
-              <ShoppingCart size={18} />
-              Masukkan Keranjang
-            </button>
-            <button
-              onClick={() => handleBuyNow(product.id ?? 0)}
-              className="cursor-pointer bg-primary text-white py-2 px-3 text-sm rounded-xl hover:-translate-y-1 duration-150 ease-in flex justify-center items-center gap-2 disabled:opacity-50"
-            >
-              Beli Sekarang
-            </button>
-          </div>
-        </div>
       </div>
+      <Footer />
     </div>
   );
 }
+

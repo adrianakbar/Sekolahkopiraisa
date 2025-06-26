@@ -71,7 +71,7 @@ export default function ShoppingCart(): JSX.Element {
 
 
     setCartItems((currentItems) =>
-      currentItems.filter((item) => item.productId !== productId)
+      currentItems.filter((item) => item.products_id !== productId)
     );
 
     setMessage(response.message);
@@ -117,7 +117,7 @@ export default function ShoppingCart(): JSX.Element {
           const transformedItems: CartItemData[] = fetchedApiCartItems.map(
             (apiItem) => ({
               id: apiItem.id,
-              productId: apiItem.products_id, // Assuming this is the correct field for product ID
+              products_id: apiItem.products_id, // Assuming this is the correct field for product ID
               imageUrl: apiItem.product.image,
               name: apiItem.product.name,
               partnerName: apiItem.product.partner.name, // Assuming you want to keep this field

@@ -14,7 +14,7 @@ export default function ProductCard({
 }: ProductItem) {
   return (
     <div
-      className="w-full bg-white rounded-xl shadow-lg overflow-hidden hover:shadow-2xl transition-all duration-500 ease-out flex flex-col group cursor-pointer border border-gray-100 hover:border-gray-200 transform hover:-translate-y-1"
+      className="w-full bg-white rounded-xl shadow-lg overflow-hidden transition-all duration-500 ease-out flex flex-col group cursor-pointer border border-gray-100 hover:border-gray-200 transform hover:-translate-y-1"
       onClick={() => onView?.(id ?? 0)}
     >
       {/* Gambar Produk */}

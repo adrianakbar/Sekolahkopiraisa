@@ -80,7 +80,7 @@ export default function ProductCarousel({
                   // Menambahkan event onClick di sini
                   onClick={() => onAddToCartClick(product.id ?? 0)}
                 >
-                  <ShoppingCart size={20} />
+                  <ShoppingCart size={18} />
                 </button>
               </div>
             </div>

@@ -12,14 +12,14 @@ export default function AboutPage() {
               <span className="inline-block px-4 py-2 bg-primary text-white text-sm font-medium rounded-full">
                 Tentang Kami
               </span>
-              <h1 className="text-xl font-medium text-gray-900 leading-tight">
+              <h1 className="text-lg font-medium text-gray-900 leading-tight">
                 Sekolah Kopi <span className="text-amber-600">Raisa</span>
               </h1>
             </div>
             <div className="space-y-4 text-lg text-gray-700 leading-relaxed">
               <p className="font-medium">
                 Sekolah Kopi Raisa adalah kelembagaan{" "}
-                <em className="text-amber-700 font-semibold">
+                <em className="text-amber-700 font-medium">
                   social entrepreneurship
                 </em>{" "}
                 yang berfokus pada fungsi edukatif dan bisnis pengelolaan kopi
@@ -44,7 +44,7 @@ export default function AboutPage() {
               <img
                 src="/assets/background-homepage.png"
                 alt="Sekolah Kopi Raisa"
-                className="relative rounded-xl w-full h-auto object-cover shadow-2xl"
+                className="relative rounded-xl w-full h-auto object-cover shadow-lg"
               />
             </div>
           </div>
@@ -58,7 +58,7 @@ export default function AboutPage() {
             <span className="inline-block px-4 py-2 bg-secondary text-sm font-medium rounded-full mb-4">
               Video Profil
             </span>
-            <h2 className="text-xl font-medium text-gray-900 mb-6">
+            <h2 className="text-lg font-medium text-gray-900 mb-6">
               Mengenal Lebih Dekat <br />
               <span className="text-amber-600">Sekolah Kopi Raisa</span>
             </h2>
@@ -70,7 +70,7 @@ export default function AboutPage() {
           <div className="max-w-5xl mx-auto">
             <div className="relative">
               <div className="absolute -inset-6 bg-gradient-to-r from-amber-400 to-orange-400 rounded-xl blur opacity-10"></div>
-              <div className="relative aspect-video rounded-xl overflow-hidden shadow-2xl bg-gray-900">
+              <div className="relative aspect-video rounded-xl overflow-hidden shadow-lg bg-gray-900">
                 <iframe
                   src="https://www.youtube.com/embed/X_XndVV-ck4"
                   title="Video Profil Sekolah Kopi Raisa"
@@ -95,7 +95,7 @@ export default function AboutPage() {
                 <img
                   src="/assets/about-image2.png"
                   alt="Kegiatan Kebun"
-                  className="relative rounded-xl w-full h-auto object-cover shadow-xl"
+                  className="relative rounded-xl w-full h-auto object-cover shadow-lg"
                 />
               </div>
             </div>
@@ -104,7 +104,7 @@ export default function AboutPage() {
               <div className="bg-white rounded-xl p-8 shadow-lg border border-gray-100">
                 <div className="flex items-center mb-4">
                   <div className="w-3 h-8 bg-gradient-to-b from-amber-400 to-orange-500 rounded mr-4"></div>
-                  <h3 className="text-xl font-medium text-gray-900">
+                  <h3 className="text-lg font-medium text-gray-900">
                     VISI
                   </h3>
                 </div>
@@ -119,7 +119,7 @@ export default function AboutPage() {
               <div className="bg-white rounded-xl p-8 shadow-lg border border-gray-100">
                 <div className="flex items-center mb-6">
                   <div className="w-3 h-8 bg-gradient-to-b from-emerald-400 to-green-500 rounded mr-4"></div>
-                  <h3 className="text-xl font-medium text-gray-900">
+                  <h3 className="text-lg font-medium text-gray-900">
                     MISI
                   </h3>
                 </div>
@@ -150,14 +150,14 @@ export default function AboutPage() {
           <span className="inline-block px-4 py-2 bg-secondary text-sm font-medium rounded-full mb-4">
             Organisasi
           </span>
-          <h2 className="text-xl font-medium text-gray-900 mb-6">
+          <h2 className="text-lg font-medium text-gray-900 mb-6">
             Struktur Kelembagaan
           </h2>
           <p className=" text-gray-600 max-w-2xl mx-auto">
             Tata kelola organisasi yang solid untuk mendukung visi dan misi kami
           </p>
         </div>
-        <div className="bg-white rounded-xl p-8 shadow-2xl border border-gray-100">
+        <div className="bg-white rounded-xl p-8 shadow-lg border border-gray-100">
           <img
             src="/assets/structure.png"
             alt="Struktur Kelembagaan"
@@ -175,7 +175,7 @@ export default function AboutPage() {
               <span className="inline-block px-4 py-2 bg-primary text-white text-sm font-medium rounded-full mb-4">
                 Tim Kami
               </span>
-              <h2 className="text-xl font-medium text-gray-900 mb-4">
+              <h2 className="text-lg font-medium text-gray-900 mb-4">
                 Pengurus Inti
               </h2>
               <p className=" text-gray-600">
@@ -213,7 +213,7 @@ export default function AboutPage() {
           {/* Bagian Pokja */}
           <div>
             <div className="text-center mb-12">
-              <h3 className="text-xl font-medium text-gray-900 mb-4">
+              <h3 className="text-lg font-medium text-gray-900 mb-4">
                 Bagian Pokja
               </h3>
               <p className=" text-gray-600">
