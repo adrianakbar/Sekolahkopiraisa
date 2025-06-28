@@ -79,8 +79,8 @@ const OrderInformation: React.FC<OrderInformationProps> = ({
       setErrors((prev) => ({ ...prev, addressLabel: "" }));
     }
     
-    // Check if input has at least 4 characters
-    if (value.trim().length >= 4) {
+    // Check if input has at least 5 characters
+    if (value.trim().length >= 5) {
       onAddressSearch(value);
       setShowSuggestions(true);
     } else {
@@ -121,7 +121,7 @@ const OrderInformation: React.FC<OrderInformationProps> = ({
           }`}
           value={addressLabel}
           onChange={handleAddressLabelChange}
-          placeholder="Ketik minimal 4 karakter untuk mencari alamat..."
+          placeholder="Ketikkan kode pos anda"
         />
         {showSuggestions && addressSuggestions.length > 0 && (
           <div className="absolute z-10 w-full mt-1 bg-white border border-gray-300 rounded-xl shadow-lg max-h-40 overflow-y-auto">
@@ -356,12 +356,10 @@ export default function CheckOutPage() {
 
   const handleAddressSearch = async (query: string) => {
     // Only search if query has at least 4 characters
-    if (query.trim().length >= 4) {
+    if (query.trim().length >= 5) {
       try {
-        console.log("Searching address:", query);
         const response = await searchAddress(query);
         setAddressSuggestions(response.data || []);
-        console.log("Address suggestions:", response.data);
       } catch (error) {
         console.error('Error searching address:', error);
         setAddressSuggestions([]);
