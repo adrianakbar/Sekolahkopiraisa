@@ -8,5 +8,35 @@ export interface OrderItem {
 export interface CreateOrderPayload {
   items: OrderItem[];
   address: string;
-  paymentMethod: "COD" | "QRIS" | "BANK_TRANSFER";
+  destination_id: number;
+  destination_province: string;
+  destination_city: string;
+  destination_district: string;
+  destination_subdistrict: string;
+  destination_pos_code: string;
+  cost: string;
+  paymentMethod: string;
+}
+
+export interface AddressSuggestion {
+  id: number;
+  label: string;
+  province_name: string;
+  city_name: string;
+  district_name: string;
+  subdistrict_name: string;
+  zip_code: string;
+}
+
+export interface ShippingCostResponse {
+  data: {
+    data: {
+      cost: number;
+    }[];
+  };
+}
+
+export interface AddressSearchResponse {
+  message: string;
+  data: AddressSuggestion[];
 }

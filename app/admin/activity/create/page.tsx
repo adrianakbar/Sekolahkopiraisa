@@ -115,7 +115,7 @@ export default function CreateActivityPage() {
   };
 
   return (
-    <div className="max-w-7xl mx-auto p-6 bg-tertiary rounded-xl shadow-lg">
+    <div className="mx-auto p-6 bg-tertiary rounded-xl shadow-lg">
       {showPopup && (
         <Popup
           message={message}

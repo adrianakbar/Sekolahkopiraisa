@@ -8,7 +8,7 @@ import { useRouter } from "next/navigation";
 import { formatCurrency } from "../utils/helper";
 import { getUser } from "../utils/user";
 import { UserItem } from "../types/userType";
-import { CreateOrderPayload } from "../types/orderType";
+import { AddressSuggestion, CreateOrderPayload } from "../types/orderType";
 import {
   Box,
   Check,
@@ -78,7 +78,7 @@ const OrderInformation: React.FC<OrderInformationProps> = ({
     if (errors.addressLabel) {
       setErrors((prev) => ({ ...prev, addressLabel: "" }));
     }
-    
+
     // Check if input has at least 5 characters
     if (value.trim().length >= 5) {
       onAddressSearch(value);
@@ -107,10 +107,10 @@ const OrderInformation: React.FC<OrderInformationProps> = ({
         <MapPin size={18} className="text-blue-500" />
         Informasi Pengiriman
       </h2>
-      
+
       <div className="mb-4 relative">
         <label className="block text-sm font-medium text-gray-700 mb-2">
-          Label Alamat
+          Kode Pos
         </label>
         <input
           type="text"
@@ -176,7 +176,9 @@ const OrderInformation: React.FC<OrderInformationProps> = ({
         <div className="bg-white p-4 rounded-xl border border-gray-100">
           <p className="text-sm font-medium text-gray-700 mb-1">Biaya Kirim</p>
           <p className="text-sm text-gray-600">
-            {shippingCost > 0 ? `Rp ${shippingCost.toLocaleString('id-ID')}` : 'Menghitung...'}
+            {shippingCost > 0
+              ? `Rp ${shippingCost.toLocaleString("id-ID")}`
+              : "Menghitung..."}
           </p>
         </div>
       </div>
@@ -291,10 +293,14 @@ export default function CheckOutPage() {
   const [addressLabel, setAddressLabel] = useState("");
   const [paymentMethod, setPaymentMethod] = useState("BANK_TRANSFER");
   const [customNotes, setCustomNotes] = useState<Record<number, string>>({});
-  const [addressSuggestions, setAddressSuggestions] = useState<any[]>([]);
+  const [addressSuggestions, setAddressSuggestions] = useState<AddressSuggestion[]>([]);
   const [shippingCost, setShippingCost] = useState(0);
-  const [selectedAddressId, setSelectedAddressId] = useState<number | null>(null); // Add this state
+  const [selectedAddressId, setSelectedAddressId] = useState<number | null>(
+    null
+  ); // Add this state
   const [destination, setDestination] = useState(0);
+  const [selectedAddress, setSelectedAddress] =
+    useState<AddressSuggestion | null>(null);
 
   const router = useRouter();
   const totalHarga = cartItems.reduce(
@@ -320,16 +326,30 @@ export default function CheckOutPage() {
       return;
     }
 
+    if (!selectedAddress) {
+      setMessage("Silakan masukkan kode pos.");
+      setPopupType("error");
+      setShowPopup(true);
+      return;
+    }
+
     const orderPayload: CreateOrderPayload = {
-      items: cartItems.map((item) => ({
-        products_id: item.products_id,
-        quantity: item.quantity,
-        custom_note: customNotes[item.id] || "",
-        fromCart: item.fromCart || false,
-      })),
-      address,
-      paymentMethod: paymentMethod as CreateOrderPayload["paymentMethod"], // optional: safe typecast
-    };
+    items: cartItems.map((item) => ({
+      products_id: item.products_id,
+      quantity: item.quantity,
+      custom_note: customNotes[item.id] || "",
+      fromCart: item.fromCart || false,
+    })),
+    address,
+    destination_id: selectedAddress.id,
+    destination_province: selectedAddress.province_name,
+    destination_city: selectedAddress.city_name,
+    destination_district: selectedAddress.district_name,
+    destination_subdistrict: selectedAddress.subdistrict_name,
+    destination_pos_code: selectedAddress.zip_code,
+    paymentMethod: paymentMethod,
+    cost: shippingCost.toString(),
+  };
 
     try {
       const data = await createOrder(orderPayload);
@@ -361,7 +381,7 @@ export default function CheckOutPage() {
         const response = await searchAddress(query);
         setAddressSuggestions(response.data || []);
       } catch (error) {
-        console.error('Error searching address:', error);
+        console.error("Error searching address:", error);
         setAddressSuggestions([]);
       }
     } else {
@@ -379,14 +399,18 @@ export default function CheckOutPage() {
         setShippingCost(cost);
         console.log("Shipping cost:", cost);
       } catch (error) {
-        console.error('Error calculating shipping cost:', error);
+        console.error("Error calculating shipping cost:", error);
         setShippingCost(0);
       }
     }
   };
 
   const handleAddressSelect = (addressId: number) => {
+    const selectedAddr = addressSuggestions.find(
+      (addr) => addr.id === addressId
+    );
     setDestination(addressId);
+    setSelectedAddress(selectedAddr || null);
   };
 
   useEffect(() => {
@@ -516,7 +540,8 @@ export default function CheckOutPage() {
                   {formatCurrency(totalHarga + shippingCost)}
                 </p>
                 <p className="text-xs text-gray-500">
-                  (Produk: {formatCurrency(totalHarga)} + Ongkir: {formatCurrency(shippingCost)})
+                  (Produk: {formatCurrency(totalHarga)} + Ongkir:{" "}
+                  {formatCurrency(shippingCost)})
                 </p>
               </div>
               <button

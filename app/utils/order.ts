@@ -1,3 +1,4 @@
+import { AddressSearchResponse, ShippingCostResponse } from "../types/orderType";
 import api from "./api";
 
 export const fetchAllOrder = async () => {
@@ -97,7 +98,14 @@ interface OrderItem {
 interface CreateOrderPayload {
   items: OrderItem[];
   address: string;
+  destination_id: number;
+  destination_province: string;
+  destination_city: string;
+  destination_district: string;
+  destination_subdistrict: string;
+  destination_pos_code: string;
   paymentMethod: string;
+  cost: string;
 }
 
 export const createOrder = async (data: CreateOrderPayload) => {
@@ -193,7 +201,7 @@ export const cancelOrder = async (orderId: number, reason: string) => {
   }
 };
 
-export const searchAddress = async (search: string) => {
+export const searchAddress = async (search: string): Promise<AddressSearchResponse> => {
   try {
     const response = await api.get(`/api/v1/order/search-address?search=${encodeURIComponent(search)}`);
     return response.data;
@@ -222,7 +230,7 @@ export const searchAddress = async (search: string) => {
   }
 }
 
-export const searchCost = async (destinationId: number, weight: number) => {
+export const searchCost = async (destinationId: number, weight: number): Promise<ShippingCostResponse> => {
   try {
     const formData = new FormData();
     formData.append('destination', destinationId.toString());
