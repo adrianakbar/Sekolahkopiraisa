@@ -5,7 +5,6 @@ import Popup from "@/app/components/Popup";
 import ProductListAdmin from "@/app/components/ProductListAdmin";
 import { ProductItem } from "@/app/types/productType";
 
-
 import { deleteProduct, fetchAllProduct } from "@/app/utils/product";
 import { Plus, ChevronLeft, ChevronRight } from "lucide-react";
 import { useRouter } from "next/navigation";
@@ -29,7 +28,7 @@ export default function AdminProductPage() {
   const handleAddProduct = () => {
     router.push("/admin/product/create");
   };
-  
+
   const handleViewProduct = (id: number) => {
     router.push(`/admin/product/${id}`);
   };
@@ -120,7 +119,6 @@ export default function AdminProductPage() {
     }
   }, []);
 
-  
   useEffect(() => {
     const getProducts = async () => {
       try {
@@ -135,7 +133,7 @@ export default function AdminProductPage() {
           stock: item.inventory.stock,
           weight: item.weight || 0,
           sold: item.sold || 0,
-          partner: item.partner?.name || "Tidak Diketahui"
+          partner: item.partner || { name: "Tidak Diketahui" }, // Ensure partner is always defined
         }));
         setProduct(formattedData);
       } catch (err) {
@@ -188,7 +186,10 @@ export default function AdminProductPage() {
             </span>
           )}
         </h1>
-        <button className="cursor-pointer bg-amber-950 text-white px-3 py-2 rounded-xl flex items-center gap-1 hover:-translate-y-1 duration-150 ease-in text-sm" onClick={handleAddProduct}>
+        <button
+          className="cursor-pointer bg-amber-950 text-white px-3 py-2 rounded-xl flex items-center gap-1 hover:-translate-y-1 duration-150 ease-in text-sm"
+          onClick={handleAddProduct}
+        >
           <Plus size={18} />
           <span>Tambah Produk</span>
         </button>
@@ -198,7 +199,10 @@ export default function AdminProductPage() {
         {loading ? (
           // Loading skeleton
           Array.from({ length: 6 }).map((_, index) => (
-            <div key={index} className="rounded-xl overflow-hidden shadow-lg border border-gray-300 p-3 flex flex-col justify-between bg-white relative animate-pulse">
+            <div
+              key={index}
+              className="rounded-xl overflow-hidden shadow-lg border border-gray-300 p-3 flex flex-col justify-between bg-white relative animate-pulse"
+            >
               {/* Availability Badge Skeleton */}
               <div className="absolute top-3 left-3 z-10">
                 <div className="bg-gray-200 h-5 w-16 rounded"></div>
@@ -271,7 +275,8 @@ export default function AdminProductPage() {
         <div className="flex flex-col items-center space-y-4 mt-8">
           {/* Pagination Info */}
           <div className="text-sm text-gray-600">
-            Menampilkan {startIndex + 1}-{Math.min(endIndex, product.length)} dari {product.length} produk
+            Menampilkan {startIndex + 1}-{Math.min(endIndex, product.length)}{" "}
+            dari {product.length} produk
           </div>
 
           {/* Pagination Controls */}

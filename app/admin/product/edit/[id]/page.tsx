@@ -185,7 +185,7 @@ export default function EditProductPage() {
   }, [productId]);
 
   return (
-    <div className="container mx-auto bg-tertiary p-6 rounded-xl shadow-md">
+    <div className="container mx-auto bg-tertiary p-6 rounded-xl shadow-lg">
       {showPopup && (
         <Popup
           message={message}
@@ -365,21 +365,24 @@ export default function EditProductPage() {
         <div className="w-full md:w-1/2 max-w-100">
           <h2 className="text-lg font-medium mb-4">Pratinjau Produk</h2>
           <ProductListAdmin
-            id={0} // ID sementara, karena produk belum dibuat
-            image={imagePreview || "/assets/activity.png"} // ganti dengan URL gambar placeholder lokal jika belum ada gambar
+            id={0}
+            image={imagePreview || "/assets/activity.png"}
             name={product.name || "Nama Produk"}
             price={product.price ? Number(product.price) : 0}
             stock={Number(product.stock) || 0}
-            sold={product.stock ? 0 : 0} // Sementara, karena belum ada data penjualan
-            weight={product.weight ? 0 : 0} // Sementara, karena belum ada data berat
-            partner={{
-              id: product.partnerId ? Number(product.partnerId) : undefined,
-              name:
-                product.partnerId && partners.length > 0
-                  ? partners.find((p) => p.id === product.partnerId)?.name ||
-                    "Pilih Mitra"
-                  : "Pilih Mitra",
-            }}
+            sold={product.stock ? 0 : 0}
+            weight={product.weight ? Number(product.weight) : 0}
+            partner={
+              product.partnerId && partners.length > 0
+                ? {
+                    name:
+                      partners.find(
+                        (p) => p.id.toString() === product.partnerId
+                      )?.name || "Pilih Mitra",
+                    id: Number(product.partnerId),
+                  }
+                : { name: "Pilih Mitra" }
+            }
             onEdit={() => {}}
             onDelete={() => {}}
           />
