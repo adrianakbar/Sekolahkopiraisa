@@ -111,23 +111,23 @@ function StatusDropdown({
   switch (currentStatus) {
     case "PENDING":
       statusColorClass = "bg-gray-100 text-gray-800";
-      statusIcon = <Loader size={14} className="mr-1.5" />;
+      statusIcon = <Loader size={18} className="mr-1.5" />;
       break;
     case "PROCESSING":
       statusColorClass = "bg-yellow-100 text-yellow-800";
-      statusIcon = <Loader size={14} className="animate-spin mr-1.5" />;
+      statusIcon = <Loader size={18} className="animate-spin mr-1.5" />;
       break;
     case "SHIPPED":
       statusColorClass = "bg-blue-100 text-blue-800";
-      statusIcon = <Truck size={14} className="mr-1.5" />;
+      statusIcon = <Truck size={18} className="mr-1.5" />;
       break;
     case "DELIVERED":
       statusColorClass = "bg-green-100 text-green-800";
-      statusIcon = <PackageCheck size={14} className="mr-1.5" />;
+      statusIcon = <PackageCheck size={18} className="mr-1.5" />;
       break;
     case "CANCELED":
       statusColorClass = "bg-red-100 text-red-800";
-      statusIcon = <XCircle size={14} className="mr-1.5" />;
+      statusIcon = <XCircle size={18} className="mr-1.5" />;
       break;
   }
 
@@ -245,7 +245,7 @@ export default function OrderTable({
                     className="cursor-pointer p-2 text-white rounded-xl bg-primary hover:-translate-y-1 duration-150 ease-in"
                     title="View"
                   >
-                    <Expand size={15} />
+                    <Expand size={18} />
                   </button>
                 </td>
               </tr>

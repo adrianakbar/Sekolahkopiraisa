@@ -6,7 +6,13 @@ import { useEffect, useState } from "react";
 import OrderDetailModal from "@/app/components/OrderDetailModal";
 import { formatCurrency } from "@/app/utils/helper";
 import ConfirmModal from "@/app/components/ConfirmModal";
-import { Check, ChevronLeft, ChevronRight, FunnelPlus, Phone } from "lucide-react";
+import {
+  Check,
+  ChevronLeft,
+  ChevronRight,
+  FunnelPlus,
+  Phone,
+} from "lucide-react";
 import { useRouter } from "next/navigation";
 import { callPartner } from "@/app/utils/partner";
 
@@ -163,7 +169,6 @@ export default function AdminOrderPage() {
   const endIndex = startIndex + itemsPerPage;
   const currentOrders = filteredOrders.slice(startIndex, endIndex);
 
-
   // Pagination handlers
   const goToPage = (page: number) => {
     setCurrentPage(page);
@@ -282,8 +287,143 @@ export default function AdminOrderPage() {
     }
   };
 
-  if (isLoading)
-    return <div className="p-4 text-center">Loading orders...</div>;
+  if (isLoading) {
+    return (
+      <div className="container mx-auto">
+        {/* Header Skeleton */}
+        <div className="flex flex-wrap justify-between items-center mb-4">
+          <h1 className="text-lg font-medium">List Order</h1>
+
+          {/* Filters - Moved to the right */}
+          <div className="flex flex-wrap gap-4 items-center">
+            {/* Status Filter */}
+            <div className="relative">
+              <select
+                value={statusFilter}
+                onChange={(e) =>
+                  setStatusFilter(e.target.value as OrderStatus | "ALL")
+                }
+                className="appearance-none border border-gray-500 rounded-xl px-3 py-2 text-sm pr-8"
+              >
+                <option value="ALL">Semua Status</option>
+                <option value="PENDING">Dibuat</option>
+                <option value="PROCESSING">Diproses</option>
+                <option value="SHIPPED">Dikirim</option>
+                <option value="DELIVERED">Diterima</option>
+                <option value="CANCELED">Dibatalkan</option>
+              </select>
+              <FunnelPlus
+                className="absolute right-2 top-1/2 transform -translate-y-1/2 text-gray-500 pointer-events-none"
+                size={18}
+              />
+            </div>
+
+            {/* Sort Filter */}
+            <div className="relative">
+              <select
+                value={sortOption}
+                onChange={(e) =>
+                  setSortOption(e.target.value as "newest" | "oldest" | "az")
+                }
+                className="appearance-none border border-gray-500 rounded-xl px-3 py-2 text-sm pr-8"
+              >
+                <option value="newest">Terbaru</option>
+                <option value="oldest">Terlama</option>
+                <option value="az">Nama A-Z</option>
+              </select>
+              <FunnelPlus
+                className="absolute right-2 top-1/2 transform -translate-y-1/2 text-gray-500 pointer-events-none"
+                size={18}
+              />
+            </div>
+          </div>
+        </div>
+
+        {/* Partner Contact Section Skeleton */}
+        <div className="mb-4 p-4 bg-secondary rounded-xl shadow-lg animate-pulse">
+          <div className="h-4 bg-gray-300 rounded w-48 mb-3"></div>
+          <div className="flex flex-wrap gap-2">
+            {Array.from({ length: 3 }).map((_, idx) => (
+              <div key={idx} className="h-8 bg-gray-300 rounded-xl w-32"></div>
+            ))}
+          </div>
+        </div>
+
+        {/* Table Skeleton */}
+        <div className="bg-tertiary shadow-lg rounded-xl overflow-hidden">
+          <div className="overflow-x-auto">
+            <table className="min-w-full divide-y divide-gray-200">
+              <thead className="bg-primary text-xs sm:text-sm text-white">
+                <tr>
+                  <th className="px-2 sm:px-4 py-3 text-left font-medium whitespace-nowrap">
+                    Nama Customer
+                  </th>
+                  <th className="px-2 sm:px-4 py-3 text-left font-medium whitespace-nowrap">
+                    Nama Produk
+                  </th>
+                  <th className="px-2 sm:px-4 py-3 text-left font-medium whitespace-nowrap">
+                    Nama Mitra
+                  </th>
+                  <th className="px-2 sm:px-4 py-3 text-left font-medium whitespace-nowrap">
+                    Quantity Total
+                  </th>
+                  <th className="px-2 sm:px-4 py-3 text-left font-medium whitespace-nowrap">
+                    Total Harga
+                  </th>
+                  <th className="px-2 sm:px-4 py-3 text-left font-medium whitespace-nowrap">
+                    Status
+                  </th>
+                  <th className="px-2 sm:px-4 py-3 text-left font-medium whitespace-nowrap">
+                    Aksi
+                  </th>
+                </tr>
+              </thead>
+              <tbody className="text-xs sm:text-sm text-gray-700 divide-y divide-gray-200">
+                {Array.from({ length: 8 }).map((_, idx) => (
+                  <tr key={idx} className="animate-pulse">
+                    <td className="px-2 sm:px-4 py-3">
+                      <div className="h-4 bg-gray-300 rounded w-28"></div>
+                    </td>
+                    <td className="px-2 sm:px-4 py-3">
+                      <div className="h-4 bg-gray-300 rounded w-36"></div>
+                    </td>
+                    <td className="px-2 sm:px-4 py-3">
+                      <div className="h-4 bg-gray-300 rounded w-24"></div>
+                    </td>
+                    <td className="px-2 sm:px-4 py-3">
+                      <div className="h-4 bg-gray-300 rounded w-12"></div>
+                    </td>
+                    <td className="px-2 sm:px-4 py-3">
+                      <div className="h-4 bg-gray-300 rounded w-24"></div>
+                    </td>
+                    <td className="px-2 sm:px-4 py-3">
+                      <div className="h-6 bg-gray-300 rounded-xl w-20"></div>
+                    </td>
+                    <td className="px-2 sm:px-4 py-3">
+                      <div className="h-8 w-8 bg-gray-300 rounded-xl"></div>
+                    </td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+          </div>
+        </div>
+
+        {/* Pagination Skeleton */}
+        <div className="flex flex-col items-center space-y-4 mt-5">
+          <div className="h-4 bg-gray-300 rounded w-48 animate-pulse"></div>
+          <div className="flex items-center space-x-1">
+            {Array.from({ length: 5 }).map((_, idx) => (
+              <div
+                key={idx}
+                className="h-8 w-8 bg-gray-300 rounded-full animate-pulse"
+              ></div>
+            ))}
+          </div>
+        </div>
+      </div>
+    );
+  }
   if (error)
     return <div className="p-4 text-center text-red-500">Error: {error}</div>;
   if (ordersData.length === 0)
@@ -388,11 +528,11 @@ export default function AdminOrderPage() {
                   >
                     {contactedPartners.includes(partner.id) ? (
                       <div className="flex items-center gap-2">
-                        <Check size={15} /> {partner.name} (Dihubungi)
+                        <Check size={18} /> {partner.name} (Dihubungi)
                       </div>
                     ) : (
                       <div className="flex items-center gap-2">
-                        <Phone size={15} /> Hubungi {partner.name}
+                        <Phone size={18} /> Hubungi {partner.name}
                       </div>
                     )}
                   </button>

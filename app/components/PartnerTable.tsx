@@ -84,7 +84,7 @@ export default function PartnerTable({
                     className="cursor-pointer p-1.5 sm:p-2 text-white rounded-xl bg-blue-500 hover:-translate-y-1 duration-150 ease-in"
                     title="Edit"
                   >
-                    <SquarePen size={12} className="sm:w-4 sm:h-4" />
+                    <SquarePen size={18} className="" />
                   </button>
                 </td>
               </tr>

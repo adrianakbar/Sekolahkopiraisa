@@ -7,7 +7,7 @@ import ActivityListAdmin, {
 import ConfirmModal from "@/app/components/ConfirmModal";
 import Popup from "@/app/components/Popup";
 import { deleteActivity, fetchAllActivity } from "@/app/utils/activity";
-import { ChevronDown, Funnel, FunnelPlus, Plus } from "lucide-react";
+import { ChevronDown, Funnel, FunnelPlus, Plus, ChevronLeft, ChevronRight } from "lucide-react";
 import { useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
 
@@ -23,6 +23,11 @@ export default function Activity() {
   const [error, setError] = useState<string | null>(null);
   const router = useRouter();
   const [sortOption, setSortOption] = useState("newest");
+
+  // Pagination states
+  const [currentPage, setCurrentPage] = useState(1);
+  const [itemsPerPage] = useState(8); // 8 items per page
+
   const sortActivities = (data: typeof activities, option: string) => {
     const sorted = [...data];
     if (option === "newest") {
@@ -37,6 +42,61 @@ export default function Activity() {
       sorted.sort((a, b) => a.title.localeCompare(b.title));
     }
     return sorted;
+  };
+
+  // Pagination calculations
+  const totalPages = Math.ceil(activities.length / itemsPerPage);
+  const startIndex = (currentPage - 1) * itemsPerPage;
+  const endIndex = startIndex + itemsPerPage;
+  const currentActivities = activities.slice(startIndex, endIndex);
+
+  // Pagination handlers
+  const goToPage = (page: number) => {
+    setCurrentPage(page);
+  };
+
+  const goToPrevious = () => {
+    setCurrentPage((prev) => Math.max(prev - 1, 1));
+  };
+
+  const goToNext = () => {
+    setCurrentPage((prev) => Math.min(prev + 1, totalPages));
+  };
+
+  // Generate page numbers for pagination
+  const getPageNumbers = () => {
+    const pages = [];
+    const maxVisiblePages = 5;
+
+    if (totalPages <= maxVisiblePages) {
+      for (let i = 1; i <= totalPages; i++) {
+        pages.push(i);
+      }
+    } else {
+      if (currentPage <= 3) {
+        for (let i = 1; i <= 4; i++) {
+          pages.push(i);
+        }
+        pages.push("...");
+        pages.push(totalPages);
+      } else if (currentPage >= totalPages - 2) {
+        pages.push(1);
+        pages.push("...");
+        for (let i = totalPages - 3; i <= totalPages; i++) {
+          pages.push(i);
+        }
+      } else {
+        pages.push(1);
+        pages.push("...");
+        for (let i = currentPage - 1; i <= currentPage + 1; i++) {
+          pages.push(i);
+        }
+        pages.push("...");
+        pages.push(totalPages);
+      }
+    }
+
+    return pages;
   };
 
   const handleAddActivity = () => {
@@ -88,6 +148,16 @@ export default function Activity() {
   useEffect(() => {
     setActivities((prev) => sortActivities(prev, sortOption));
   }, [sortOption]);
+
+  // Reset to page 1 when sort option changes
+  useEffect(() => {
+    setCurrentPage(1);
+  }, [sortOption]);
+
+  // Reset to page 1 when activities change
+  useEffect(() => {
+    setCurrentPage(1);
+  }, [activities.length]);
 
   useEffect(() => {
     const popupData = sessionStorage.getItem("popup");
@@ -168,7 +238,14 @@ export default function Activity() {
       />
 
       <div className="flex flex-col md:flex-row items-center justify-between gap-4 mb-4 md:mb-6">
-        <h1 className="text-lg font-medium text-gray-800">Daftar Berita</h1>
+        <h1 className="text-lg font-medium text-gray-800">
+          Daftar Berita
+          {!loading && activities.length > 0 && (
+            <span className="text-sm text-gray-500 ml-2">
+              ({activities.length} berita)
+            </span>
+          )}
+        </h1>
 
         <div className="flex items-center gap-4">
           <button
@@ -209,7 +286,7 @@ export default function Activity() {
         ) : activities.length === 0 ? (
           <div className="text-center py-8">Tidak ada berita tersedia</div>
         ) : (
-          activities.map((item) => (
+          currentActivities.map((item) => (
             <ActivityListAdmin
               key={item.id}
               {...item}
@@ -223,6 +300,60 @@ export default function Activity() {
           ))
         )}
       </div>
+
+      {/* Pagination */}
+      {!loading && activities.length > 0 && totalPages > 1 && (
+        <div className="flex flex-col items-center space-y-4 mt-8">
+          {/* Pagination Info */}
+          <div className="text-sm text-gray-600">
+            Menampilkan {startIndex + 1}-{Math.min(endIndex, activities.length)} dari {activities.length} berita
+          </div>
+
+          {/* Pagination Controls */}
+          <div className="flex items-center space-x-1">
+            {/* Previous Button */}
+            <button
+              onClick={goToPrevious}
+              disabled={currentPage === 1}
+              className="p-2 hover:bg-gray-100 disabled:opacity-50 disabled:cursor-not-allowed rounded-lg"
+            >
+              <ChevronLeft size={20} />
+            </button>
+
+            {/* Page Numbers */}
+            <div className="flex items-center space-x-1">
+              {getPageNumbers().map((page, index) =>
+                page === "..." ? (
+                  <span key={index} className="px-3 py-2 text-gray-500">
+                    ...
+                  </span>
+                ) : (
+                  <button
+                    key={index}
+                    onClick={() => goToPage(page as number)}
+                    className={`w-8 h-8 rounded-full border flex items-center justify-center text-sm ${
+                      currentPage === page
+                        ? "bg-amber-950 text-white border-amber-950"
+                        : "border-gray-300 hover:bg-gray-100"
+                    }`}
+                  >
+                    {page}
+                  </button>
+                )
+              )}
+            </div>
+
+            {/* Next Button */}
+            <button
+              onClick={goToNext}
+              disabled={currentPage === totalPages}
+              className="p-2 hover:bg-gray-100 disabled:opacity-50 disabled:cursor-not-allowed rounded-lg"
+            >
+              <ChevronRight size={20} />
+            </button>
+          </div>
+        </div>
+      )}
     </div>
   );
 }

@@ -198,19 +198,78 @@ export default function AdminPartnerPage() {
           </button>
         </div>
         <div>
-          <PartnerTable
-            partner={currentPartners}
-            onDelete={(id: number) => {
-              setPartnerToDelete(id);
-              setShowConfirmModal(true);
-            }}
-            onEdit={handleEditPartner}
-            onCall={handlePartnerCall}
-          />
+          {loading ? (
+            <div className="bg-tertiary shadow-lg rounded-xl overflow-hidden">
+              <div className="overflow-x-auto">
+                <table className="min-w-full divide-y divide-gray-200">
+                  <thead className="bg-primary text-xs sm:text-sm text-white">
+                    <tr>
+                      <th className="px-2 sm:px-4 py-3 text-left font-medium whitespace-nowrap">
+                        Nama Mitra
+                      </th>
+                      <th className="px-2 sm:px-4 py-3 text-left font-medium whitespace-nowrap">
+                        Nama Pemilik
+                      </th>
+                      <th className="px-2 sm:px-4 py-3 text-left font-medium whitespace-nowrap">
+                        No. Telpon
+                      </th>
+                      <th className="px-2 sm:px-4 py-3 text-left font-medium whitespace-nowrap">
+                        Alamat
+                      </th>
+                      <th className="px-2 sm:px-4 py-3 text-left font-medium whitespace-nowrap">
+                        Produk Terdaftar
+                      </th>
+                      <th className="px-2 sm:px-4 py-3 text-left font-medium whitespace-nowrap">
+                        Aksi
+                      </th>
+                    </tr>
+                  </thead>
+                  <tbody className="text-xs sm:text-sm text-gray-700 divide-y divide-gray-200">
+                    {Array.from({ length: 5 }).map((_, idx) => (
+                      <tr key={idx} className="animate-pulse">
+                        <td className="px-2 sm:px-4 py-3">
+                          <div className="h-4 bg-gray-300 rounded w-32"></div>
+                        </td>
+                        <td className="px-2 sm:px-4 py-3">
+                          <div className="h-4 bg-gray-300 rounded w-28"></div>
+                        </td>
+                        <td className="px-2 sm:px-4 py-3">
+                          <div className="h-6 bg-gray-300 rounded-xl w-24"></div>
+                        </td>
+                        <td className="px-2 sm:px-4 py-3">
+                          <div className="h-4 bg-gray-300 rounded w-48"></div>
+                        </td>
+                        <td className="px-2 sm:px-4 py-3">
+                          <div className="h-4 bg-gray-300 rounded w-36"></div>
+                        </td>
+                        <td className="px-2 sm:px-4 py-3">
+                          <div className="h-8 w-8 bg-gray-300 rounded-xl"></div>
+                        </td>
+                      </tr>
+                    ))}
+                  </tbody>
+                </table>
+              </div>
+            </div>
+          ) : error ? (
+            <div className="bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded">
+              {error}
+            </div>
+          ) : (
+            <PartnerTable
+              partner={currentPartners}
+              onDelete={(id: number) => {
+                setPartnerToDelete(id);
+                setShowConfirmModal(true);
+              }}
+              onEdit={handleEditPartner}
+              onCall={handlePartnerCall}
+            />
+          )}
         </div>
 
-        {/* Pagination */}
-        {totalPages > 1 && (
+        {/* Pagination - only show when not loading */}
+        {!loading && totalPages > 1 && (
           <div className="flex flex-col items-center space-y-4 mt-5">
             {/* Pagination Info */}
             <div className="text-sm text-gray-600">
