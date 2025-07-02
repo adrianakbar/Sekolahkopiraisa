@@ -10,7 +10,7 @@ import Popup from "@/app/components/Popup";
 import ProductListAdmin from "@/app/components/ProductListAdmin";
 import ConfirmModal from "@/app/components/ConfirmModal";
 
-export default function CreateProductPage() {
+export default function AdminCreateProductPage() {
   // State for product data
   const [product, setProduct] = useState({
     name: "",
@@ -337,6 +337,9 @@ export default function CreateProductPage() {
             name={product.name || "Nama Produk"}
             price={product.price?.toString() || "0"}
             stock={Number(product.stock) || 0}
+            sold={product.stock ? 0 : 0} // Sementara, karena belum ada data penjualan
+            weight={product.weight? 0 : 0} // Sementara, karena belum ada data berat
+            partner={product.partnerName || "Pilih Mitra"}
             onEdit={() => {}}
             onDelete={() => {}}
           />

@@ -98,7 +98,10 @@ export default function EditProductPage() {
       formData.append("partner_id", product.partnerId);
       formData.append("description", product.description);
       formData.append("price", product.price.toString());
-      formData.append("weight", product.weight ? Number(product.weight).toString() : "0");
+      formData.append(
+        "weight",
+        product.weight ? Number(product.weight).toString() : "0"
+      );
       formData.append("stock", product.stock.toString());
       if (imageFile) {
         formData.append("productFile", imageFile); // ⬅️ Ini ditambahkan
@@ -367,6 +370,14 @@ export default function EditProductPage() {
             name={product.name || "Nama Produk"}
             price={product.price?.toString() || "0"}
             stock={Number(product.stock) || 0}
+            sold={product.stock ? 0 : 0} // Sementara, karena belum ada data penjualan
+            weight={product.weight ? 0 : 0} // Sementara, karena belum ada data berat
+            partner={
+              product.partnerId
+                ? partners.find((p) => p.id === product.partnerId)?.name ||
+                  "Pilih Mitra"
+                : "Pilih Mitra"
+            }
             onEdit={() => {}}
             onDelete={() => {}}
           />

@@ -12,6 +12,7 @@ export interface ProductItem {
   partner?: Partner;
   partnerName?: string;
   sold?: number;
+  weight?: number; // Tambahkan berat produk
   onView?: (id: number) => void; // Tambahkan fungsi untuk menangani klik pada detail produk
 }
 
@@ -21,13 +22,14 @@ export interface ProductApi {
   price?: number;
   description?: string;
   image?: string;
-  createdAt?: string;
-  updatedAt?: string;
+  weight?: number;
+  partner_id?: number; // Tambahkan partner_id yang ada di response
+  created_at?: string; // Ubah dari createdAt ke created_at (snake_case)
+  updated_at?: string; // Ubah dari updatedAt ke updated_at (snake_case)
   inventory?: {
     stock?: number;
   }
   partner?: Partner;
   partnerName?: string;
   sold?: number;
-  weight?: number; // Tambahkan berat produk
 }
