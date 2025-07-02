@@ -217,7 +217,7 @@ export default function ProductPage() {
   }
 
   return (
-    <div className="min-h-screen bg-secondary">
+    <div className="min-h-screen bg-secondary flex flex-col">
       {/* Hero Header Section */}
       <div className="bg-primary text-white">
         <div className="container mx-auto p-4 py-12 pt-32">
@@ -259,7 +259,7 @@ export default function ProductPage() {
       </div>
 
       {/* Stats Section */}
-      <div className=" border-b border-gray-300">
+      <div className="border-b border-gray-300">
         <div className="container mx-auto p-4 py-6">
           <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between">
             <div className="flex items-center space-x-4">
@@ -280,47 +280,51 @@ export default function ProductPage() {
         </div>
       </div>
 
-      {/* Products Grid */}
-      <div className="container mx-auto p-4 py-8">
-        {filteredProducts.length === 0 && searchTerm ? (
-          <div className="text-center py-12">
-            <div className="bg-gray-100 rounded-full w-20 h-20 flex items-center justify-center mx-auto mb-4">
-              <Search size={15} className="text-gray-400" />
-            </div>
-            <h3 className="text-xl font-semibold text-gray-900 mb-2">
-              Tidak ditemukan
-            </h3>
-            <p className="text-gray-600 mb-4">
-              Tidak ada produk yang cocok dengan pencarian "{searchTerm}"
-            </p>
-            <button
-              onClick={() => setSearchTerm("")}
-              className="text-blue-600 hover:text-blue-700 font-medium"
-            >
-              Hapus filter pencarian
-            </button>
-          </div>
-        ) : (
-          <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-8">
-            {filteredProducts.map((product, index) => (
-              <div
-                key={product.id}
-                className=""
-                style={{ animationDelay: `${index * 0.1}s` }}
-              >
-                <ProductCard
-                  id={product.id}
-                  image={product.image}
-                  name={product.name}
-                  sold={product.sold}
-                  price={product.price}
-                  onView={handleViewDetails}
-                />
+      {/* Products Grid - Tambahkan flex-1 untuk mengisi ruang kosong */}
+      <div className="flex-1">
+        <div className="container mx-auto p-4 py-8">
+          {filteredProducts.length === 0 && searchTerm ? (
+            <div className="text-center py-12">
+              <div className="bg-gray-100 rounded-full w-20 h-20 flex items-center justify-center mx-auto mb-4">
+                <Search size={15} className="text-gray-400" />
               </div>
-            ))}
-          </div>
-        )}
+              <h3 className="text-xl font-semibold text-gray-900 mb-2">
+                Tidak ditemukan
+              </h3>
+              <p className="text-gray-600 mb-4">
+                Tidak ada produk yang cocok dengan pencarian "{searchTerm}"
+              </p>
+              <button
+                onClick={() => setSearchTerm("")}
+                className="text-blue-600 hover:text-blue-700 font-medium"
+              >
+                Hapus filter pencarian
+              </button>
+            </div>
+          ) : (
+            <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-8">
+              {filteredProducts.map((product, index) => (
+                <div
+                  key={product.id}
+                  className=""
+                  style={{ animationDelay: `${index * 0.1}s` }}
+                >
+                  <ProductCard
+                    id={product.id}
+                    image={product.image}
+                    name={product.name}
+                    sold={product.sold}
+                    price={product.price}
+                    onView={handleViewDetails}
+                  />
+                </div>
+              ))}
+            </div>
+          )}
+        </div>
       </div>
+
+      {/* Footer - Sekarang akan berada di bagian bawah */}
       <Footer />
     </div>
   );

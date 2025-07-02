@@ -52,7 +52,7 @@ export default function Home() {
     // Check if user is logged in
     const isLoggedIn = await checkUserAuthentication();
     if (!isLoggedIn) {
-      setMessage("Silakan login terlebih dahulu untuk melakukan pembelian.");
+      setMessage("Silakan login terlebih dahulu");
       setPopupType("error");
       setShowPopup(true);
       return;
@@ -137,7 +137,7 @@ export default function Home() {
     const isLoggedIn = await checkUserAuthentication();
     if (!isLoggedIn) {
       setMessage(
-        "Silakan login terlebih dahulu untuk menambahkan produk ke keranjang."
+        "Silakan login terlebih dahulu"
       );
       setPopupType("error");
       setShowPopup(true);

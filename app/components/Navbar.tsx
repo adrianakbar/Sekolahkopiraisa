@@ -21,11 +21,12 @@ import clsx from "clsx";
 import ConfirmModal from "./ConfirmModal";
 import { fetchAllCart } from "../utils/cart";
 import { UserItem } from "../types/userType";
+import Popup from "./Popup";
 
 interface NavbarItem {
   title: string;
   link: string;
-  icon?: React.ReactNode; // Add icon support for mobile view
+  icon?: React.ReactNode;
 }
 
 export default function Navbar({ navbarItems }: { navbarItems: NavbarItem[] }) {
@@ -33,10 +34,38 @@ export default function Navbar({ navbarItems }: { navbarItems: NavbarItem[] }) {
   const [isDropdownOpen, setIsDropdownOpen] = useState(false);
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
   const [showConfirmModal, setShowConfirmModal] = useState(false);
+  const [showPopup, setShowPopup] = useState(false);
+  const [popupMessage, setPopupMessage] = useState("");
 
   const pathname = usePathname();
   const router = useRouter();
   const [cartCount, setCartCount] = useState(0);
+
+  // Add authentication check function
+  const checkUserAuthentication = async (): Promise<boolean> => {
+    try {
+      await getUser();
+      return true;
+    } catch (error) {
+      return false;
+    }
+  };
+
+  // Handle protected navigation
+  const handleProtectedNavigation = async (href: string, title: string) => {
+    // Check if the link is for products page
+    if (href === "/product") {
+      const isLoggedIn = await checkUserAuthentication();
+      if (!isLoggedIn) {
+        setPopupMessage("Silakan login terlebih dahulu");
+        setShowPopup(true);
+        return;
+      }
+    }
+
+    // Navigate normally for other pages or if user is authenticated
+    router.push(href);
+  };
 
   const handleLogout = () => {
     setShowConfirmModal(true);
@@ -121,6 +150,14 @@ export default function Navbar({ navbarItems }: { navbarItems: NavbarItem[] }) {
 
   return (
     <nav className="flex justify-between items-center p-3 shadow-md bg-white/80 fixed w-full z-50 px-4 md:px-8 lg:px-16">
+      {showPopup && (
+        <Popup
+          message={popupMessage}
+          type="error"
+          onClose={() => setShowPopup(false)}
+        />
+      )}
+
       {showConfirmModal && (
         <ConfirmModal
           isOpen={showConfirmModal}
@@ -150,7 +187,11 @@ export default function Navbar({ navbarItems }: { navbarItems: NavbarItem[] }) {
         {navbarItems.map((item, index) => {
           const isActive = pathname === item.link;
           return (
-            <Link key={index} href={item.link} className="relative group">
+            <button
+              key={index}
+              onClick={() => handleProtectedNavigation(item.link, item.title)}
+              className="relative group"
+            >
               <span
                 className={`relative after:content-[''] after:absolute after:left-0 after:-bottom-1/4 after:h-[2px] after:bg-primary after:transition-all after:duration-300
                 ${
@@ -161,7 +202,7 @@ export default function Navbar({ navbarItems }: { navbarItems: NavbarItem[] }) {
               >
                 {item.title}
               </span>
-            </Link>
+            </button>
           );
         })}
       </div>
@@ -170,12 +211,12 @@ export default function Navbar({ navbarItems }: { navbarItems: NavbarItem[] }) {
       <div className="hidden md:flex items-center space-x-4">
         {user ? (
           <div className="flex items-center gap-4 relative">
-            {/* Tombol Bell */}
+            {/* Bell Button */}
             <button className="text-primary">
               <Bell width={20} />
             </button>
 
-            {/* Link Cart */}
+            {/* Cart Link */}
             <Link href="/cart" className="text-primary relative">
               <ShoppingCart width={20} />
               {cartCount > 0 && (
@@ -185,7 +226,7 @@ export default function Navbar({ navbarItems }: { navbarItems: NavbarItem[] }) {
               )}
             </Link>
 
-            {/* Tombol User */}
+            {/* User Button */}
             <div className="relative">
               <button
                 onClick={toggleUserDropdown}
@@ -322,7 +363,7 @@ export default function Navbar({ navbarItems }: { navbarItems: NavbarItem[] }) {
         )}
       </div>
 
-      {/* Mobile Menu Button - Now placed directly in navbar */}
+      {/* Mobile Menu Button */}
       <button className="md:hidden p-2" onClick={toggleMobileMenu}>
         <Menu size={24} />
       </button>
@@ -374,16 +415,24 @@ export default function Navbar({ navbarItems }: { navbarItems: NavbarItem[] }) {
                 <ul className="space-y-4">
                   {navbarItems.map((item, index) => {
                     const isActive = pathname === item.link;
-                    // Use default icon if not provided
                     const icon = item.icon || (
-                      <div className="w-5 h-5  rounded-full flex items-center justify-center text-xs text-primary font-medium">
+                      <div className="w-5 h-5 rounded-full flex items-center justify-center text-xs text-primary font-medium">
                         {item.title.charAt(0)}
                       </div>
                     );
 
                     return (
                       <li key={index}>
-                        <Link href={item.link}>
+                        <button
+                          onClick={async () => {
+                            await handleProtectedNavigation(
+                              item.link,
+                              item.title
+                            );
+                            setIsMobileMenuOpen(false);
+                          }}
+                          className="w-full"
+                        >
                           <div
                             className={clsx(
                               "flex items-center gap-3 px-3 py-2 rounded-xl transition-all duration-200 text-sm",
@@ -395,7 +444,7 @@ export default function Navbar({ navbarItems }: { navbarItems: NavbarItem[] }) {
                             {icon}
                             <span>{item.title}</span>
                           </div>
-                        </Link>
+                        </button>
                       </li>
                     );
                   })}
@@ -428,7 +477,6 @@ export default function Navbar({ navbarItems }: { navbarItems: NavbarItem[] }) {
               <div className="mt-auto px-4 py-4 bg-gray-100 flex items-center justify-between rounded-t-xl">
                 {user ? (
                   <>
-                    {/* Cart and Bell icons for mobile */}
                     <div className="flex items-center gap-3">
                       <button className="text-primary">
                         <Bell size={20} />
