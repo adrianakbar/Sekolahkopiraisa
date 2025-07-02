@@ -338,11 +338,18 @@ export default function AdminCreateProductPage() {
             price={product.price ? Number(product.price) : 0}
             stock={Number(product.stock) || 0}
             sold={product.stock ? 0 : 0} // Sementara, karena belum ada data penjualan
-            weight={product.weight? 0 : 0} // Sementara, karena belum ada data berat
-            partner={{ 
-              id: product.partnerName ? Number(product.partnerName) : undefined,
-              name: product.partnerName ? partners.find(p => p.id === product.partnerName)?.name : "Pilih Mitra"
-            }}
+            weight={product.weight ? Number(product.weight) : 0} // Sementara, karena belum ada data berat
+            partner={
+              partners.length > 0
+                ? {
+                    name:
+                      partners.find(
+                        (p) => p.id.toString() === product.partnerName
+                      )?.name || "Pilih Mitra",
+                    id: Number(product.partnerName) || 0,
+                  }
+                : { name: "Pilih Mitra" }
+            }
             onEdit={() => {}}
             onDelete={() => {}}
           />
