@@ -6,7 +6,7 @@ import { fetchAllProduct } from "@/app/utils/product";
 import { ProductItem } from "@/app/types/productType";
 import { formatCurrency } from "@/app/utils/helper";
 
-export default function ProductPage() {
+export default function AdminProductDetailPage() {
   const params = useParams();
   const id = Number(params?.id);
   const [product, setProduct] = useState<ProductItem | null>(null);
