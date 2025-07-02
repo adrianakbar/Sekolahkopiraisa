@@ -7,7 +7,6 @@ import Skeleton, { SkeletonTheme } from "react-loading-skeleton";
 import "react-loading-skeleton/dist/skeleton.css";
 // Impor fungsi fetch API dan tipe ProductItem Anda
 import { fetchProductById } from "@/app/utils/product"; // <--- SESUAIKAN PATH INI
-import { ProductApi, ProductItem } from "@/app/types/productType"; // <--- SESUAIKAN PATH INI
 import { formatCurrency } from "@/app/utils/helper";
 import {
   Lightbulb,
@@ -21,6 +20,7 @@ import Popup from "@/app/components/Popup";
 import { CartItemData } from "@/app/components/CartCard";
 import { useCartStore } from "@/app/stores/cartStore";
 import Footer from "@/app/components/Footer";
+import { ProductItem } from "@/app/types/productType";
 
 export default function ProductDetailPage() {
   const params = useParams();
@@ -28,7 +28,7 @@ export default function ProductDetailPage() {
     ? params.id[0]
     : (params.id as string | undefined);
 
-  const [product, setProduct] = useState<ProductApi | null>(null);
+  const [product, setProduct] = useState<ProductItem | null>(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
   const [quantity, setQuantity] = useState(1);

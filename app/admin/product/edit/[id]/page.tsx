@@ -368,16 +368,18 @@ export default function EditProductPage() {
             id={0} // ID sementara, karena produk belum dibuat
             image={imagePreview || "/assets/activity.png"} // ganti dengan URL gambar placeholder lokal jika belum ada gambar
             name={product.name || "Nama Produk"}
-            price={product.price?.toString() || "0"}
+            price={product.price ? Number(product.price) : 0}
             stock={Number(product.stock) || 0}
             sold={product.stock ? 0 : 0} // Sementara, karena belum ada data penjualan
             weight={product.weight ? 0 : 0} // Sementara, karena belum ada data berat
-            partner={
-              product.partnerId
-                ? partners.find((p) => p.id === product.partnerId)?.name ||
-                  "Pilih Mitra"
-                : "Pilih Mitra"
-            }
+            partner={{
+              id: product.partnerId ? Number(product.partnerId) : undefined,
+              name:
+                product.partnerId && partners.length > 0
+                  ? partners.find((p) => p.id === product.partnerId)?.name ||
+                    "Pilih Mitra"
+                  : "Pilih Mitra",
+            }}
             onEdit={() => {}}
             onDelete={() => {}}
           />

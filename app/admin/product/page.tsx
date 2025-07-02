@@ -2,9 +2,9 @@
 
 import ConfirmModal from "@/app/components/ConfirmModal";
 import Popup from "@/app/components/Popup";
-import ProductListAdmin, {
-  ProductListProps,
-} from "@/app/components/ProductListAdmin";
+import ProductListAdmin from "@/app/components/ProductListAdmin";
+import { ProductItem } from "@/app/types/productType";
+
 
 import { deleteProduct, fetchAllProduct } from "@/app/utils/product";
 import { Plus, ChevronLeft, ChevronRight } from "lucide-react";
@@ -17,7 +17,7 @@ export default function AdminProductPage() {
   const [popupType, setPopupType] = useState<"success" | "error">("success");
   const [showConfirmModal, setShowConfirmModal] = useState(false);
   const router = useRouter();
-  const [product, setProduct] = useState<ProductListProps[]>([]);
+  const [product, setProduct] = useState<ProductItem[]>([]);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [productToDelete, setProductToDelete] = useState<number | null>(null);

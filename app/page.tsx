@@ -47,7 +47,7 @@ export default function Home() {
       products_id: selectedProduct.id ?? 0,
       imageUrl: selectedProduct.image ?? "",
       name: selectedProduct.name ?? "",
-      partnerName: selectedProduct.partnerName,
+      partnerName: selectedProduct.partner?.name ?? "",
       price: Number(selectedProduct.price),
       quantity: 1,
       selected: true,

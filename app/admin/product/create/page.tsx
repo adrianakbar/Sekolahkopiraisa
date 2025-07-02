@@ -335,11 +335,14 @@ export default function AdminCreateProductPage() {
             id={0} // ID sementara, karena produk belum dibuat
             image={imagePreview || "/assets/noimage.png"} // ganti dengan URL gambar placeholder lokal jika belum ada gambar
             name={product.name || "Nama Produk"}
-            price={product.price?.toString() || "0"}
+            price={product.price ? Number(product.price) : 0}
             stock={Number(product.stock) || 0}
             sold={product.stock ? 0 : 0} // Sementara, karena belum ada data penjualan
             weight={product.weight? 0 : 0} // Sementara, karena belum ada data berat
-            partner={product.partnerName || "Pilih Mitra"}
+            partner={{ 
+              id: product.partnerName ? Number(product.partnerName) : undefined,
+              name: product.partnerName ? partners.find(p => p.id === product.partnerName)?.name : "Pilih Mitra"
+            }}
             onEdit={() => {}}
             onDelete={() => {}}
           />

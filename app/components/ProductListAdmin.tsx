@@ -1,52 +1,41 @@
 import { Pencil, SquarePen, Trash } from "lucide-react";
 import { formatCurrency } from "../utils/helper";
+import { ProductItem } from "../types/productType";
 
-export interface ProductListProps {
-  id: number;
-  image: string;
-  name: string;
-  price: string;
-  stock: number;
-  weight: number;
-  partner: string;
-  sold: number;
-  onEdit: (id: number) => void;
-  onDelete: (id: number) => void;
-  onView?: (id: number) => void;
-}
+
 
 export default function ProductListAdmin({
   id,
-  image,
   name,
+  image,
   price,
   stock,
   weight,
-  partner,
   sold,
-  onEdit,
-  onDelete,
+  partner,
   onView,
-}: ProductListProps) {
+  onEdit,
+  onDelete
+}: ProductItem) {
   return (
-    <div className="cursor-pointer rounded-xl overflow-hidden shadow-lg border border-gray-300 p-3 flex flex-col justify-between bg-white relative">
+    <div className="cursor-pointer rounded-xl overflow-hidden shadow-lg border border-gray-300 p-3 flex flex-col justify-between bg-tertiary relative">
       {/* Availability Badge */}
       <div className="absolute top-3 left-3 z-10">
         <span
           className={`px-2 py-1 rounded-xl text-xs ${
-            stock > 0
+            (stock ?? 0) > 0
               ? "bg-green-200 text-green-800"
               : "bg-red-200 text-red-800"
           }`}
         >
-          {stock > 0 ? "Tersedia" : "Habis"}
+          {(stock ?? 0) > 0 ? "Tersedia" : "Habis"}
         </span>
       </div>
 
       <img src={image} alt={name} className="h-50 object-cover rounded-xl" />
 
       <div className="mt-3 flex flex-col justify-between flex-grow text-sm">
-        <div onClick={() => onView?.(id)} className="cursor-pointer">
+        <div onClick={() => onView?.(id ?? 0)} className="cursor-pointer">
           <div className="flex justify-between items-start">
             {/* Kolom Kiri */}
             <div className="flex flex-col space-y-1">
@@ -54,7 +43,7 @@ export default function ProductListAdmin({
               <p className="font-medium text-primary">
                 {formatCurrency(Number(price))}
               </p>
-              <p className="text-gray-600 text-xs">Mitra: {partner}</p>
+              <p className="text-gray-600 text-xs">Mitra: {partner?.name}</p>
             </div>
 
             {/* Kolom Kanan */}
@@ -69,7 +58,7 @@ export default function ProductListAdmin({
         <div className="flex justify-end md:items-center space-x-2 mt-3 md:mt-0">
           {/* Edit */}
           <button
-            onClick={() => onEdit?.(id)}
+            onClick={() => onEdit?.(id ?? 0)}
             className="cursor-pointer p-2 text-white rounded-xl bg-blue-500 hover:-translate-y-1 duration-150 ease-in"
             title="Edit"
           >
@@ -77,7 +66,7 @@ export default function ProductListAdmin({
           </button>
           {/* Delete */}
           <button
-            onClick={() => onDelete?.(id)}
+            onClick={() => onDelete?.(id ?? 0)}
             className="cursor-pointer p-2 text-white rounded-xl bg-red-500 hover:-translate-y-1 duration-150 ease-in"
             title="Hapus"
           >
