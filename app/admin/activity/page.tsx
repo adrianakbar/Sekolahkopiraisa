@@ -180,7 +180,7 @@ export default function Activity() {
         const filtered = rawData
           .filter((item: any) =>
             item.newsMedia?.some((media: any) =>
-              media.media_type?.startsWith("image/")
+              media.media_type?.startsWith("image")
             )
           )
           .map((item: any) => {
@@ -199,6 +199,7 @@ export default function Activity() {
           .filter(Boolean); // buang null
 
         setActivities(filtered);
+        console.log("Activities fetched:", filtered);
         setError(null);
       } catch (err) {
         console.error("Failed to fetch activities:", err);

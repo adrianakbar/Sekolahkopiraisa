@@ -64,12 +64,12 @@ export default function ActivityPage() {
         const filtered = rawData
           .filter((item: any) =>
             item.newsMedia?.some((media: any) =>
-              media.media_type?.startsWith("image/")
+              media.media_type?.startsWith("image")
             )
           )
           .map((item: any) => {
             const imageMedia = item.newsMedia.find((media: any) =>
-              media.media_type?.startsWith("image/")
+              media.media_type?.startsWith("image")
             );
 
             return {
