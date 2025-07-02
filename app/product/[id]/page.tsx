@@ -113,7 +113,7 @@ export default function ProductDetailPage() {
 
     setIsAddingToCart(true);
     try {
-      const response = await addToCart(productId, 1);
+      const response = await addToCart(productId, quantity);
       setMessage(response.message);
       setPopupType("success");
       setShowPopup(true);
