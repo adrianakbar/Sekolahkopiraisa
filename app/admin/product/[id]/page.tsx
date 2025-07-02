@@ -48,7 +48,7 @@ export default function ProductPage() {
   return (
     <div className="container mx-auto px-4 py-8 max-w-4xl">
       {/* Product Header */}
-      <div className="grid grid-cols-1 md:grid-cols-2 bg-white rounded-xl shadow-lg overflow-hidden">
+      <div className="grid grid-cols-1 md:grid-cols-2 bg-tertiary rounded-xl shadow-lg overflow-hidden">
         {/* Image */}
         <div className="bg-gray-100 flex items-center justify-center p-4">
           <img
@@ -93,7 +93,7 @@ export default function ProductPage() {
       </div>
 
       {/* Product Description */}
-      <div className="bg-white rounded-xl shadow-lg mt-8 p-6">
+      <div className="bg-tertiary rounded-xl shadow-lg mt-8 p-6">
         <h2 className="text-lg font-medium mb-3 text-gray-800">Deskripsi Produk</h2>
         <p className="text-gray-700 leading-relaxed whitespace-pre-line">
           {product.description}
@@ -101,7 +101,7 @@ export default function ProductPage() {
       </div>
 
       {/* Partner Information */}
-      <div className="bg-white rounded-xl shadow-lg mt-8 p-6">
+      <div className="bg-tertiary rounded-xl shadow-lg mt-8 p-6">
         <h2 className="text-lg font-medium mb-3 text-gray-800">Informasi Mitra</h2>
         <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
           <div>
@@ -120,7 +120,7 @@ export default function ProductPage() {
       </div>
 
       {/* Product Metadata */}
-      <div className="bg-white rounded-xl shadow-lg mt-8 p-6">
+      <div className="bg-tertiary rounded-xl shadow-lg mt-8 p-6">
         <h2 className="text-lg font-medium mb-3 text-gray-800">Informasi Tambahan</h2>
         <div className="grid grid-cols-1 md:grid-cols-2 gap-4 text-sm">
           <div>
