@@ -13,7 +13,7 @@ export default function CreatePartnerPage() {
         name: "",
         owner_name: "",
         phone_number: "",
-        address: "",
+        // address: "",
     });
 
     const params = useParams();
@@ -100,10 +100,10 @@ export default function CreatePartnerPage() {
                 const data = response.data;
 
                 setPartner({
-                    name: data.name || "",
-                    owner_name: data.owner_name || "",
-                    phone_number: data.phone_number || "",
-                    address: data.address || "",
+                    name: data.namePartner || "",
+                    owner_name: data.ownerPartner || "",
+                    phone_number: data.phoneNumberPartner || "",
+                    // address: data.address || "",
                 });
             } catch (error) {
                 console.error("Error fetching partner data:", error);
@@ -196,7 +196,7 @@ export default function CreatePartnerPage() {
                         )}
                     </div>
 
-                    <div className="mt-4">
+                    {/* <div className="mt-4">
                         <label className="block text-sm font-medium text-gray-700 mb-1">
                             Alamat
                         </label>
@@ -213,7 +213,7 @@ export default function CreatePartnerPage() {
                                 {errors.address}
                             </p>
                         )}
-                    </div>
+                    </div> */}
 
                     <div className="flex justify-end">
                         <button

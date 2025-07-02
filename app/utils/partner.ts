@@ -71,7 +71,7 @@ export const createPartner = async (data: {
   name: string;
   owner_name: string;
   phone_number: string;
-  address: string;
+  // address: string;
 }) => {
   try {
     const response = await api.post("/api/v1/partner/", data);
@@ -114,7 +114,7 @@ export const updatePartner = async (
     name: string;
     owner_name: string;
     phone_number: string;
-    address: string;
+    // address: string;
   }
 ) => {
   try {
