@@ -40,9 +40,7 @@ export default function PartnerTable({
               <th className="px-2 sm:px-4 py-3 text-left font-medium whitespace-nowrap">
                 No. Telpon
               </th>
-              <th className="px-2 sm:px-4 py-3 text-left font-medium whitespace-nowrap">
-                Alamat
-              </th>
+          
               <th className="px-2 sm:px-4 py-3 text-left font-medium whitespace-nowrap">
                 Produk Terdaftar
               </th>
@@ -71,9 +69,7 @@ export default function PartnerTable({
                   </span>
                 </td>
 
-                <td className="px-2 sm:px-4 py-3 max-w-xs truncate">
-                  {item.address}
-                </td>
+              
                 <td className="px-2 sm:px-4 py-3 max-w-xs truncate">
                   {item.products}
                 </td>

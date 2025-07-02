@@ -213,9 +213,7 @@ export default function AdminPartnerPage() {
                       <th className="px-2 sm:px-4 py-3 text-left font-medium whitespace-nowrap">
                         No. Telpon
                       </th>
-                      <th className="px-2 sm:px-4 py-3 text-left font-medium whitespace-nowrap">
-                        Alamat
-                      </th>
+                      
                       <th className="px-2 sm:px-4 py-3 text-left font-medium whitespace-nowrap">
                         Produk Terdaftar
                       </th>
@@ -236,9 +234,7 @@ export default function AdminPartnerPage() {
                         <td className="px-2 sm:px-4 py-3">
                           <div className="h-6 bg-gray-300 rounded-xl w-24"></div>
                         </td>
-                        <td className="px-2 sm:px-4 py-3">
-                          <div className="h-4 bg-gray-300 rounded w-48"></div>
-                        </td>
+                      
                         <td className="px-2 sm:px-4 py-3">
                           <div className="h-4 bg-gray-300 rounded w-36"></div>
                         </td>
