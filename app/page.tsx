@@ -17,6 +17,7 @@ import ProductCarousel from "./components/ProductCarousel";
 import { useCartStore } from "./stores/cartStore";
 import { CartItemData } from "./components/CartCard";
 import { ProductItem } from "./types/productType";
+import { getUser } from "./utils/user";
 
 interface ActivityItemApi {
   id: number;
@@ -38,12 +39,30 @@ export default function Home() {
     router.push(`/activity/${id}`);
   };
 
-  const handleBuyNow = (id: number) => {
+  const checkUserAuthentication = async (): Promise<boolean> => {
+    try {
+      await getUser();
+      return true;
+    } catch (error) {
+      return false;
+    }
+  };
+
+  const handleBuyNow = async (id: number) => {
+    // Check if user is logged in
+    const isLoggedIn = await checkUserAuthentication();
+    if (!isLoggedIn) {
+      setMessage("Silakan login terlebih dahulu untuk melakukan pembelian.");
+      setPopupType("error");
+      setShowPopup(true);
+      return;
+    }
+
     const selectedProduct = products.find((product) => product.id === id);
     if (!selectedProduct) return;
 
     const item: CartItemData = {
-      id: selectedProduct.id ?? 0, // bisa diganti ke ID unik jika diperlukan
+      id: selectedProduct.id ?? 0,
       products_id: selectedProduct.id ?? 0,
       imageUrl: selectedProduct.image ?? "",
       name: selectedProduct.name ?? "",
@@ -51,7 +70,7 @@ export default function Home() {
       price: Number(selectedProduct.price),
       quantity: 1,
       selected: true,
-      fromCart: false, // karena bukan dari halaman keranjang
+      fromCart: false,
     };
 
     useCartStore.getState().setCartItems([item]);
@@ -112,7 +131,18 @@ export default function Home() {
   };
 
   const handleAddToCart = async (productId: number) => {
-    if (isAddingToCart) return; // Prevent multiple clicks
+    if (isAddingToCart) return;
+
+    // Check if user is logged in
+    const isLoggedIn = await checkUserAuthentication();
+    if (!isLoggedIn) {
+      setMessage(
+        "Silakan login terlebih dahulu untuk menambahkan produk ke keranjang."
+      );
+      setPopupType("error");
+      setShowPopup(true);
+      return;
+    }
 
     setIsAddingToCart(true);
     try {
@@ -122,7 +152,9 @@ export default function Home() {
       setShowPopup(true);
       window.dispatchEvent(new CustomEvent("cartUpdated"));
     } catch (error: any) {
-      setMessage(error.message || "Terjadi kesalahan saat menghapus.");
+      setMessage(
+        error.message || "Terjadi kesalahan saat menambahkan ke keranjang."
+      );
       setPopupType("error");
       setShowPopup(true);
     } finally {

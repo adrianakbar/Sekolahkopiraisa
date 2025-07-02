@@ -185,7 +185,7 @@ export default function Login() {
                 value={form.emailOrPhone}
                 onChange={handleChange}
                 type="text"
-                className="w-full p-1.5 border border-gray-300 rounded-xl"
+                className="w-full p-2 border border-gray-300 rounded-xl"
                 placeholder="Masukkan email atau nomor hp"
               />
               {errors.emailOrPhone && (
@@ -210,7 +210,7 @@ export default function Login() {
                 value={form.password}
                 onChange={handleChange}
                 type={showPassword ? "text" : "password"}
-                className="w-full p-1.5 border border-gray-300 rounded-xl"
+                className="w-full p-2 border border-gray-300 rounded-xl"
                 placeholder="Masukkan kata sandi"
               />
 

@@ -97,7 +97,7 @@ export default function Signup() {
                 value={form.name}
                 onChange={handleChange}
                 type="text"
-                className="w-full p-1.5 border border-gray-300 rounded-xl"
+                className="w-full p-2 border border-gray-300 rounded-xl"
                 placeholder="Masukkan nama lengkap"
               />
               {errors.name && (
@@ -112,7 +112,7 @@ export default function Signup() {
                 value={form.email}
                 onChange={handleChange}
                 type="email"
-                className="w-full p-1.5 border border-gray-300 rounded-xl"
+                className="w-full p-2 border border-gray-300 rounded-xl"
                 placeholder="Masukkan email"
               />
               {errors.email && (
@@ -127,7 +127,7 @@ export default function Signup() {
                 value={form.password}
                 onChange={handleChange}
                 type={showPassword ? "text" : "password"}
-                className="w-full p-1.5 border border-gray-300 rounded-xl"
+                className="w-full p-2 border border-gray-300 rounded-xl"
                 placeholder="Masukkan kata sandi"
               />
               <button
@@ -149,7 +149,7 @@ export default function Signup() {
                 value={form.phone_number}
                 onChange={handleChange}
                 type="number"
-                className="w-full p-1.5 border border-gray-300 rounded-xl"
+                className="w-full p-2 border border-gray-300 rounded-xl"
                 placeholder="Masukkan nomor hp"
               />
               {errors.phone_number && (
