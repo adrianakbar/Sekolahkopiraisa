@@ -171,7 +171,7 @@ const OrderInformation: React.FC<OrderInformationProps> = ({
       <div className="grid grid-cols-2 gap-4">
         <div className="bg-white p-4 rounded-xl border border-gray-100">
           <p className="text-sm font-medium text-gray-700 mb-1">Total Berat</p>
-          <p className="text-sm text-gray-600">{totalWeight.toFixed(2)} kg</p>
+          <p className="text-sm text-gray-600">{totalWeight} gr</p>
         </div>
         <div className="bg-white p-4 rounded-xl border border-gray-100">
           <p className="text-sm font-medium text-gray-700 mb-1">Biaya Kirim</p>

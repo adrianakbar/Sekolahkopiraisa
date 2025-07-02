@@ -21,6 +21,7 @@ interface ApiProduct {
   description: string;
   image: string;
   partner: Partner
+  weight?: number; // Optional field for product weight
 }
 
 interface ApiCartItem {
@@ -124,9 +125,11 @@ export default function ShoppingCart(): JSX.Element {
               price: apiItem.product.price,
               quantity: apiItem.quantity,
               selected: true,
+              weight: apiItem.product.weight, // Optional field
             })
           );
           setCartItems(transformedItems);
+          console.log("Cart items loaded successfully:", transformedItems);
         } else {
           console.warn(
             "Cart data is empty or not in the expected format from fetchAllCart:",
