@@ -8,6 +8,9 @@ export interface OrderItem {
 export interface CreateOrderPayload {
   items: OrderItem[];
   address: string;
+  shipping_name: string;
+  shipping_code: string;
+  shipping_service: string;
   destination_id: number;
   destination_province: string;
   destination_city: string;
@@ -31,6 +34,9 @@ export interface AddressSuggestion {
 export interface ShippingCostResponse {
   data: {
     data: {
+      name: string;
+      code: string;
+      service: string;
       cost: number;
     }[];
   };

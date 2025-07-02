@@ -114,7 +114,7 @@ const OrderInformation: React.FC<OrderInformationProps> = ({
         </label>
         <input
           type="text"
-          className={`w-full p-3 border-2 rounded-xl text-sm transition-all duration-200 ${
+          className={`w-full p-2 border-2 rounded-xl text-sm transition-all duration-200 ${
             errors.addressLabel
               ? "border-red-500 bg-red-50"
               : "border-gray-200 bg-white hover:border-gray-300"
@@ -195,7 +195,7 @@ const ProductItem: React.FC<ProductItemProps> = ({
   customNote,
   onNoteChange,
 }) => (
-  <div className="bg-tertiary border border-gray-200 rounded-xl p-4 md:p-6 mb-4 shadow-sm hover:shadow-lg transition-all duration-200">
+  <div className="bg-tertiary border border-gray-200 rounded-xl p-4  mb-4 shadow-sm hover:shadow-lg transition-all duration-200">
     <div className="grid grid-cols-1 lg:grid-cols-12 gap-4 lg:gap-6 items-center">
       <div className="lg:col-span-6 flex flex-col sm:flex-row items-center sm:items-start">
         <div className="relative mb-3 sm:mb-0">
@@ -318,61 +318,92 @@ export default function CheckOutPage() {
   };
 
   const handleCreateOrder = async () => {
-    const cartItems = useCartStore.getState().cartItems;
-    if (cartItems.length === 0) {
-      setMessage("Keranjang kosong. Silakan tambahkan produk.");
+  // Add debugging at the start
+  console.log("=== Starting Order Creation ===");
+  
+  const cartItems = useCartStore.getState().cartItems;
+  console.log("Cart items:", cartItems);
+  
+  if (cartItems.length === 0) {
+    setMessage("Keranjang kosong. Silakan tambahkan produk.");
+    setPopupType("error");
+    setShowPopup(true);
+    return;
+  }
+
+  if (!selectedAddress) {
+    console.log("No selected address:", selectedAddress);
+    setMessage("Silakan masukkan kode pos.");
+    setPopupType("error");
+    setShowPopup(true);
+    return;
+  }
+
+  // Debug the order payload
+  // In handleCreateOrder function, replace the orderPayload with:
+const orderPayload: CreateOrderPayload = {
+  items: cartItems.map((item) => ({
+    products_id: item.products_id,
+    quantity: item.quantity,
+    custom_note: customNotes[item.id] || "",
+    fromCart: item.fromCart || false,
+  })),
+  address,
+  shipping_name: shippingDetails?.name || "J&T Express",
+  shipping_code: shippingDetails?.code || "jnt",
+  shipping_service: shippingDetails?.service || "EZ",
+  destination_id: selectedAddress.id,
+  destination_province: selectedAddress.province_name,
+  destination_city: selectedAddress.city_name,
+  destination_district: selectedAddress.district_name,
+  destination_subdistrict: selectedAddress.subdistrict_name,
+  destination_pos_code: selectedAddress.zip_code,
+  paymentMethod: paymentMethod,
+  cost: shippingCost.toString(),
+};
+
+  console.log("Order payload:", JSON.stringify(orderPayload, null, 2));
+  console.log("Selected address:", selectedAddress);
+  console.log("Address:", address);
+  console.log("Shipping cost:", shippingCost);
+  console.log("Payment method:", paymentMethod);
+
+  try {
+    console.log("Calling createOrder API...");
+    const data = await createOrder(orderPayload);
+    console.log("Order response:", data);
+    
+    const redirectUrl = data.order?.payment?.snapRedirectUrl;
+    console.log("Redirect URL:", redirectUrl);
+
+    if (redirectUrl) {
+      console.log("Redirecting to:", redirectUrl);
+      window.location.href = redirectUrl;
+    } else {
+      console.log("No redirect URL, showing success message");
+      // Fix: Use a proper success message instead of undefined 'message'
+      setMessage("Pesanan berhasil dibuat!");
+      setPopupType("success");
+      setShowPopup(true);
+    }
+  } catch (error: any) {
+    console.error("=== Order Creation Error ===");
+    console.error("Error object:", error);
+    console.error("Error type:", typeof error);
+    console.error("Error message:", error.message);
+    console.error("Error stack:", error.stack);
+    
+    if (error.type === "validation") {
+      console.log("Validation errors:", error.errors);
+      setErrors(error.errors);
+    } else {
+      console.error("Non-validation error:", error);
+      setMessage(error.message || "Terjadi kesalahan saat membuat pesanan.");
       setPopupType("error");
       setShowPopup(true);
-      return;
     }
-
-    if (!selectedAddress) {
-      setMessage("Silakan masukkan kode pos.");
-      setPopupType("error");
-      setShowPopup(true);
-      return;
-    }
-
-    const orderPayload: CreateOrderPayload = {
-    items: cartItems.map((item) => ({
-      products_id: item.products_id,
-      quantity: item.quantity,
-      custom_note: customNotes[item.id] || "",
-      fromCart: item.fromCart || false,
-    })),
-    address,
-    destination_id: selectedAddress.id,
-    destination_province: selectedAddress.province_name,
-    destination_city: selectedAddress.city_name,
-    destination_district: selectedAddress.district_name,
-    destination_subdistrict: selectedAddress.subdistrict_name,
-    destination_pos_code: selectedAddress.zip_code,
-    paymentMethod: paymentMethod,
-    cost: shippingCost.toString(),
-  };
-
-    try {
-      const data = await createOrder(orderPayload);
-      const redirectUrl = data.order?.payment?.snapRedirectUrl;
-
-      if (redirectUrl) {
-        window.location.href = redirectUrl;
-      } else {
-        setMessage(message);
-        setPopupType("success");
-        setShowPopup(true);
-      }
-    } catch (error: any) {
-      if (error.type === "validation") {
-        setErrors(error.errors);
-      } else {
-        console.error("Error:", error);
-        setMessage(error.message || "Terjadi kesalahan saat membuat pesanan.");
-        setPopupType("error");
-        setShowPopup(true);
-      }
-    }
-  };
+  }
+};
 
   const handleAddressSearch = async (query: string) => {
     // Only search if query has at least 4 characters
@@ -389,21 +420,40 @@ export default function CheckOutPage() {
     }
   };
 
-  const calculateShippingCost = async () => {
-    if (destination && totalWeight > 0) {
-      try {
-        const response = await searchCost(destination, totalWeight);
-        // Get the first shipping option's cost
-        const firstShippingOption = response.data?.data?.[0];
-        const cost = firstShippingOption?.cost || 0;
-        setShippingCost(cost);
-        console.log("Shipping cost:", cost);
-      } catch (error) {
-        console.error("Error calculating shipping cost:", error);
-        setShippingCost(0);
+  // Add this state for shipping details
+const [shippingDetails, setShippingDetails] = useState<{
+  name: string;
+  code: string;
+  service: string;
+} | null>(null);
+
+const calculateShippingCost = async () => {
+  if (destination && totalWeight > 0) {
+    try {
+      const response = await searchCost(destination, totalWeight);
+      // Get the first shipping option
+      const firstShippingOption = response.data?.data?.[0];
+      const cost = firstShippingOption?.cost || 0;
+      setShippingCost(cost);
+      
+      // Store shipping details
+      if (firstShippingOption) {
+        setShippingDetails({
+          name: firstShippingOption.name,
+          code: firstShippingOption.code,
+          service: firstShippingOption.service
+        });
       }
+      
+      console.log("Shipping cost:", cost);
+      console.log("Shipping details:", firstShippingOption);
+    } catch (error) {
+      console.error("Error calculating shipping cost:", error);
+      setShippingCost(0);
+      setShippingDetails(null);
     }
-  };
+  }
+};
 
   const handleAddressSelect = (addressId: number) => {
     const selectedAddr = addressSuggestions.find(
@@ -511,12 +561,12 @@ export default function CheckOutPage() {
                     onNoteChange={(val) => handleNoteChange(product.id, val)}
                   />
                 ))}
-                <div className="bg-primary p-4 md:p-6 rounded-xl shadow-lg">
+                <div className="bg-tertiary p-4 md:p-6 rounded-xl shadow-lg">
                   <div className="flex flex-col sm:flex-row justify-between items-center gap-2">
-                    <span className="text-base md:text-lg font-medium text-white">
+                    <span className="text-base md:text-lg font-medium text-gray-800">
                       Total Pesanan:
                     </span>
-                    <span className="text-base md:text-lg font-medium text-white">
+                    <span className="text-base md:text-lg font-medium text-gray-800">
                       {formatCurrency(totalHarga)}
                     </span>
                   </div>
