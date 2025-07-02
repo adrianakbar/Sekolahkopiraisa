@@ -142,7 +142,7 @@ export default function OrderPage() {
   const LoadingSkeleton = () => (
     <div className="space-y-4">
       {[...Array(3)].map((_, index) => (
-        <div key={index} className="bg-white rounded-2xl p-6 shadow-lg animate-pulse">
+        <div key={index} className="bg-white rounded-xl p-6 shadow-lg animate-pulse">
           <div className="h-4 bg-gray-200 rounded w-1/4 mb-4"></div>
           <div className="h-6 bg-gray-200 rounded w-1/2 mb-3"></div>
           <div className="space-y-2">
@@ -169,7 +169,7 @@ export default function OrderPage() {
       "Belum ada pesanan yang selesai atau dibatalkan";
 
     return (
-      <div className="bg-white rounded-2xl p-12 text-center shadow-lg">
+      <div className="bg-white rounded-xl p-12 text-center shadow-lg">
         <div className="flex justify-center">
           {icon}
         </div>
@@ -189,10 +189,10 @@ export default function OrderPage() {
         </div>
 
         {/* Enhanced Tab Navigation */}
-        <div className="bg-white rounded-2xl p-2 mb-8 shadow-lg inline-flex">
+        <div className="bg-white rounded-xl p-2 mb-8 shadow-lg inline-flex">
           <button
             onClick={() => handleTabChange("ongoing")}
-            className={`relative px-6 py-3 rounded-xl font-medium transition-all duration-200 flex items-center space-x-2 ${
+            className={`relative px-4 py-2 rounded-xl font-medium transition-all duration-200 flex items-center space-x-2 ${
               activeTab === "ongoing"
                 ? "bg-primary text-white shadow-lg transform scale-105"
                 : "text-gray-600 hover:text-gray-800 hover:bg-gray-50"
@@ -206,7 +206,7 @@ export default function OrderPage() {
           </button>
           <button
             onClick={() => handleTabChange("history")}
-            className={`relative px-6 py-3 rounded-xl font-medium transition-all duration-200 flex items-center space-x-2 ${
+            className={`relative px-4 py-2 rounded-xl font-medium transition-all duration-200 flex items-center space-x-2 ${
               activeTab === "history"
                 ? "bg-primary text-white shadow-lg transform scale-105"
                 : "text-gray-600 hover:text-gray-800 hover:bg-gray-50"
@@ -305,7 +305,7 @@ export default function OrderPage() {
 
             {/* Enhanced Pagination */}
             {totalPages > 1 && (
-              <div className="bg-white rounded-2xl p-6 shadow-lg">
+              <div className="bg-white rounded-xl p-6 shadow-lg">
                 <div className="flex flex-col sm:flex-row items-center justify-between space-y-4 sm:space-y-0">
                   <div className="text-sm text-gray-600">
                     Menampilkan <span className="font-medium">{startIndex + 1}-{Math.min(endIndex, filteredOrders.length)}</span> dari{" "}
@@ -316,10 +316,10 @@ export default function OrderPage() {
                     <button
                       onClick={goToPrevious}
                       disabled={currentPage === 1}
-                      className="flex items-center space-x-2 px-4 py-2 rounded-xl border border-gray-300 hover:bg-gray-50 disabled:opacity-50 disabled:cursor-not-allowed transition-all duration-200"
+                      className="flex items-center space-x-2 px-4 py-2  disabled:opacity-50 disabled:cursor-not-allowed transition-all duration-200"
                     >
-                      <ChevronLeft size={18} />
-                      <span className="hidden sm:inline">Previous</span>
+                      <ChevronLeft size={23} />
+                     
                     </button>
 
                     <div className="flex items-center space-x-1">
@@ -332,7 +332,7 @@ export default function OrderPage() {
                           <button
                             key={index}
                             onClick={() => goToPage(page as number)}
-                            className={`w-10 h-10 rounded-xl flex items-center justify-center text-sm font-medium transition-all duration-200 ${
+                            className={`w-8 h-8 rounded-full flex items-center justify-center text-sm font-medium transition-all duration-200 ${
                               currentPage === page
                                 ? "bg-primary text-white shadow-lg transform scale-110"
                                 : "border border-gray-300 hover:bg-gray-50 hover:border-gray-400"
@@ -347,10 +347,9 @@ export default function OrderPage() {
                     <button
                       onClick={goToNext}
                       disabled={currentPage === totalPages}
-                      className="flex items-center space-x-2 px-4 py-2 rounded-xl border border-gray-300 hover:bg-gray-50 disabled:opacity-50 disabled:cursor-not-allowed transition-all duration-200"
+                      className="flex items-center space-x-2 px-4 py-2 disabled:opacity-50 disabled:cursor-not-allowed transition-all duration-200"
                     >
-                      <span className="hidden sm:inline">Next</span>
-                      <ChevronRight size={18} />
+                      <ChevronRight size={23} />
                     </button>
                   </div>
                 </div>
