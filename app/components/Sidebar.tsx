@@ -67,7 +67,12 @@ export default function Sidebar({ items }: { items: SidebarItemType[] }) {
       )}
     >
       {/* Header */}
-      <div className="flex items-center justify-between px-4 py-4">
+      <div
+        className={clsx(
+          "flex items-center px-4 py-4",
+          isSidebarOpen ? "justify-between" : "flex-col gap-3 justify-center"
+        )}
+      >
         <Image src="/assets/logo.png" alt="Logo" width={20} height={20} />
         {isMobile ? (
           <button onClick={() => setMobileOpen(false)}>
@@ -111,70 +116,6 @@ export default function Sidebar({ items }: { items: SidebarItemType[] }) {
               isSidebarOpen={isMobile ? true : isSidebarOpen}
             />
           ))}
-
-          {/* Submenu */}
-          <li>
-            <button
-              onClick={() => setProdukOpen(!isProdukOpen)}
-              className={clsx(
-                "cursor-pointer w-full flex items-center justify-between px-3 py-2 rounded-xl text-gray-700 hover:bg-gray-100 hover:text-gray-900 transition",
-                !isMobile && !isSidebarOpen && "justify-center"
-              )}
-            >
-              <span className="flex items-center gap-3 text-sm">
-                <Store size={20} />
-                {(isMobile || isSidebarOpen) && <span>Toko</span>}
-              </span>
-              {(isMobile || isSidebarOpen) &&
-                (isProdukOpen ? (
-                  <ChevronDown size={16} />
-                ) : (
-                  <ChevronRight size={16} />
-                ))}
-            </button>
-
-            <AnimatePresence initial={false}>
-              {isProdukOpen && (
-                <motion.div
-                  initial={{ height: 0, opacity: 0 }}
-                  animate={{ height: "auto", opacity: 1 }}
-                  exit={{ height: 0, opacity: 0 }}
-                  className="ml-5 mt-1 space-y-1 text-sm text-gray-600 overflow-hidden"
-                >
-                  <LinkItem
-                    href="/admin/product"
-                    pathname={pathname}
-                    label={
-                      <span className="flex items-center gap-2">
-                        <Package size={20} />
-                        Produk
-                      </span>
-                    }
-                  />
-                  <LinkItem
-                    href="/admin/partner"
-                    pathname={pathname}
-                    label={
-                      <span className="flex items-center gap-2">
-                        <Handshake size={20} />
-                        Mitra
-                      </span>
-                    }
-                  />
-                  <LinkItem
-                    href="/admin/order"
-                    pathname={pathname}
-                    label={
-                      <span className="flex items-center gap-2">
-                        <NotepadText size={20} />
-                        Order
-                      </span>
-                    }
-                  />
-                </motion.div>
-              )}
-            </AnimatePresence>
-          </li>
         </ul>
       </nav>
 
@@ -306,29 +247,5 @@ function SidebarItem({
         </div>
       </Link>
     </li>
-  );
-}
-
-function LinkItem({
-  href,
-  pathname,
-  label,
-}: {
-  href: string;
-  pathname: string;
-  label: React.ReactNode;
-}) {
-  const isActive = pathname === href;
-  return (
-    <Link href={href}>
-      <span
-        className={clsx(
-          "block px-2 py-1 rounded-xl transition",
-          isActive ? "text-black bg-gray-100 font-medium" : "hover:text-black"
-        )}
-      >
-        {label}
-      </span>
-    </Link>
   );
 }

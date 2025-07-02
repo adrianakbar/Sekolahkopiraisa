@@ -320,7 +320,7 @@ export default function AdminOrderPage() {
                 onChange={(e) =>
                   setStatusFilter(e.target.value as OrderStatus | "ALL")
                 }
-                className="appearance-none border border-gray-500 rounded-xl px-4 py-1.5 text-sm pr-8"
+                className="appearance-none border border-gray-500 rounded-xl px-3 py-2 text-sm pr-8"
               >
                 <option value="ALL">Semua Status</option>
                 <option value="PENDING">Dibuat</option>
@@ -342,7 +342,7 @@ export default function AdminOrderPage() {
                 onChange={(e) =>
                   setSortOption(e.target.value as "newest" | "oldest" | "az")
                 }
-                className="appearance-none border border-gray-500 rounded-xl px-4 py-1.5 text-sm pr-8"
+                className="appearance-none border border-gray-500 rounded-xl px-3 py-2 text-sm pr-8"
               >
                 <option value="newest">Terbaru</option>
                 <option value="oldest">Terlama</option>
@@ -426,9 +426,9 @@ export default function AdminOrderPage() {
               <button
                 onClick={goToPrevious}
                 disabled={currentPage === 1}
-                className="p-2 rounded-lg border border-gray-300 hover:bg-gray-100 disabled:opacity-50 disabled:cursor-not-allowed"
+                className=" hover:bg-gray-100 disabled:opacity-50 disabled:cursor-not-allowed"
               >
-                <ChevronLeft size={20} />
+                <ChevronLeft size={23} />
               </button>
 
               {/* Page Numbers */}
@@ -458,9 +458,9 @@ export default function AdminOrderPage() {
               <button
                 onClick={goToNext}
                 disabled={currentPage === totalPages}
-                className="p-2 rounded-xl border border-gray-300 hover:bg-gray-100 disabled:opacity-50 disabled:cursor-not-allowed"
+                className=" hover:bg-gray-100 disabled:opacity-50 disabled:cursor-not-allowed"
               >
-                <ChevronRight size={20} />
+                <ChevronRight size={23} />
               </button>
             </div>
           </div>

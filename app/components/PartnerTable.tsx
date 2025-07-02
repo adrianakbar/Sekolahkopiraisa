@@ -24,21 +24,6 @@ export default function PartnerTable({
   onDelete?: (id: number) => void;
   onCall?: (id: number) => void;
 }) {
-  const [currentPage, setCurrentPage] = useState(1);
-  const itemsPerPage = 15;
-
-  const totalPages = Math.ceil(partner.length / itemsPerPage);
-
-  // Data untuk halaman sekarang saja
-  const currentData = partner.slice(
-    (currentPage - 1) * itemsPerPage,
-    currentPage * itemsPerPage
-  );
-
-  const goToPage = (page: number) => {
-    if (page < 1 || page > totalPages) return;
-    setCurrentPage(page);
-  };
   return (
     <div className="bg-tertiary shadow-lg rounded-xl overflow-hidden">
       {/* Horizontal scroll container for mobile */}
@@ -67,23 +52,31 @@ export default function PartnerTable({
             </tr>
           </thead>
           <tbody className="text-xs sm:text-sm text-gray-700 divide-y divide-gray-200">
-            {currentData.map((item, idx) => (
+            {partner.map((item, idx) => (
               <tr key={idx}>
                 <td className="px-2 sm:px-4 py-3">
-                  <div className="text-gray-900 whitespace-nowrap">{item.name}</div>
+                  <div className="text-gray-900 whitespace-nowrap">
+                    {item.name}
+                  </div>
                   {/* <div className="text-xs text-gray-500">
                                       {item.id}
                                   </div> */}
                 </td>
-                <td className="px-2 sm:px-4 py-3 whitespace-nowrap">{item.owner_name}</td>
+                <td className="px-2 sm:px-4 py-3 whitespace-nowrap">
+                  {item.owner_name}
+                </td>
                 <td className="px-2 sm:px-4 py-3">
                   <span className="inline-block bg-yellow-100 px-1 sm:px-2 py-1 rounded-xl text-gray-900 text-xs sm:text-sm whitespace-nowrap">
                     {item.phone_number}
                   </span>
                 </td>
 
-                <td className="px-2 sm:px-4 py-3 max-w-xs truncate">{item.address}</td>
-                <td className="px-2 sm:px-4 py-3 max-w-xs truncate">{item.products}</td>
+                <td className="px-2 sm:px-4 py-3 max-w-xs truncate">
+                  {item.address}
+                </td>
+                <td className="px-2 sm:px-4 py-3 max-w-xs truncate">
+                  {item.products}
+                </td>
                 <td className="px-2 sm:px-4 py-3 whitespace-nowrap">
                   {/* Edit */}
                   <button
@@ -98,41 +91,6 @@ export default function PartnerTable({
             ))}
           </tbody>
         </table>
-      </div>
-      {/* Pagination */}
-      <div className="flex justify-center items-center flex-wrap gap-1 sm:gap-2 mt-4 px-2 sm:px-4 pb-4">
-        <button
-          onClick={() => goToPage(currentPage - 1)}
-          disabled={currentPage === 1}
-          className="px-2 sm:px-3 py-1 text-xs sm:text-sm rounded-xl border border-gray-300 disabled:opacity-50 disabled:cursor-not-allowed"
-        >
-          Prev
-        </button>
-
-        {[...Array(totalPages)].map((_, idx) => {
-          const page = idx + 1;
-          return (
-            <button
-              key={page}
-              onClick={() => goToPage(page)}
-              className={`px-2 sm:px-3 py-1 text-xs sm:text-sm rounded-xl border ${
-                page === currentPage
-                  ? "bg-primary text-white border-primary"
-                  : "border-gray-300 text-gray-700 hover:bg-gray-100"
-              }`}
-            >
-              {page}
-            </button>
-          );
-        })}
-
-        <button
-          onClick={() => goToPage(currentPage + 1)}
-          disabled={currentPage === totalPages}
-          className="px-2 sm:px-3 py-1 text-xs sm:text-sm rounded-xl border border-gray-300 disabled:opacity-50 disabled:cursor-not-allowed"
-        >
-          Next
-        </button>
       </div>
     </div>
   );

@@ -5,6 +5,9 @@ import {
   CalendarCheck,
   Building,
   FileText,
+  Package,
+  Handshake,
+  NotepadText,
 } from "lucide-react";
 
 export default function AdminLayout({ children }: { children: ReactNode }) {
@@ -19,6 +22,21 @@ export default function AdminLayout({ children }: { children: ReactNode }) {
       icon: <Building size={20} />,
       text: "Perusahaan",
       href: "/admin/company",
+    },
+    {
+      icon: <Package size={20} />,
+      text: "Produk",
+      href: "/admin/product",
+    },
+    {
+      icon: <Handshake size={20} />,
+      text: "Mitra",
+      href: "/admin/partner",
+    },
+    {
+      icon: <NotepadText size={20} />,
+      text: "Order",
+      href: "/admin/order",
     },
   ];
 

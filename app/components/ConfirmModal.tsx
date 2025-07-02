@@ -28,7 +28,7 @@ export default function ConfirmModal({
         {/* Tombol close */}
         <button
           onClick={onClose}
-          className="absolute top-4 right-4 text-[#A99F99] hover:text-gray-800"
+          className="absolute top-4 right-4 text-[#A99F99] hover:text-primary"
         >
           <X />
         </button>

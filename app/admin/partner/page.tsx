@@ -1,5 +1,5 @@
 "use client";
-import { Plus } from "lucide-react";
+import { Plus, ChevronLeft, ChevronRight } from "lucide-react";
 import { useRouter } from "next/navigation";
 import { use, useEffect, useState } from "react";
 import {
@@ -21,6 +21,10 @@ export default function AdminPartnerPage() {
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [partnerToDelete, setPartnerToDelete] = useState<number | null>(null);
+  
+  // Pagination states
+  const [currentPage, setCurrentPage] = useState(1);
+  const [itemsPerPage] = useState(15);
 
   const handleAddPartner = () => {
     router.push("/admin/partner/create");
@@ -61,6 +65,61 @@ export default function AdminPartnerPage() {
       setPopupType("error");
       setShowPopup(true);
     }
+  };
+
+  // Pagination calculations
+  const totalPages = Math.ceil(data.length / itemsPerPage);
+  const startIndex = (currentPage - 1) * itemsPerPage;
+  const endIndex = startIndex + itemsPerPage;
+  const currentPartners = data.slice(startIndex, endIndex);
+
+  // Pagination handlers
+  const goToPage = (page: number) => {
+    setCurrentPage(page);
+  };
+
+  const goToPrevious = () => {
+    setCurrentPage((prev) => Math.max(prev - 1, 1));
+  };
+
+  const goToNext = () => {
+    setCurrentPage((prev) => Math.min(prev + 1, totalPages));
+  };
+
+  // Generate page numbers for pagination
+  const getPageNumbers = () => {
+    const pages = [];
+    const maxVisiblePages = 5;
+
+    if (totalPages <= maxVisiblePages) {
+      for (let i = 1; i <= totalPages; i++) {
+        pages.push(i);
+      }
+    } else {
+      if (currentPage <= 3) {
+        for (let i = 1; i <= 4; i++) {
+          pages.push(i);
+        }
+        pages.push("...");
+        pages.push(totalPages);
+      } else if (currentPage >= totalPages - 2) {
+        pages.push(1);
+        pages.push("...");
+        for (let i = totalPages - 3; i <= totalPages; i++) {
+          pages.push(i);
+        }
+      } else {
+        pages.push(1);
+        pages.push("...");
+        for (let i = currentPage - 1; i <= currentPage + 1; i++) {
+          pages.push(i);
+        }
+        pages.push("...");
+        pages.push(totalPages);
+      }
+    }
+
+    return pages;
   };
 
   useEffect(() => {
@@ -131,16 +190,16 @@ export default function AdminPartnerPage() {
           <h1 className="text-lg font-medium ">Daftar Mitra / Partner</h1>
 
           <button
-            className="cursor-pointer bg-amber-950 text-white px-3 py-1.5 rounded-xl flex items-center gap-1 hover:-translate-y-1 duration-150 ease-in text-sm"
+            className="cursor-pointer bg-primary text-white px-3 py-2 rounded-xl flex items-center gap-1 hover:-translate-y-1 duration-150 ease-in text-sm"
             onClick={handleAddPartner}
           >
-            <Plus size={15} />
+            <Plus size={18} />
             <span>Tambah Mitra</span>
           </button>
         </div>
         <div>
           <PartnerTable
-            partner={data}
+            partner={currentPartners}
             onDelete={(id: number) => {
               setPartnerToDelete(id);
               setShowConfirmModal(true);
@@ -149,6 +208,62 @@ export default function AdminPartnerPage() {
             onCall={handlePartnerCall}
           />
         </div>
+
+        {/* Pagination */}
+        {totalPages > 1 && (
+          <div className="flex flex-col items-center space-y-4 mt-5">
+            {/* Pagination Info */}
+            <div className="text-sm text-gray-600">
+              Menampilkan {startIndex + 1}-
+              {Math.min(endIndex, data.length)} dari{" "}
+              {data.length} mitra
+            </div>
+
+            {/* Pagination Controls */}
+            <div className="flex items-center space-x-1">
+              {/* Previous Button */}
+              <button
+                onClick={goToPrevious}
+                disabled={currentPage === 1}
+                className=" hover:bg-gray-100 disabled:opacity-50 disabled:cursor-not-allowed"
+              >
+                <ChevronLeft size={23} />
+              </button>
+
+              {/* Page Numbers */}
+              <div className="flex items-center space-x-1">
+                {getPageNumbers().map((page, index) =>
+                  page === "..." ? (
+                    <span key={index} className="px-3 py-2 text-gray-500">
+                      ...
+                    </span>
+                  ) : (
+                    <button
+                      key={index}
+                      onClick={() => goToPage(page as number)}
+                      className={`w-8 h-8 rounded-full border flex items-center justify-center text-sm ${
+                        currentPage === page
+                          ? "bg-primary text-white border-primary"
+                          : "border-gray-300 hover:bg-gray-100"
+                      }`}
+                    >
+                      {page}
+                    </button>
+                  )
+                )}
+              </div>
+
+              {/* Next Button */}
+              <button
+                onClick={goToNext}
+                disabled={currentPage === totalPages}
+                className=" hover:bg-gray-100 disabled:opacity-50 disabled:cursor-not-allowed"
+              >
+                <ChevronRight size={23} />
+              </button>
+            </div>
+          </div>
+        )}
       </div>
     </div>
   );
