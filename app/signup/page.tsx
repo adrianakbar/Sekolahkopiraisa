@@ -204,7 +204,7 @@ export default function Signup() {
       <div
         className="md:col-span-12 lg:col-span-6 min-h-[30vh] md:min-h-[50vh] lg:min-h-screen flex-shrink-0 order-1 md:order-2"
         style={{
-          backgroundImage: "url('/assets/kelompok-capstone.jpeg')",
+          backgroundImage: "url('/assets/login_image.jpeg')",
           backgroundSize: "cover",
           backgroundPosition: "center",
         }}

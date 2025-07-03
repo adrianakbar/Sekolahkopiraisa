@@ -161,7 +161,7 @@ export default function AdminPartnerPage() {
   }, []);
 
   return (
-    <div className="container mx-auto">
+    <div className="mx-auto">
       {showPopup && (
         <Popup
           message={message}
