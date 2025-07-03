@@ -16,14 +16,13 @@ export default function MemberCard({
   return (
     <div className="relative rounded-xl overflow-hidden shadow-lg hover:shadow-xl transition-shadow duration-300 group">
       <div
-        className="relative aspect-[4/3] w-full max-w-sm mx-auto overflow-hidden transform group-hover:scale-[1.02] transition-transform duration-300"
+        className="relative aspect-[1/1] w-full max-w-sm mx-auto overflow-hidden transform group-hover:scale-[1.02] transition-transform duration-300"
         key={id}
       >
-        <img
-          src={image}
-          alt={name}
-          sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
-          className="object-cover transition-transform duration-500 group-hover:scale-105"
+        <img 
+          src={image} 
+          alt={name} 
+          className="w-full h-full object-cover object-center"
         />
         {/* Overlay */}
         <div className="absolute inset-0 bg-gradient-to-t from-black via-transparent to-transparent opacity-50 group-hover:opacity-80 transition-opacity duration-300" />

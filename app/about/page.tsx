@@ -166,11 +166,11 @@ export default function AboutPage() {
         </div>
       </section>
 
-      {/* Team Section */}
+            {/* Team Section */}
       <div className="bg-secondary py-15">
         <section className="container mx-auto px-4 max-w-7xl">
           {/* Pengurus Inti */}
-          <div className="mb-16">
+          <div className="mb-8">
             <div className="text-center mb-12">
               <span className="inline-block px-4 py-2 bg-primary text-white text-sm font-medium rounded-full mb-4">
                 Tim Kami
@@ -178,67 +178,132 @@ export default function AboutPage() {
               <h2 className="text-lg font-medium text-gray-900 mb-4">
                 Pengurus Inti
               </h2>
-              <p className=" text-gray-600">
+              <p className="text-gray-600 max-w-2xl mx-auto">
                 Para pemimpin yang berdedikasi untuk kemajuan Sekolah Kopi Raisa
               </p>
             </div>
-            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-8">
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8 max-w-6xl mx-auto">
               <MemberCard
                 id={1}
-                image="/assets/tk2.png"
-                name="Raisa"
-                position="Founder"
+                image="/assets/user.png"
+                name="Saiful Fadli,S.Pd"
+                position="Sekretaris"
               />
               <MemberCard
                 id={2}
-                image="/assets/tk2.png"
-                name="Raisa"
-                position="Co-Founder"
+                image="/assets/direktur_saleh.jpg"
+                name="Saleh, S.Pd, M.MPd"
+                position="Direktur"
               />
               <MemberCard
                 id={3}
-                image="/assets/tk2.png"
-                name="Raisa"
-                position="Co-Founder"
-              />
-              <MemberCard
-                id={4}
-                image="/assets/tk2.png"
-                name="Raisa"
-                position="Co-Founder"
+                image="/assets/bendahara_harsono.jpg"
+                name="Harsono"
+                position="Bendahara"
               />
             </div>
           </div>
 
-          {/* Bagian Pokja */}
-          <div>
-            <div className="text-center mb-12">
-              <h3 className="text-lg font-medium text-gray-900 mb-4">
-                Bagian Pokja
-              </h3>
-              <p className=" text-gray-600">
-                Tim kerja yang menjalankan program-program strategis
-              </p>
+          {/* Pokja Sections */}
+          <div className="space-y-8">
+            {/* Pokja Hulu */}
+            <div>
+              <div className="text-center mb-12">
+                <h3 className="text-lg font-medium text-gray-900 mb-4">
+                  Pokja Hulu
+                </h3>
+                <p className="text-gray-600 max-w-2xl mx-auto">
+                  Tim yang bertanggung jawab atas pengelolaan hulu kopi, mulai
+                  dari penanaman hingga pengolahan awal
+                </p>
+              </div>
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-8 max-w-4xl mx-auto">
+                <MemberCard
+                  id={1}
+                  image="/assets/hulu_agus.jpg"
+                  name="Agus"
+                  position="Pokja Hulu"
+                />
+                <MemberCard
+                  id={2}
+                  image="/assets/hulu_sugiono.jpg"
+                  name="Sugiono, A.Md"
+                  position="Pokja Hulu"
+                />
+              </div>
             </div>
-            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-8 max-w-5xl mx-auto">
-              <MemberCard
-                id={1}
-                image="/assets/tk2.png"
-                name="Raisa"
-                position="Pokja Member"
-              />
-              <MemberCard
-                id={2}
-                image="/assets/tk2.png"
-                name="Raisa"
-                position="Pokja Member"
-              />
-              <MemberCard
-                id={3}
-                image="/assets/tk2.png"
-                name="Raisa"
-                position="Pokja Member"
-              />
+
+            {/* Pokja Humas dan Promosi */}
+            <div>
+              <div className="text-center mb-12">
+                <h3 className="text-lg font-medium text-gray-900 mb-4">
+                  Pokja Humas dan Promosi
+                </h3>
+                <p className="text-gray-600 max-w-2xl mx-auto">
+                  Tim yang bertanggung jawab atas komunikasi, pemasaran, dan
+                  promosi Sekolah Kopi Raisa
+                </p>
+              </div>
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-8 max-w-4xl mx-auto">
+                <MemberCard
+                  id={1}
+                  image="/assets/humas_achrizal.jpg"
+                  name="Achmad Rizal,A,Md"
+                  position="Pokja Humas dan Promosi"
+                />
+                <MemberCard
+                  id={2}
+                  image="/assets/humas_alfan.jpg"
+                  name="Alfan Wahid A.H."
+                  position="Pokja Humas dan Promosi"
+                />
+              </div>
+            </div>
+
+            {/* Pokja Prosesor */}
+            <div>
+              <div className="text-center mb-12">
+                <h3 className="text-lg font-medium text-gray-900 mb-4">
+                  Pokja Prosesor
+                </h3>
+                <p className="text-gray-600 max-w-2xl mx-auto">
+                  Tim yang bertanggung jawab mengelola proses pengolahan
+                  kopi, mulai dari pascapanen hingga pengemasan
+                </p>
+              </div>
+              <div className="flex justify-center">
+                <div className="w-full max-w-sm">
+                  <MemberCard
+                    id={1}
+                    image="/assets/prosesor_iyan.jpg"
+                    name="Supriyanto"
+                    position="Pokja Prosesor"
+                  />
+                </div>
+              </div>
+            </div>
+
+            {/* Pokja Rosteri */}
+            <div>
+              <div className="text-center mb-12">
+                <h3 className="text-lg font-medium text-gray-900 mb-4">
+                  Pokja Rosteri
+                </h3>
+                <p className="text-gray-600 max-w-2xl mx-auto">
+                  Tim yang bertanggung jawab atas pengelolaan dan
+                  pengembangan produk kopi, termasuk roasting dan penyajian
+                </p>
+              </div>
+              <div className="flex justify-center">
+                <div className="w-full max-w-sm">
+                  <MemberCard
+                    id={1}
+                    image="/assets/rosteri_sundari.jpg"
+                    name="Sundari Januryatin, S.Pd"
+                    position="Pokja Rosteri"
+                  />
+                </div>
+              </div>
             </div>
           </div>
         </section>
