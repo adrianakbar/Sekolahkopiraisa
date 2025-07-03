@@ -23,6 +23,8 @@ import ConfirmModal from "./ConfirmModal";
 import { fetchAllCart } from "../utils/cart";
 import { UserItem } from "../types/userType";
 import Popup from "./Popup";
+import NotificationDropdown from "./NotificationDropdown";
+import { fetchNotifications } from "../utils/notif";
 
 interface NavbarItem {
   title: string;
@@ -37,6 +39,7 @@ export default function Navbar({ navbarItems }: { navbarItems: NavbarItem[] }) {
   const [showConfirmModal, setShowConfirmModal] = useState(false);
   const [showPopup, setShowPopup] = useState(false);
   const [popupMessage, setPopupMessage] = useState("");
+  const [notificationCount, setNotificationCount] = useState(0);
 
   const pathname = usePathname();
   const router = useRouter();
@@ -95,6 +98,30 @@ export default function Navbar({ navbarItems }: { navbarItems: NavbarItem[] }) {
     }
   };
 
+  // Fungsi untuk mengambil notifikasi baru (hanya 5 menit terakhir)
+  const fetchRecentNotifications = async () => {
+    try {
+      const response = await fetchNotifications();
+      const notifications = response.data;
+
+      if (notifications && notifications.length > 0) {
+        // Filter notifikasi yang belum dibaca dan dibuat dalam 5 menit terakhir
+        const fiveMinutesAgo = new Date(Date.now() - 5 * 60 * 1000);
+        const recentNotifications = notifications.filter((notif: any) => {
+          const createdAt = new Date(notif.created_at);
+          return !notif.viewed && createdAt > fiveMinutesAgo;
+        });
+
+        setNotificationCount(recentNotifications.length);
+      } else {
+        setNotificationCount(0);
+      }
+    } catch (error) {
+      console.error("Gagal mengambil notifikasi:", error);
+      setNotificationCount(0);
+    }
+  };
+
   useEffect(() => {
     fetchCartCount();
     const handleCartUpdated = () => {
@@ -123,7 +150,11 @@ export default function Navbar({ navbarItems }: { navbarItems: NavbarItem[] }) {
     const fetchUser = async () => {
       try {
         const data = await getUser();
-        if (data) setUser(data);
+        if (data) {
+          setUser(data);
+          // Fetch notifikasi hanya jika user sudah login
+          fetchRecentNotifications();
+        }
       } catch (error) {
         console.error("Gagal mendapatkan user:", error);
       }
@@ -213,9 +244,14 @@ export default function Navbar({ navbarItems }: { navbarItems: NavbarItem[] }) {
         {user ? (
           <div className="flex items-center gap-4 relative">
             {/* Bell Button */}
-            <button className="text-primary">
-              <Bell width={20} />
-            </button>
+            <div className="relative">
+              <NotificationDropdown />
+              {notificationCount > 0 && (
+                <span className="absolute -top-1 -right-1 flex h-5 w-5 items-center justify-center rounded-full bg-red-500 text-xs font-medium text-white">
+                  {notificationCount > 99 ? "99+" : notificationCount}
+                </span>
+              )}
+            </div>
 
             {/* Cart Link */}
             <Link href="/cart" className="text-primary relative">
@@ -497,9 +533,16 @@ export default function Navbar({ navbarItems }: { navbarItems: NavbarItem[] }) {
                 {user ? (
                   <>
                     <div className="flex items-center gap-3">
-                      <button className="text-primary">
-                        <Bell size={20} />
-                      </button>
+                      <div className="relative">
+                        <button className="text-primary">
+                          <Bell size={20} />
+                        </button>
+                        {notificationCount > 0 && (
+                          <span className="absolute -top-2 -right-2 flex h-4 w-4 items-center justify-center rounded-full bg-red-500 text-xs font-medium text-white">
+                            {notificationCount > 9 ? "9+" : notificationCount}
+                          </span>
+                        )}
+                      </div>
                       <Link href="/cart" className="text-primary relative">
                         <ShoppingCart size={20} />
                         {cartCount > 0 && (

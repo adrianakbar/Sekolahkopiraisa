@@ -77,3 +77,5 @@ export const handleNotificationError = (error: any): string => {
 export const getUnreadCount = (notifications: Notification[]): number => {
   return notifications.filter((notification) => !notification.viewed).length;
 };
+export { Notification };
+
