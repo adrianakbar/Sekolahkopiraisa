@@ -74,7 +74,7 @@ export default function EditProductPage() {
 
     setProduct((prev) => ({
       ...prev,
-      [name]: name === "price" || name === "stock" ? Number(value) : value,
+      [name]: name === "price" || name === "stock"  ? Number(value) : value,
     }));
 
     // Hilangkan error saat field diperbarui
