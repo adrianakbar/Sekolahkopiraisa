@@ -26,7 +26,7 @@ import {
 interface OrderData {
   orderId: number;
   namaCustomer: string;
-  nomorCustomer: string;
+  nomerCustomer: string;
   alamatCustomer: string;
   tanggalTransaksi: string;
   statusOrder: string;
@@ -36,6 +36,7 @@ interface OrderData {
     quantity: number;
     catatan: string;
     namaMitra: string;
+    gambarProduk: string;
   }[];
   metodePembayaran: string;
   statusPembayaran: string;
@@ -76,7 +77,7 @@ export default function OrderDetailPage() {
         const formattedOrder: OrderData = {
           orderId: orderData.data.orderId,
           namaCustomer: orderData.data.namaCustomer || "Tidak Diketahui",
-          nomorCustomer: orderData.data.nomorCustomer || "Tidak Diketahui",
+          nomerCustomer: orderData.data.nomerCustomer || "Tidak Diketahui",
           alamatCustomer: orderData.data.alamatCustomer || "Tidak Diketahui",
           tanggalTransaksi: new Date(
             orderData.data.tanggalTransaksi
@@ -94,7 +95,7 @@ export default function OrderDetailPage() {
                 quantity: item.quantity || 1,
                 catatan: item.catatan || "",
                 namaMitra: item.namaMitra || "Tidak Diketahui",
-                image: item.image || "",
+                gambarProduk: item.gambarProduk || "",
               }))
             : [],
           metodePembayaran: orderData.data.metodePembayaran,
@@ -377,7 +378,7 @@ export default function OrderDetailPage() {
                     <div className="flex items-center">
                       <Phone className="w-4 h-4 text-gray-400 mr-2" />
                       <span className="text-gray-600">
-                        {order.nomorCustomer}
+                        {order.nomerCustomer}
                       </span>
                     </div>
                   </div>
@@ -406,13 +407,13 @@ export default function OrderDetailPage() {
                       <div className="flex items-center space-x-4">
                         <div className="relative">
                           <img
-                            src={item.image}
+                            src={item.gambarProduk}
                             alt={item.namaProduk}
                             className="w-20 h-20 object-cover rounded-xl border border-gray-200"
                           />
-                          <div className="absolute -top-2 -right-2 bg-primary text-white text-xs rounded-full w-6 h-6 flex items-center justify-center font-medium">
+                          {/* <div className="absolute -top-2 -right-2 bg-primary text-white text-xs rounded-full w-6 h-6 flex items-center justify-center font-medium">
                             {item.quantity}
-                          </div>
+                          </div> */}
                         </div>
                         <div className="flex-1">
                           <h4 className="font-medium text-gray-800 mb-1">
