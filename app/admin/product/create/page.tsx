@@ -92,10 +92,7 @@ export default function AdminCreateProductPage() {
       formData.append("partner_id", product.partnerName);
       formData.append("description", product.description);
       formData.append("price", product.price.toString());
-      formData.append(
-        "weight",
-        product.weight ? Number(product.weight).toString() : "0"
-      );
+      formData.append("weight", product.weight.toString());
       formData.append("stock", product.stock.toString());
       if (imageFile) {
         formData.append("productFile", imageFile); // ⬅️ Ini ditambahkan
@@ -119,6 +116,7 @@ export default function AdminCreateProductPage() {
       if (error.type === "validation") {
         setErrors(error.errors); // ✅ Ambil langsung dari backend
         setShowConfirmModal(false);
+        console.error("Validation errors:", error.errors);
       } else {
         console.error("Error:", error);
         setMessage(error.message || "Terjadi kesalahan saat menyimpan berita.");
@@ -152,7 +150,7 @@ export default function AdminCreateProductPage() {
   }, []);
 
   return (
-    <div className="container mx-auto bg-tertiary p-6 rounded-lg shadow-md">
+    <div className="mx-auto bg-tertiary p-6 rounded-lg shadow-md">
       {showPopup && (
         <Popup
           message={message}
@@ -185,7 +183,7 @@ export default function AdminCreateProductPage() {
                 <button
                   type="button"
                   onClick={() => fileInputRef.current?.click()}
-                  className="cursor-pointer font-medium bg-primary text-white px-3 py-1.5 rounded-xl hover:-translate-y-1 duration-150 ease-in text-sm"
+                  className="cursor-pointer font-medium bg-primary text-white px-4 py-2 rounded-xl hover:-translate-y-1 duration-150 ease-in text-sm"
                 >
                   Pilih Gambar
                 </button>
@@ -201,7 +199,7 @@ export default function AdminCreateProductPage() {
                 />
               </div>
               <p className="text-xs text-gray-500 mt-1">
-                Format: JPG, PNG. Maksimal 2MB.
+                Format: JPG, PNG. Maksimal 5MB.
               </p>
               {errors.productFile && (
                 <p className="text-sm text-red-600 mt-1">
@@ -219,7 +217,7 @@ export default function AdminCreateProductPage() {
                 name="name"
                 value={product.name}
                 onChange={handleInputChange}
-                className="w-full p-1.5 border border-gray-300 rounded-xl"
+                className="w-full p-2 border border-gray-300 rounded-xl"
               />
               {errors.name && (
                 <p className="text-sm text-red-600 mt-1">{errors.name}</p>
@@ -240,7 +238,7 @@ export default function AdminCreateProductPage() {
                   name="partnerName"
                   value={product.partnerName}
                   onChange={handleInputChange}
-                  className="w-full p-1.5 border border-gray-300 rounded-xl"
+                  className="w-full p-2 border border-gray-300 rounded-xl"
                 >
                   <option value="">Pilih Mitra</option>
                   {partners.map((partner) => (
@@ -260,7 +258,7 @@ export default function AdminCreateProductPage() {
                 name="description"
                 value={product.description}
                 onChange={handleInputChange}
-                className="w-full p-1.5 border border-gray-300 rounded-xl"
+                className="w-full p-2 border border-gray-300 rounded-xl"
                 rows={3}
               />
               {errors.description && (
@@ -279,7 +277,7 @@ export default function AdminCreateProductPage() {
                 name="price"
                 value={product.price || ""}
                 onChange={handleInputChange}
-                className="w-full p-1.5 border border-gray-300 rounded-xl"
+                className="w-full p-2 border border-gray-300 rounded-xl"
               />
               {errors.price && (
                 <p className="text-sm text-red-600 mt-1">{errors.price}</p>
@@ -295,7 +293,7 @@ export default function AdminCreateProductPage() {
                 name="weight"
                 value={product.weight || ""}
                 onChange={handleInputChange}
-                className="w-full p-1.5 border border-gray-300 rounded-xl"
+                className="w-full p-2 border border-gray-300 rounded-xl"
               />
               {errors.weight && (
                 <p className="text-sm text-red-600 mt-1">{errors.weight}</p>
@@ -311,7 +309,7 @@ export default function AdminCreateProductPage() {
                 name="stock"
                 value={product.stock || ""}
                 onChange={handleInputChange}
-                className="w-full p-1.5 border border-gray-300 rounded-xl"
+                className="w-full p-2 border border-gray-300 rounded-xl"
               />
               {errors.stock && (
                 <p className="text-sm text-red-600 mt-1">{errors.stock}</p>
@@ -321,7 +319,7 @@ export default function AdminCreateProductPage() {
             <button
               type="button"
               onClick={() => setShowConfirmModal(true)}
-              className="cursor-pointer w-full bg-primary text-white py-2 px-3 text-sm font-medium rounded-xl hover:-translate-y-1 duration-150 ease-in flex justify-center items-center gap-2 disabled:opacity-50"
+              className="cursor-pointer w-full bg-primary text-white py-2 px-4 text-sm font-medium rounded-xl hover:-translate-y-1 duration-150 ease-in flex justify-center items-center gap-2 disabled:opacity-50"
             >
               Simpan Produk
             </button>

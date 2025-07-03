@@ -153,7 +153,7 @@ export default function AdminProductPage() {
   }, [product.length]);
 
   return (
-    <div className="container mx-auto">
+    <div className="mx-auto">
       {showPopup && (
         <Popup
           message={message}
