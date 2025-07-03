@@ -22,6 +22,7 @@ interface ApiProduct {
   image: string;
   partner: Partner;
   weight?: number; // Optional field for product weight
+  inventory: ApiInventory;
 }
 
 interface ApiCartItem {
@@ -44,6 +45,10 @@ interface FetchedCartData {
     updated_at: string;
     cartItems: ApiCartItem[];
   }[];
+}
+
+interface ApiInventory {
+  stock: number;
 }
 
 // Komponen utama Keranjang Belanja
@@ -103,6 +108,8 @@ export default function ShoppingCart(): JSX.Element {
         // Call your imported function
         const result: FetchedCartData = await fetchAllCart();
 
+        console.log(result);
+
         // 'result' is now the actual data returned by response.data in fetchAllCart
         // (e.g., { message: "...", data: [ ... ] })
         if (
@@ -113,18 +120,32 @@ export default function ShoppingCart(): JSX.Element {
         ) {
           const fetchedApiCartItems = result.data[0].cartItems;
           const transformedItems: CartItemData[] = fetchedApiCartItems.map(
-            (apiItem) => ({
-              id: apiItem.id,
-              products_id: apiItem.products_id, // Assuming this is the correct field for product ID
-              imageUrl: apiItem.product.image,
-              name: apiItem.product.name,
-              partnerName: apiItem.product.partner.name, // Assuming you want to keep this field
-              price: apiItem.product.price,
-              quantity: apiItem.quantity,
-              selected: true,
-              weight: apiItem.product.weight, // Optional field
-              fromCart: true, // Indicating this item is from the cart
-            })
+            (apiItem) => {
+              const productInventory = apiItem.product.inventory.stock;
+              const databaseQuantity = apiItem.quantity;
+
+              // Adjust the quantity:
+              // - It must be at least 0 (Math.max(0, ...))
+              // - It must not exceed the product's inventory (Math.min(..., productInventory))
+              const adjustedQuantity = Math.min(
+                Math.max(0, databaseQuantity),
+                productInventory
+              );
+
+              return {
+                id: apiItem.id,
+                products_id: apiItem.products_id,
+                imageUrl: apiItem.product.image,
+                name: apiItem.product.name,
+                partnerName: apiItem.product.partner.name,
+                price: apiItem.product.price,
+                quantity: adjustedQuantity, // Use the adjusted quantity here
+                selected: true,
+                weight: apiItem.product.weight,
+                fromCart: true,
+                inventory: productInventory, // Still store the actual inventory for future checks
+              };
+            }
           );
           setCartItems(transformedItems);
           console.log("Cart items loaded successfully:", transformedItems);
@@ -173,10 +194,16 @@ export default function ShoppingCart(): JSX.Element {
   }, [cartItems]);
 
   // Fungsi untuk mengubah kuantitas
-  const handleQuantityChange = (id: number, newQuantity: number): void => {
+  const handleQuantityChange = (
+    id: number,
+    newQuantity: number,
+    inventory: number
+  ): void => {
     setCartItems((currentItems) =>
       currentItems.map((item) =>
-        item.id === id ? { ...item, quantity: Math.max(0, newQuantity) } : item
+        item.id === id
+          ? { ...item, quantity: Math.max(0, newQuantity), inventory }
+          : item
       )
     );
   };

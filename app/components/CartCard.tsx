@@ -16,12 +16,17 @@ export interface CartItemData {
   fromCart?: boolean;
   partnerName?: string;
   weight?: number; // berat produk, jika diperlukan
+  inventory: number;
 }
 
 // Props untuk komponen CartItem
 interface CartItemProps {
   item: CartItemData;
-  onQuantityChange: (id: number, newQuantity: number) => void;
+  onQuantityChange: (
+    id: number,
+    newQuantity: number,
+    inventory: number
+  ) => void;
   onSelectionChange: (id: number, isSelected: boolean) => void;
   onDelete: (id: number) => void;
 }
@@ -34,12 +39,12 @@ export default function CartCard({
   onDelete,
 }: CartItemProps): JSX.Element {
   const handleIncrease = (): void => {
-    onQuantityChange(item.id, item.quantity + 1);
+    onQuantityChange(item.id, item.quantity + 1, item.inventory);
   };
 
   const handleDecrease = (): void => {
     if (item.quantity > 1) {
-      onQuantityChange(item.id, item.quantity - 1);
+      onQuantityChange(item.id, item.quantity - 1, item.inventory);
     }
   };
 
@@ -72,13 +77,19 @@ export default function CartCard({
             }}
           />
         </div>
-        
+
         {/* Product Details */}
         <div className="flex-1 ml-3">
-          <h3 className="text-sm font-medium text-gray-900 mb-1">{item.name}</h3>
-          <p className="text-xs text-gray-500 mb-2">Mitra: {item.partnerName}</p>
-          <div className="text-sm text-gray-700 mb-2">{formatCurrency(item.price)}</div>
-          
+          <h3 className="text-sm font-medium text-gray-900 mb-1">
+            {item.name}
+          </h3>
+          <p className="text-xs text-gray-500 mb-2">
+            Mitra: {item.partnerName}
+          </p>
+          <div className="text-sm text-gray-700 mb-2">
+            {formatCurrency(item.price)}
+          </div>
+
           {/* Quantity and Total */}
           <div className="flex items-center justify-between">
             <div className="flex items-center border border-gray-200 rounded-md bg-secondary overflow-hidden">
@@ -95,15 +106,16 @@ export default function CartCard({
               <button
                 onClick={handleIncrease}
                 className="px-2 py-1 text-gray-700 hover:bg-gray-200 focus:outline-none text-sm"
+                disabled={item.quantity >= item.inventory}
               >
                 +
               </button>
             </div>
-            
+
             <div className="text-sm font-medium text-gray-900">
               {formatCurrency(itemTotal)}
             </div>
-            
+
             <button
               onClick={() => onDelete(item.products_id)}
               className="cursor-pointer p-2 text-white rounded-lg bg-red-500 hover:-translate-y-1 duration-150 ease-in"
@@ -139,8 +151,12 @@ export default function CartCard({
           }}
         />
         <div className="min-w-0 flex-1">
-          <h3 className="text-xs lg:text-sm font-medium text-gray-900 truncate">{item.name}</h3>
-          <p className="text-xs text-gray-500 truncate">Mitra: {item.partnerName}</p>
+          <h3 className="text-xs lg:text-sm font-medium text-gray-900 truncate">
+            {item.name}
+          </h3>
+          <p className="text-xs text-gray-500 truncate">
+            Mitra: {item.partnerName}
+          </p>
         </div>
       </div>
 
@@ -165,6 +181,7 @@ export default function CartCard({
           <button
             onClick={handleIncrease}
             className="px-2 lg:px-3 py-1 text-gray-700 hover:bg-gray-200 focus:outline-none text-sm"
+            disabled={item.quantity >= item.inventory}
           >
             +
           </button>
