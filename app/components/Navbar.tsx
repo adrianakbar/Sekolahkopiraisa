@@ -322,8 +322,7 @@ export default function Navbar({ navbarItems }: { navbarItems: NavbarItem[] }) {
                         Pesanan Saya
                       </DropdownItem>
                     </li>
-                    <li>
-                      {/* Menu Admin */}
+                    {/* <li>
                       <DropdownItem
                         onItemClick={closeUserDropdown}
                         tag="a"
@@ -340,7 +339,7 @@ export default function Navbar({ navbarItems }: { navbarItems: NavbarItem[] }) {
                         />
                         Menu Admin
                       </DropdownItem>
-                    </li>
+                    </li> */}
                   </ul>
                   <div
                     onClick={handleLogout}
