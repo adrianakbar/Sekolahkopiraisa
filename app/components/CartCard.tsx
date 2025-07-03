@@ -16,7 +16,7 @@ export interface CartItemData {
   fromCart?: boolean;
   partnerName?: string;
   weight?: number; // berat produk, jika diperlukan
-  inventory: number;
+  inventory?: number;
 }
 
 // Props untuk komponen CartItem
@@ -39,12 +39,12 @@ export default function CartCard({
   onDelete,
 }: CartItemProps): JSX.Element {
   const handleIncrease = (): void => {
-    onQuantityChange(item.id, item.quantity + 1, item.inventory);
+    onQuantityChange(item.id, item.quantity + 1, item.inventory ?? 0);
   };
 
   const handleDecrease = (): void => {
     if (item.quantity > 1) {
-      onQuantityChange(item.id, item.quantity - 1, item.inventory);
+      onQuantityChange(item.id, item.quantity - 1, item.inventory ?? 0);
     }
   };
 
@@ -106,7 +106,7 @@ export default function CartCard({
               <button
                 onClick={handleIncrease}
                 className="px-2 py-1 text-gray-700 hover:bg-gray-200 focus:outline-none text-sm"
-                disabled={item.quantity >= item.inventory}
+                disabled={item.quantity >= (item.inventory ?? 0)}
               >
                 +
               </button>
@@ -181,7 +181,7 @@ export default function CartCard({
           <button
             onClick={handleIncrease}
             className="px-2 lg:px-3 py-1 text-gray-700 hover:bg-gray-200 focus:outline-none text-sm"
-            disabled={item.quantity >= item.inventory}
+            disabled={item.quantity >= (item.inventory ?? 0)}
           >
             +
           </button>
