@@ -141,6 +141,7 @@ export default function ProductDetailPage() {
       selected: true,
       fromCart: false,
       weight: product.weight ?? 0, // Tambahkan berat jika ada
+      inventory: Number(product?.inventory?.stock)
     };
 
     useCartStore.getState().setCartItems([item]);
