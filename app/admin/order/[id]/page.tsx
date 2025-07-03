@@ -22,6 +22,7 @@ interface OrderData {
   items: OrderItem[];
   statusPembayaran: string;
   totalHarga: number;
+  kodePos: number;
 }
 
 export default function OrderDetailPage() {
@@ -74,7 +75,7 @@ export default function OrderDetailPage() {
       <div className="mb-4">
         <h3 className="font-bold text-lg">Customer</h3>
         <p className="font-semibold">{order.namaCustomer}</p>
-        <p>{order.alamatCustomer}</p>
+        <p>{order.alamatCustomer}, {order.kodePos}</p>
       </div>
 
       {/* Tabel Produk */}
