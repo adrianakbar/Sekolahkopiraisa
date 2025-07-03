@@ -74,7 +74,7 @@ export default function EditProductPage() {
 
     setProduct((prev) => ({
       ...prev,
-      [name]: name === "price" || name === "stock" ? Number(value) : value,
+      [name]: value, // ✅ Simpan sebagai string, jangan konversi langsung
     }));
 
     // Hilangkan error saat field diperbarui
@@ -98,10 +98,7 @@ export default function EditProductPage() {
       formData.append("partner_id", product.partnerId);
       formData.append("description", product.description);
       formData.append("price", product.price.toString());
-      formData.append(
-        "weight",
-        product.weight ? Number(product.weight).toString() : "0"
-      );
+      formData.append("weight", product.weight.toString());
       formData.append("stock", product.stock.toString());
       if (imageFile) {
         formData.append("productFile", imageFile); // ⬅️ Ini ditambahkan
@@ -136,6 +133,7 @@ export default function EditProductPage() {
       }
     } finally {
       setIsSubmitting(false);
+      setShowConfirmModal(false);
     }
   };
 
@@ -185,7 +183,7 @@ export default function EditProductPage() {
   }, [productId]);
 
   return (
-    <div className="container mx-auto bg-tertiary p-6 rounded-xl shadow-lg">
+    <div className="mx-auto bg-tertiary p-6 rounded-xl shadow-lg">
       {showPopup && (
         <Popup
           message={message}
@@ -252,7 +250,7 @@ export default function EditProductPage() {
                 name="name"
                 value={product.name}
                 onChange={handleInputChange}
-                className="w-full p-1.5 border border-gray-300 rounded-xl"
+                className="w-full p-2 border border-gray-300 rounded-xl"
               />
               {errors.name && (
                 <p className="text-sm text-red-600 mt-1">{errors.name}</p>
@@ -273,7 +271,7 @@ export default function EditProductPage() {
                   name="partnerId"
                   value={product.partnerId}
                   onChange={handleInputChange}
-                  className="w-full p-1.5 border border-gray-300 rounded-xl"
+                  className="w-full p-2 border border-gray-300 rounded-xl"
                 >
                   <option value="">Pilih Mitra</option>
                   {partners.map((partner) => (
@@ -293,7 +291,7 @@ export default function EditProductPage() {
                 name="description"
                 value={product.description}
                 onChange={handleInputChange}
-                className="w-full p-1.5 border border-gray-300 rounded-xl"
+                className="w-full p-2 border border-gray-300 rounded-xl"
                 rows={3}
               />
               {errors.description && (
@@ -312,7 +310,7 @@ export default function EditProductPage() {
                 name="price"
                 value={product.price || ""}
                 onChange={handleInputChange}
-                className="w-full p-1.5 border border-gray-300 rounded-xl"
+                className="w-full p-2 border border-gray-300 rounded-xl"
               />
               {errors.price && (
                 <p className="text-sm text-red-600 mt-1">{errors.price}</p>
@@ -328,7 +326,7 @@ export default function EditProductPage() {
                 name="weight"
                 value={product.weight || ""}
                 onChange={handleInputChange}
-                className="w-full p-1.5 border border-gray-300 rounded-xl"
+                className="w-full p-2 border border-gray-300 rounded-xl"
               />
               {errors.weight && (
                 <p className="text-sm text-red-600 mt-1">{errors.weight}</p>
@@ -344,7 +342,7 @@ export default function EditProductPage() {
                 name="stock"
                 value={product.stock || ""}
                 onChange={handleInputChange}
-                className="w-full p-1.5 border border-gray-300 rounded-xl"
+                className="w-full p-2 border border-gray-300 rounded-xl"
               />
               {errors.stock && (
                 <p className="text-sm text-red-600 mt-1">{errors.stock}</p>
@@ -354,7 +352,7 @@ export default function EditProductPage() {
             <button
               type="button"
               onClick={() => setShowConfirmModal(true)}
-              className="cursor-pointer w-full bg-primary text-white py-2 px-3 text-sm font-medium rounded-xl hover:-translate-y-1 duration-150 ease-in flex justify-center items-center gap-2 disabled:opacity-50"
+              className="cursor-pointer w-full bg-primary text-white py-2 px-4 text-sm font-medium rounded-xl hover:-translate-y-1 duration-150 ease-in flex justify-center items-center gap-2 disabled:opacity-50"
             >
               Simpan Produk
             </button>
