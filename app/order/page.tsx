@@ -6,7 +6,14 @@ import { useEffect, useState } from "react";
 import { fetchMyOrder } from "../utils/order";
 import OrderCard, { OrderItem } from "../components/OrderCard";
 import { useRouter } from "next/navigation";
-import { ChevronLeft, ChevronRight, Package, Clock, CheckCircle, XCircle } from "lucide-react";
+import {
+  ChevronLeft,
+  ChevronRight,
+  Package,
+  Clock,
+  CheckCircle,
+  XCircle,
+} from "lucide-react";
 
 // Update the OrderStatus type to include all possible statuses
 type OrderStatus =
@@ -142,7 +149,10 @@ export default function OrderPage() {
   const LoadingSkeleton = () => (
     <div className="space-y-4">
       {[...Array(3)].map((_, index) => (
-        <div key={index} className="bg-white rounded-xl p-6 shadow-lg animate-pulse">
+        <div
+          key={index}
+          className="bg-white rounded-xl p-6 shadow-lg animate-pulse"
+        >
           <div className="h-4 bg-gray-200 rounded w-1/4 mb-4"></div>
           <div className="h-6 bg-gray-200 rounded w-1/2 mb-3"></div>
           <div className="space-y-2">
@@ -156,23 +166,26 @@ export default function OrderPage() {
 
   // Empty state component
   const EmptyState = ({ type }: { type: "ongoing" | "history" }) => {
-    const icon = type === "ongoing" ? 
-      <Clock className="w-16 h-16 text-gray-300 mb-4" /> : 
-      <Package className="w-16 h-16 text-gray-300 mb-4" />;
-    
-    const title = type === "ongoing" ? 
-      "Belum Ada Pesanan Aktif" : 
-      "Belum Ada Riwayat Pesanan";
-    
-    const description = type === "ongoing" ? 
-      "Anda belum memiliki pesanan yang sedang berjalan" : 
-      "Belum ada pesanan yang selesai atau dibatalkan";
+    const icon =
+      type === "ongoing" ? (
+        <Clock className="w-16 h-16 text-gray-300 mb-4" />
+      ) : (
+        <Package className="w-16 h-16 text-gray-300 mb-4" />
+      );
+
+    const title =
+      type === "ongoing"
+        ? "Belum Ada Pesanan Aktif"
+        : "Belum Ada Riwayat Pesanan";
+
+    const description =
+      type === "ongoing"
+        ? "Anda belum memiliki pesanan yang sedang berjalan"
+        : "Belum ada pesanan yang selesai atau dibatalkan";
 
     return (
       <div className="bg-white rounded-xl p-12 text-center shadow-lg">
-        <div className="flex justify-center">
-          {icon}
-        </div>
+        <div className="flex justify-center">{icon}</div>
         <h3 className="text-md font-medium text-gray-700 mb-2">{title}</h3>
         <p className="text-gray-500 max-w-md mx-auto">{description}</p>
       </div>
@@ -184,7 +197,9 @@ export default function OrderPage() {
       <div className="max-w-7xl mx-auto px-4 py-8 pt-24">
         {/* Header */}
         <div className="mb-8">
-          <h1 className="text-lg font-medium text-gray-800 mb-2">Pesanan Saya</h1>
+          <h1 className="text-lg font-medium text-gray-800 mb-2">
+            Pesanan Saya
+          </h1>
           <p className="text-gray-600">Kelola dan pantau semua pesanan Anda</p>
         </div>
 
@@ -227,7 +242,7 @@ export default function OrderPage() {
               <div>
                 <p className="text-sm text-gray-600">Pending</p>
                 <p className="text-md font-medium text-gray-800">
-                  {orders.filter(o => o.statusOrder === "PENDING").length}
+                  {orders.filter((o) => o.statusOrder === "PENDING").length}
                 </p>
               </div>
             </div>
@@ -240,7 +255,7 @@ export default function OrderPage() {
               <div>
                 <p className="text-sm text-gray-600">Diproses</p>
                 <p className="text-md font-medium text-gray-800">
-                  {orders.filter(o => o.statusOrder === "PROCESSING").length}
+                  {orders.filter((o) => o.statusOrder === "PROCESSING").length}
                 </p>
               </div>
             </div>
@@ -253,7 +268,7 @@ export default function OrderPage() {
               <div>
                 <p className="text-sm text-gray-600">Selesai</p>
                 <p className="text-md font-medium text-gray-800">
-                  {orders.filter(o => o.statusOrder === "DELIVERED").length}
+                  {orders.filter((o) => o.statusOrder === "DELIVERED").length}
                 </p>
               </div>
             </div>
@@ -266,7 +281,7 @@ export default function OrderPage() {
               <div>
                 <p className="text-sm text-gray-600">Dibatalkan</p>
                 <p className="text-md font-medium text-gray-800">
-                  {orders.filter(o => o.statusOrder === "CANCELED").length}
+                  {orders.filter((o) => o.statusOrder === "CANCELED").length}
                 </p>
               </div>
             </div>
@@ -283,7 +298,9 @@ export default function OrderPage() {
             {/* Results Info */}
             <div className="flex justify-between items-center mb-6">
               <p className="text-gray-600">
-                Menampilkan <span className="font-medium">{filteredOrders.length}</span> pesanan
+                Menampilkan{" "}
+                <span className="font-medium">{filteredOrders.length}</span>{" "}
+                pesanan
               </p>
               <div className="text-sm text-gray-500">
                 Halaman {currentPage} dari {totalPages}
@@ -308,8 +325,14 @@ export default function OrderPage() {
               <div className="bg-white rounded-xl p-6 shadow-lg">
                 <div className="flex flex-col sm:flex-row items-center justify-between space-y-4 sm:space-y-0">
                   <div className="text-sm text-gray-600">
-                    Menampilkan <span className="font-medium">{startIndex + 1}-{Math.min(endIndex, filteredOrders.length)}</span> dari{" "}
-                    <span className="font-medium">{filteredOrders.length}</span> pesanan
+                    Menampilkan{" "}
+                    <span className="font-medium">
+                      {startIndex + 1}-
+                      {Math.min(endIndex, filteredOrders.length)}
+                    </span>{" "}
+                    dari{" "}
+                    <span className="font-medium">{filteredOrders.length}</span>{" "}
+                    pesanan
                   </div>
 
                   <div className="flex items-center space-x-2">
@@ -319,7 +342,6 @@ export default function OrderPage() {
                       className="flex items-center space-x-2 px-4 py-2  disabled:opacity-50 disabled:cursor-not-allowed transition-all duration-200"
                     >
                       <ChevronLeft size={23} />
-                     
                     </button>
 
                     <div className="flex items-center space-x-1">

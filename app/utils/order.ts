@@ -181,23 +181,30 @@ export const deletePartner = async (id: number) => {
 
 export const cancelOrder = async (orderId: number, reason: string) => {
   try {
-    const response = await fetch(`/api/orders/${orderId}/cancel`, {
-      method: "PUT",
-      headers: {
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify({ reason }),
-    });
+    const response = await api.put(`/api/v1/order/${orderId}/cancel`, { reason });
+    return response.data;
+  } catch (error: any) {
+    if (error.response) {
+      const { data } = error.response;
 
-    const data = await response.json();
+      if (data?.errors && typeof data.errors === "object") {
+        throw {
+          type: "validation",
+          message: data.message || "Validasi gagal!",
+          errors: data.errors,
+        };
+      }
 
-    if (!response.ok) {
-      throw new Error(data.message || "Failed to cancel order");
+      throw {
+        type: "general",
+        message: data.message || "Gagal membatalkan pesanan!",
+      };
     }
 
-    return data;
-  } catch (error) {
-    throw error;
+    throw {
+      type: "network",
+      message: "Tidak dapat menghubungi server",
+    };
   }
 };
 
