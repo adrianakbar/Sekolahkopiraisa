@@ -1,5 +1,4 @@
-import { NotificationResponse } from "../types/notifType";
-import { Notification } from "../types/notifType";
+import { NotificationItem, NotificationResponse } from "../types/notifType";
 import api from "./api";
 
 // Fetch all notifications for authenticated user
@@ -74,8 +73,7 @@ export const handleNotificationError = (error: any): string => {
 };
 
 // Get unread notification count from fetched data
-export const getUnreadCount = (notifications: Notification[]): number => {
+export const getUnreadCount = (notifications: NotificationItem[]): number => {
   return notifications.filter((notification) => !notification.viewed).length;
 };
-export { Notification };
 

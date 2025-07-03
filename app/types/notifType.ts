@@ -12,7 +12,7 @@ export interface NotificationUser {
   google_id: string | null;
 }
 
-export interface Notification {
+export interface NotificationItem {
   id: number;
   name: string;
   viewed: boolean;
@@ -26,5 +26,5 @@ export interface Notification {
 
 export interface NotificationResponse {
   message: string;
-  data: Notification[];
+  data: NotificationItem[];
 }

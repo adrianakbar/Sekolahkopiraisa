@@ -7,12 +7,12 @@ import {
   formatNotificationTime,
   getUnreadCount,
   handleNotificationError,
-  Notification,
 } from "../utils/notif";
+import { NotificationItem } from "../types/notifType";
 
 export default function NotificationDropdown() {
   const [isOpen, setIsOpen] = useState(false);
-  const [notifications, setNotifications] = useState<Notification[]>([]);
+  const [notifications, setNotifications] = useState<NotificationItem[]>([]);
   const [loading, setLoading] = useState(false);
   const [unreadCount, setUnreadCount] = useState(0);
   const [error, setError] = useState<string | null>(null);
