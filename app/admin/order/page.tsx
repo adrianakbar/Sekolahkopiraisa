@@ -461,7 +461,7 @@ export default function AdminOrderPage() {
         isSubmitting={isSubmitting}
       />
 
-      <div className="container mx-auto">
+      <div className="mx-auto">
         <div className="flex flex-wrap justify-between items-center mb-4">
           <h1 className="text-lg font-medium">List Order</h1>
 
