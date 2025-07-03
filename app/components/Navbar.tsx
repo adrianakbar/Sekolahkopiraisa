@@ -11,6 +11,7 @@ import {
   ShoppingBasket,
   ShoppingCart,
   X,
+  ShieldUser,
 } from "lucide-react";
 import { logout } from "../utils/auth";
 import { useRouter, usePathname } from "next/navigation";
@@ -319,6 +320,25 @@ export default function Navbar({ navbarItems }: { navbarItems: NavbarItem[] }) {
                           strokeWidth={1.5}
                         />
                         Pesanan Saya
+                      </DropdownItem>
+                    </li>
+                    <li>
+                      {/* Menu Admin */}
+                      <DropdownItem
+                        onItemClick={closeUserDropdown}
+                        tag="a"
+                        href="/admin"
+                        className={clsx(
+                          "flex items-center font-medium gap-3 px-3 py-2 text-gray-700 rounded-lg group hover:bg-gray-100 hover:text-gray-700",
+                          user?.admin !== true && "hidden"
+                        )}
+                      >
+                        <ShieldUser
+                          size={23}
+                          color="#77767b"
+                          strokeWidth={1.5}
+                        />
+                        Menu Admin
                       </DropdownItem>
                     </li>
                   </ul>

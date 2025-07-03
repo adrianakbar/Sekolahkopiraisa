@@ -73,7 +73,12 @@ export default function Sidebar({ items }: { items: SidebarItemType[] }) {
           isSidebarOpen ? "justify-between" : "flex-col gap-3 justify-center"
         )}
       >
-        <Image src="/assets/logo.png" alt="Logo" width={20} height={20} />
+        <button
+          onClick={() => router.push("/")}
+          className="flex items-center gap-2 hover:bg-gray-100 cursor-pointer rounded-sm p-2"
+        >
+          <Image src="/assets/logo.png" alt="Logo" width={20} height={20} />
+        </button>
         {isMobile ? (
           <button onClick={() => setMobileOpen(false)}>
             <X />
