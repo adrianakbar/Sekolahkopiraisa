@@ -46,6 +46,7 @@ interface OrderData {
   metodePembayaran: string;
   statusPembayaran: string;
   totalHarga: number;
+  kodePos: number;
 }
 
 export default function OrderDetailPage() {
@@ -108,6 +109,7 @@ export default function OrderDetailPage() {
           metodePembayaran: orderData.data.metodePembayaran,
           statusPembayaran: orderData.data.statusPembayaran,
           totalHarga: orderData.data.totalHarga,
+          kodePos: orderData.data.kodePos,
         };
 
         // Set the formatted order data
@@ -423,7 +425,7 @@ export default function OrderDetailPage() {
                   </div>
                   <div>
                     <p className="text-gray-600 leading-relaxed">
-                      {order.alamatCustomer}
+                      {order.alamatCustomer}, {order.kodePos}
                     </p>
                   </div>
                 </div>
