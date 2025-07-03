@@ -2,7 +2,12 @@
 
 import React, { useEffect, useState } from "react";
 import { useParams, useRouter } from "next/navigation";
-import { cancelOrder, fetchMyOrder, fetchOrderById } from "@/app/utils/order";
+import {
+  cancelOrder,
+  fetchMyOrder,
+  fetchOrderById,
+  updateStatusOrder,
+} from "@/app/utils/order";
 import { UserItem } from "@/app/types/userType";
 import Popup from "@/app/components/Popup";
 import ConfirmModal from "@/app/components/ConfirmModal";
@@ -60,6 +65,7 @@ export default function OrderDetailPage() {
   );
   const [showReasonModal, setShowReasonModal] = useState(false);
   const [cancelReason, setCancelReason] = useState("");
+  const [showConfirmModalShipped, setShowConfirmModalShipped] = useState(false);
 
   const router = useRouter();
 
@@ -142,7 +148,30 @@ export default function OrderDetailPage() {
     } finally {
       setLoading(false);
     }
+  };
 
+  const handleFinishOrder = async () => {
+    if (!order) return;
+
+    try {
+      setLoading(true);
+      const response = await updateStatusOrder(order.orderId, "DELIVERED");
+      if (response.success) {
+        setMessage("Pesanan berhasil diselesaikan");
+        setPopupType("success");
+        setShowPopup(true);
+        router.push("/order");
+      } else {
+        throw new Error(response.message || "Gagal menyelesaikan pesanan");
+      }
+    } catch (err) {
+      console.error("Error finishing order:", err);
+      setMessage(err instanceof Error ? err.message : "An error occurred");
+      setPopupType("error");
+      setShowPopup(true);
+    } finally {
+      setLoading(false);
+    }
   };
 
   // Status timeline component
@@ -314,6 +343,17 @@ export default function OrderDetailPage() {
           setCancelReason("");
         }}
       />
+      <ConfirmModal
+        title="Konfirmasi Penerimaan"
+        description="Apakah Anda yakin ingin menyekesaikan pesanan ini?"
+        isOpen={showConfirmModalShipped}
+        onClose={() => setShowConfirmModalShipped(false)}
+        onConfirm={() => {
+          handleFinishOrder();
+          setShowConfirmModalShipped(false);
+          router.push("/order");
+        }}
+      />
 
       <div className="pt-24 pb-8">
         <div className="container mx-auto px-4 max-w-6xl">
@@ -355,9 +395,7 @@ export default function OrderDetailPage() {
             <StatusTimeline status={order.statusOrder} />
           </div>
 
-          {/* Order Information Grid */}
-          <div className="grid grid-cols-1 lg:grid-cols-3 gap-6 mb-8">
-            {/* Order Details */}
+          <div className="grid grid-cols-1 lg:grid-cols-3 gap-6 mb-6">
             <div className="lg:col-span-2 space-y-6">
               {/* Shipping Address Card */}
               <div className="bg-white rounded-2xl p-6 shadow-sm border border-gray-100">
@@ -389,7 +427,36 @@ export default function OrderDetailPage() {
                   </div>
                 </div>
               </div>
+            </div>
 
+            <div className="space-y-6"> 
+              {/* Payment Method */}
+              <div className="bg-white rounded-2xl p-6 shadow-sm border border-gray-100 h-full ">
+                <div className="flex items-center mb-4">
+                  <CreditCard className="w-5 h-5 text-primary mr-2" />
+                  <h3 className="text-lg font-medium text-gray-800">
+                    Metode Pembayaran
+                  </h3>
+                </div>
+                <div
+                  className={`inline-flex items-center px-4 py-2 rounded-full text-sm font-medium ${
+                    order.metodePembayaran === "BANK_TRANSFER"
+                      ? "bg-blue-100 text-blue-800"
+                      : order.metodePembayaran === "QRIS"
+                      ? "bg-green-100 text-green-800"
+                      : "bg-gray-100 text-gray-800"
+                  }`}
+                >
+                  {order.metodePembayaran.replace("_", " ")}
+                </div>
+              </div>
+            </div>
+          </div>
+
+          {/* Order Information Grid */}
+          <div className="grid grid-cols-1 lg:grid-cols-3 gap-6 mb-8">
+            {/* Order Details */}
+            <div className="lg:col-span-2 space-y-6">
               {/* Products Card */}
               <div className="bg-white rounded-2xl shadow-sm border border-gray-100 overflow-hidden">
                 <div className="p-6 border-b border-gray-100">
@@ -448,27 +515,6 @@ export default function OrderDetailPage() {
 
             {/* Order Summary Sidebar */}
             <div className="space-y-6">
-              {/* Payment Method */}
-              <div className="bg-white rounded-2xl p-6 shadow-sm border border-gray-100">
-                <div className="flex items-center mb-4">
-                  <CreditCard className="w-5 h-5 text-primary mr-2" />
-                  <h3 className="text-lg font-medium text-gray-800">
-                    Metode Pembayaran
-                  </h3>
-                </div>
-                <div
-                  className={`inline-flex items-center px-4 py-2 rounded-full text-sm font-medium ${
-                    order.metodePembayaran === "BANK_TRANSFER"
-                      ? "bg-blue-100 text-blue-800"
-                      : order.metodePembayaran === "QRIS"
-                      ? "bg-green-100 text-green-800"
-                      : "bg-gray-100 text-gray-800"
-                  }`}
-                >
-                  {order.metodePembayaran.replace("_", " ")}
-                </div>
-              </div>
-
               {/* Payment Summary */}
               <div className="bg-primary rounded-2xl p-6 border border-primary/20 text-white">
                 <h3 className="text-lg font-medium  mb-4">
@@ -519,6 +565,16 @@ export default function OrderDetailPage() {
                 >
                   <XCircle className="w-5 h-5" />
                   <span>Batalkan Pesanan</span>
+                </button>
+              )}
+
+              {order.statusOrder === "SHIPPED" && (
+                <button
+                  onClick={() => setShowConfirmModalShipped(true)}
+                  className="w-full px-6 py-3 bg-green-500 text-white rounded-xl hover:bg-green-600 transition-colors font-medium flex items-center justify-center space-x-2"
+                >
+                  <CheckCircle className="w-5 h-5" />
+                  <span>Konfirmasi Penerimaan</span>
                 </button>
               )}
             </div>
