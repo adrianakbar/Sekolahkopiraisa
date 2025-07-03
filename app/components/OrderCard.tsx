@@ -12,8 +12,10 @@ import {
   Truck, 
   XCircle,
   Hash,
-  Store
+  Store,
+  ExternalLink
 } from "lucide-react";
+import { useEffect, useState } from "react";
 
 export interface OrderItem {
   productId: number;
@@ -90,9 +92,24 @@ const getStatusBadge = (status: string) => {
 export default function OrderCard({ order }: Props) {
   const badge = getStatusBadge(order.statusOrder);
   const StatusIcon = badge.icon;
+  const [paymentUrl, setPaymentUrl] = useState<string | null>(null);
+
+  useEffect(() => {
+    // Cek apakah ada payment URL yang tersimpan
+    const savedPaymentUrl = localStorage.getItem(`paymentUrl_${order.orderId}`);
+    if (savedPaymentUrl && order.payment.statusPembayaran === "PENDING") {
+      setPaymentUrl(savedPaymentUrl);
+    }
+  }, [order.orderId, order.payment.statusPembayaran]);
+
+  const handlePaymentClick = () => {
+    if (paymentUrl) {
+      window.open(paymentUrl, '_blank');
+    }
+  };
 
   return (
-    <div className="bg-white rounded-2xl shadow-sm hover:shadow-md transition-all duration-300 border border-gray-100 overflow-hidden group">
+    <div className="bg-white rounded-xl shadow-lg p-6 hover:shadow-xl transition-shadow">
       {/* Header with gradient background */}
       <div className="bg-gradient-to-r from-gray-50 to-gray-100 p-6 border-b border-gray-200">
         <div className="flex justify-between items-start">
@@ -188,11 +205,18 @@ export default function OrderCard({ order }: Props) {
               <p className="text-sm text-gray-600">
                 {order.payment.method.replace("_", " ")} 
                 <span className={`ml-2 px-2 py-0.5 rounded-full text-xs ${
-                  order.payment.statusPembayaran === 'PAID' 
+                  order.payment.statusPembayaran === 'SUCCESS' 
                     ? 'bg-green-100 text-green-700' 
-                    : 'bg-yellow-100 text-yellow-700'
+                    : order.payment.statusPembayaran === 'PENDING'
+                    ? 'bg-yellow-100 text-yellow-700'
+                    : order.payment.statusPembayaran === 'EXPIRE'
+                    ? 'bg-red-100 text-red-700'
+                    : 'bg-gray-100 text-gray-700'
                 }`}>
-                  {order.payment.statusPembayaran}
+                  {order.payment.statusPembayaran === "SUCCESS" ? "Berhasil" : 
+                   order.payment.statusPembayaran === "PENDING" ? "Menunggu" :
+                   order.payment.statusPembayaran === "EXPIRE" ? "Kadaluarsa" : 
+                   order.payment.statusPembayaran}
                 </span>
               </p>
             </div>
@@ -204,6 +228,42 @@ export default function OrderCard({ order }: Props) {
               {formatCurrency(order.payment.amount)}
             </p>
           </div>
+        </div>
+      </div>
+
+      {/* Payment Information */}
+      <div className="mt-4 pt-4 border-t border-gray-200">
+        <div className="flex justify-between items-center">
+          <div>
+            <p className="text-sm text-gray-600">Metode Pembayaran</p>
+            <p className="font-medium">{order.payment.method}</p>
+            <p className={`text-sm ${
+              order.payment.statusPembayaran === "SUCCESS" 
+                ? "text-green-600" 
+                : order.payment.statusPembayaran === "PENDING"
+                ? "text-yellow-600"
+                : order.payment.statusPembayaran === "EXPIRE"
+                ? "text-red-600"
+                : "text-gray-600"
+            }`}>
+              Status: {order.payment.statusPembayaran === "SUCCESS" ? "Berhasil" : 
+                      order.payment.statusPembayaran === "PENDING" ? "Menunggu" :
+                      order.payment.statusPembayaran === "EXPIRE" ? "Kadaluarsa" : 
+                      order.payment.statusPembayaran}
+            </p>
+          </div>
+          
+          {/* Tombol Bayar jika pembayaran pending dan ada URL */}
+          {order.payment.statusPembayaran === "PENDING" && paymentUrl && (
+            <button
+              onClick={handlePaymentClick}
+              className="flex items-center space-x-2 bg-primary text-white px-4 py-2 rounded-lg hover:bg-primary-dark transition-colors"
+            >
+              <CreditCard size={16} />
+              <span>Bayar Sekarang</span>
+              <ExternalLink size={14} />
+            </button>
+          )}
         </div>
       </div>
 

@@ -379,6 +379,8 @@ export default function CheckOutPage() {
 
       if (redirectUrl) {
         console.log("Redirecting to:", redirectUrl);
+        // Simpan redirectUrl ke localStorage untuk digunakan nanti
+    localStorage.setItem(`paymentUrl_${data.order.id}`, redirectUrl);
         window.location.href = redirectUrl;
       } else {
         console.log("No redirect URL, navigating to orders page");
