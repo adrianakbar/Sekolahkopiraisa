@@ -7,39 +7,60 @@ export function middleware(request: NextRequest) {
   console.log('Token found:', !!token);
   console.log('Token value (first 50 chars):', token?.substring(0, 50));
   
-  // Check if accessing admin routes
-  if (request.nextUrl.pathname.startsWith('/admin')) {
-    console.log('Accessing admin route');
+  // If no token, allow access to public routes
+  if (!token) {
+    console.log('No token found, allowing public access');
+    return NextResponse.next();
+  }
+
+  try {
+    // Decode JWT token payload
+    const payload = JSON.parse(atob(token.split('.')[1]));
+    console.log('Decoded payload:', payload);
     
-    // If no token, redirect to login
-    if (!token) {
-      console.log('No token found, redirecting to login');
-      return NextResponse.redirect(new URL('/login', request.url));
+    const isAdminRoute = request.nextUrl.pathname.startsWith('/admin');
+    const isAdmin = payload.admin;
+    
+    // If user is admin
+    if (isAdmin) {
+      console.log('User is admin');
+      
+      // Admin can only access /admin routes
+      if (!isAdminRoute) {
+        console.log('Admin trying to access non-admin route, redirecting to admin dashboard');
+        return NextResponse.redirect(new URL('/admin', request.url));
+      }
+      
+      console.log('Admin accessing admin route, allowing access');
+      return NextResponse.next();
     }
     
-    try {
-      // Decode JWT token payload (frontend only approach)
-      const payload = JSON.parse(atob(token.split('.')[1]));
-      console.log('Decoded payload:', payload);
+    // If user is not admin
+    if (!isAdmin) {
+      console.log('User is not admin');
       
-      // If not admin, redirect to unauthorized page
-      if (!payload.admin) {
-        console.log('User is not admin, redirecting to unauthorized');
+      // Non-admin cannot access /admin routes
+      if (isAdminRoute) {
+        console.log('Non-admin trying to access admin route, redirecting to unauthorized');
         return NextResponse.redirect(new URL('/unauthorized', request.url));
       }
       
-      console.log('User is admin, allowing access');
-    } catch (error) {
-      console.log('Error decoding token:', error);
-      // If token is invalid, redirect to login
-      return NextResponse.redirect(new URL('/login', request.url));
+      console.log('Non-admin accessing public route, allowing access');
+      return NextResponse.next();
     }
+    
+  } catch (error) {
+    console.log('Error decoding token:', error);
+    // If token is invalid, redirect to login
+    return NextResponse.redirect(new URL('/login', request.url));
   }
   
   return NextResponse.next();
 }
 
 export const config = {
-  matcher: ['/admin/:path*']
+  matcher: [
+    '/((?!api|_next/static|_next/image|favicon.ico|login|unauthorized).*)',
+  ]
 };
 

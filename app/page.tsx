@@ -69,6 +69,7 @@ export default function Home() {
       partnerName: selectedProduct.partner?.name ?? "",
       price: Number(selectedProduct.price),
       quantity: 1,
+      weight: selectedProduct.weight ?? 0,
       selected: true,
       fromCart: false,
     };

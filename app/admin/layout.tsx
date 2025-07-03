@@ -19,11 +19,6 @@ export default function AdminLayout({ children }: { children: ReactNode }) {
       href: "/admin/activity",
     },
     {
-      icon: <Building size={20} />,
-      text: "Perusahaan",
-      href: "/admin/company",
-    },
-    {
       icon: <Package size={20} />,
       text: "Produk",
       href: "/admin/product",

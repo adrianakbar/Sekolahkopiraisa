@@ -20,7 +20,7 @@ interface ApiProduct {
   price: number;
   description: string;
   image: string;
-  partner: Partner
+  partner: Partner;
   weight?: number; // Optional field for product weight
 }
 
@@ -66,27 +66,24 @@ export default function ShoppingCart(): JSX.Element {
   };
 
   const handleDelete = async (productId: number) => {
-  try {
+    try {
+      const response = await deleteCart(productId);
 
-    const response = await deleteCart(productId);
+      setCartItems((currentItems) =>
+        currentItems.filter((item) => item.products_id !== productId)
+      );
 
-
-    setCartItems((currentItems) =>
-      currentItems.filter((item) => item.products_id !== productId)
-    );
-
-    setMessage(response.message);
-    setPopupType("success");
-    setShowPopup(true);
-    window.dispatchEvent(new CustomEvent('cartUpdated'));
-  } catch (error: any) {
-    console.error("Delete error:", error);
-    setMessage(error.message || "Terjadi kesalahan saat menghapus.");
-    setPopupType("error");
-    setShowPopup(true);
-  }
-};
-
+      setMessage(response.message);
+      setPopupType("success");
+      setShowPopup(true);
+      window.dispatchEvent(new CustomEvent("cartUpdated"));
+    } catch (error: any) {
+      console.error("Delete error:", error);
+      setMessage(error.message || "Terjadi kesalahan saat menghapus.");
+      setPopupType("error");
+      setShowPopup(true);
+    }
+  };
 
   useEffect(() => {
     const popupData = sessionStorage.getItem("popup");
@@ -126,6 +123,7 @@ export default function ShoppingCart(): JSX.Element {
               quantity: apiItem.quantity,
               selected: true,
               weight: apiItem.product.weight, // Optional field
+              fromCart: true, // Indicating this item is from the cart
             })
           );
           setCartItems(transformedItems);
@@ -239,7 +237,7 @@ export default function ShoppingCart(): JSX.Element {
         <div className="bg-white p-6 rounded-xl shadow-lg max-w-7xl mx-auto">
           {/* Header skeleton */}
           <Skeleton width={192} height={24} className="mb-6" />
-          
+
           {/* Table header skeleton */}
           <div className="hidden md:grid md:grid-cols-13 md:gap-4 text-sm mb-4 border-b border-b-gray-200 pb-3">
             <div className="col-span-1"></div>
@@ -299,9 +297,9 @@ export default function ShoppingCart(): JSX.Element {
         <div className="bg-white p-8 md:p-12 rounded-xl shadow-lg max-w-4xl mx-auto text-center">
           <div className="flex flex-col items-center justify-center">
             <div className="mb-6">
-              <ShoppingCartIcon 
-                size={64} 
-                className="text-gray-300 mx-auto" 
+              <ShoppingCartIcon
+                size={64}
+                className="text-gray-300 mx-auto"
                 strokeWidth={1.5}
               />
             </div>
@@ -309,11 +307,12 @@ export default function ShoppingCart(): JSX.Element {
               Keranjang Belanja Kosong
             </h2>
             <p className="text-gray-500 mb-6 max-w-md">
-              Belum ada produk di keranjang Anda. Mulai berbelanja sekarang dan temukan produk-produk terbaik dari mitra kami.
+              Belum ada produk di keranjang Anda. Mulai berbelanja sekarang dan
+              temukan produk-produk terbaik dari mitra kami.
             </p>
             <button
-              onClick={() => router.push('/product')}
-              className="bg-primary text-white px-3 py-1.5 rounded-xl font-medium hover:-translate-y-1 duration-150 ease-in transition-transform"
+              onClick={() => router.push("/product")}
+              className="bg-primary text-white px-4 py-2 rounded-xl font-medium hover:-translate-y-1 duration-150 ease-in transition-transform"
             >
               Mulai Belanja
             </button>
@@ -325,58 +324,58 @@ export default function ShoppingCart(): JSX.Element {
 
   return (
     <div className="pt-25 min-h-screen bg-secondary p-4">
-
-    <div className="bg-white p-6 rounded-xl shadow-lg max-w-7xl mx-auto">
-      {showPopup && (
-        <Popup
-          message={message}
-          type={popupType}
-          onClose={() => setShowPopup(false)}
-        />
-      )}
-      <h2 className="text-lg font-medium text-gray-800 mb-6">
-        Keranjang Belanja
-      </h2>
-      <div className="hidden md:grid md:grid-cols-13 md:gap-4 text-sm text-gray-500 font-medium mb-4 border-b border-b-gray-200 pb-3">
-        <div className="col-span-1"></div>
-        <div className="col-span-5">Detail Produk</div>
-        <div className="col-span-2 text-center">Harga Satuan</div>
-        <div className="col-span-2 text-center">Jumlah</div>
-        <div className="col-span-2 text-right">Total Harga</div>
-      </div>
-      <div className="divide-y divide-gray-100 md:divide-y-0">
-        {cartItems.map((item) => (
-          <CartCard
-            key={item.id}
-            item={item}
-            onQuantityChange={handleQuantityChange}
-            onSelectionChange={handleSelectionChange}
-            onDelete={handleDelete}
+      <div className="bg-white p-6 rounded-xl shadow-lg max-w-7xl mx-auto">
+        {showPopup && (
+          <Popup
+            message={message}
+            type={popupType}
+            onClose={() => setShowPopup(false)}
           />
-        ))}
-      </div>
-      <div className="flex flex-col sm:flex-row justify-between items-center mt-8 pt-6 border-t border-gray-200 gap-4">
-        <div className="text-sm font-medium text-gray-800">
-          Total (
-          {cartItems
-            .filter((item) => item.selected)
-            .reduce((sum, item) => sum + item.quantity, 0)}{" "}
-          item
-          {cartItems.filter((item) => item.selected).reduce((sum, item) => sum + item.quantity, 0) !== 1
-            ? "s"
-            : ""}
-          ): {formatCurrency(totalPrice)}
+        )}
+        <h2 className="text-lg font-medium text-gray-800 mb-6">
+          Keranjang Belanja
+        </h2>
+        <div className="hidden md:grid md:grid-cols-13 md:gap-4 text-sm text-gray-500 font-medium mb-4 border-b border-b-gray-200 pb-3">
+          <div className="col-span-1"></div>
+          <div className="col-span-5">Detail Produk</div>
+          <div className="col-span-2 text-center">Harga Satuan</div>
+          <div className="col-span-2 text-center">Jumlah</div>
+          <div className="col-span-2 text-right">Total Harga</div>
         </div>
-        <button
-          type="submit"
-          className="cursor-pointer w-30 bg-primary text-white py-2 px-3 text-sm font-medium rounded-xl hover:-translate-y-1 duration-150 ease-in flex justify-center items-center gap-2 disabled:opacity-50"
-          onClick={handleCheckout}
-        >
-          Checkout
-        </button>
+        <div className="divide-y divide-gray-100 md:divide-y-0">
+          {cartItems.map((item) => (
+            <CartCard
+              key={item.id}
+              item={item}
+              onQuantityChange={handleQuantityChange}
+              onSelectionChange={handleSelectionChange}
+              onDelete={handleDelete}
+            />
+          ))}
+        </div>
+        <div className="flex flex-col sm:flex-row justify-between items-center mt-8 pt-6 border-t border-gray-200 gap-4">
+          <div className="text-sm font-medium text-gray-800">
+            Total (
+            {cartItems
+              .filter((item) => item.selected)
+              .reduce((sum, item) => sum + item.quantity, 0)}{" "}
+            item
+            {cartItems
+              .filter((item) => item.selected)
+              .reduce((sum, item) => sum + item.quantity, 0) !== 1
+              ? "s"
+              : ""}
+            ): {formatCurrency(totalPrice)}
+          </div>
+          <button
+            type="submit"
+            className="cursor-pointer w-30 bg-primary text-white py-2 text-sm font-medium rounded-xl hover:-translate-y-1 duration-150 ease-in flex justify-center items-center gap-2 disabled:opacity-50"
+            onClick={handleCheckout}
+          >
+            Checkout
+          </button>
+        </div>
       </div>
     </div>
-    </div>
-
   );
 }

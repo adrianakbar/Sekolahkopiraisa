@@ -120,6 +120,7 @@ export const loginUser = async (formData: {
 export const logout = async () => {
   try {
     const res = await api.post("/api/v1/auth/logout");
+    removeToken(); // Remove token from localStorage and cookie
     return res.data;
   } catch (error: any) {
     throw error;
