@@ -124,7 +124,7 @@ export default function Activity() {
   };
 
   const handleViewActivity = (id: number) => {
-    window.open(`/activity/${id}`, "_blank");
+    router.push(`/admin/activity/${id}`);
   };
 
   const formatUpload = (dateString: string): string => {
@@ -213,7 +213,7 @@ export default function Activity() {
   }, []);
 
   return (
-    <div className="container mx-auto">
+    <div className="mx-auto">
       {showPopup && (
         <Popup
           message={message}

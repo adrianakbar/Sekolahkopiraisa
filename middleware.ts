@@ -25,13 +25,13 @@ export function middleware(request: NextRequest) {
     if (isAdmin) {
       console.log('User is admin');
       
-      // Admin can only access /admin routes
-      if (!isAdminRoute) {
+      // Admin can access /admin routes and /assets routes
+      if (!isAdminRoute && !request.nextUrl.pathname.startsWith('/assets')) {
         console.log('Admin trying to access non-admin route, redirecting to admin dashboard');
         return NextResponse.redirect(new URL('/admin', request.url));
       }
       
-      console.log('Admin accessing admin route, allowing access');
+      console.log('Admin accessing admin route or assets, allowing access');
       return NextResponse.next();
     }
     

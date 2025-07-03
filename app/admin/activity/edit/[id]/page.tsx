@@ -186,7 +186,7 @@ export default function EditActivityPage() {
   }
 
   return (
-    <div className="max-w-7xl mx-auto p-6 bg-tertiary rounded-xl shadow-lg">
+    <div className="mx-auto p-6 bg-tertiary rounded-xl shadow-lg">
       {showPopup && (
         <Popup
           message={message}
@@ -286,7 +286,7 @@ export default function EditActivityPage() {
               <div className="flex justify-between items-center">
                 <label
                   htmlFor="thumbnail-upload"
-                  className="cursor-pointer font-medium bg-primary text-white px-3 py-1.5 rounded-xl hover:-translate-y-1 duration-150 ease-in text-sm"
+                  className="cursor-pointer font-medium bg-primary text-white px-4 py-2 rounded-xl hover:-translate-y-1 duration-150 ease-in text-sm"
                 >
                   Pilih Gambar
                 </label>
@@ -364,7 +364,7 @@ export default function EditActivityPage() {
               <div className="flex justify-between items-center">
                 <label
                   htmlFor="image-upload"
-                  className={`cursor-pointer bg-primary font-medium text-white text-sm px-3 py-1.5 rounded-xl hover:-translate-y-1 duration-150 ease-in ${
+                  className={`cursor-pointer bg-primary font-medium text-white text-sm px-4 py-2 rounded-xl hover:-translate-y-1 duration-150 ease-in ${
                     images.length + retainedMedia.length >= 4
                       ? "opacity-50 pointer-events-none"
                       : ""
@@ -399,7 +399,7 @@ export default function EditActivityPage() {
           {/* Tombol Submit */}
           <button
             type="button"
-            className="cursor-pointer w-full bg-primary text-white py-1.5 px-3 text-sm font-medium rounded-xl hover:-translate-y-1 duration-150 ease-in flex justify-center items-center gap-2 disabled:opacity-50"
+            className="cursor-pointer w-full bg-primary text-white py-2 px-4 text-sm font-medium rounded-xl hover:-translate-y-1 duration-150 ease-in flex justify-center items-center gap-2 disabled:opacity-50"
             onClick={() => setShowConfirmModal(true)}
           >
             Perbarui Berita

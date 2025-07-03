@@ -5,8 +5,7 @@ import { useRouter } from "next/navigation";
 import { FormEvent, useState } from "react";
 import { LoaderCircle, X } from "lucide-react";
 import Popup from "@/app/components/Popup";
-import Image from "next/image";
-import { DotLottieReact } from '@lottiefiles/dotlottie-react';
+import { DotLottieReact } from "@lottiefiles/dotlottie-react";
 
 export default function CreateActivityPage() {
   const [isSubmitting, setIsSubmitting] = useState(false);
@@ -115,7 +114,7 @@ export default function CreateActivityPage() {
   };
 
   return (
-    <div className="mx-auto p-6 bg-tertiary rounded-xl shadow-lg">
+    <div className="p-6 bg-tertiary rounded-xl shadow-lg">
       {showPopup && (
         <Popup
           message={message}
@@ -152,9 +151,7 @@ export default function CreateActivityPage() {
         <div className="w-full md:w-1/3 text-sm">
           {/* Judul */}
           <div className="mb-6">
-            <label className="block mb-1 font-medium">
-              Judul Berita
-            </label>
+            <label className="block mb-1 font-medium">Judul Berita</label>
             <input
               type="text"
               placeholder="Judul Berita"
@@ -163,7 +160,7 @@ export default function CreateActivityPage() {
                 setTitle(e.target.value);
                 setErrors((prev) => ({ ...prev, title: "" }));
               }}
-              className="w-full p-1.5 border border-gray-300 rounded-xl"
+              className="w-full p-2 border border-gray-300 rounded-xl"
             />
             <p className="text-sm text-gray-500 mt-1">
               {title.length}/90 karakter
@@ -206,7 +203,7 @@ export default function CreateActivityPage() {
               <div className="flex justify-between items-center">
                 <label
                   htmlFor="thumbnail-upload"
-                  className="cursor-pointer font-medium bg-primary text-white px-3 py-1.5 rounded-xl hover:-translate-y-1 duration-150 ease-in text-sm"
+                  className="cursor-pointer font-medium bg-primary text-white px-4 py-2 rounded-xl hover:-translate-y-1 duration-150 ease-in text-sm"
                 >
                   Pilih Gambar
                 </label>
@@ -258,7 +255,7 @@ export default function CreateActivityPage() {
               <div className="flex justify-between items-center">
                 <label
                   htmlFor="image-upload"
-                  className={`cursor-pointer bg-primary font-medium text-white text-sm px-3 py-1.5 rounded-xl hover:-translate-y-1 duration-150 ease-in ${
+                  className={`cursor-pointer bg-primary font-medium text-white text-sm px-4 py-2 rounded-xl hover:-translate-y-1 duration-150 ease-in ${
                     images.length >= 4 ? "opacity-50 pointer-events-none" : ""
                   }`}
                 >
@@ -283,19 +280,18 @@ export default function CreateActivityPage() {
                 {images.length}/4 gambar terpilih
               </p>
               {errors.media && (
-              <p className="text-sm text-red-600 mt-1">{errors.media}</p>
-            )}
+                <p className="text-sm text-red-600 mt-1">{errors.media}</p>
+              )}
             </div>
           </div>
 
           <div className="mb-4 flex items-center gap-6">
             {/* Switch Post to Facebook */}
             <div className="flex items-center gap-2">
-              <Image
-                src="/assets/facebook-logo.svg"
+              <img
+                src="/assets/facebook_logo.svg"
                 alt="Facebook Icon"
-                width={20}
-                height={24}
+                className="w-7.5 h-7.5"
               />
               <button
                 type="button"
@@ -314,11 +310,10 @@ export default function CreateActivityPage() {
 
             {/* Switch Post to Instagram */}
             <div className="flex items-center gap-2">
-              <Image
-                src="/assets/instagram-logo.svg"
+              <img
+                src="/assets/instagram_logo.svg"
                 alt="Instagram Icon"
-                width={20}
-                height={24}
+                className="w-8 h-8"
               />
               <button
                 type="button"
@@ -340,7 +335,7 @@ export default function CreateActivityPage() {
           <button
             type="submit"
             disabled={isSubmitting}
-            className="cursor-pointer w-full bg-primary text-white py-2 px-3 text-sm font-medium rounded-xl hover:-translate-y-1 duration-150 ease-in flex justify-center items-center gap-2 disabled:opacity-50"
+            className="cursor-pointer w-full bg-primary text-white py-2 px-4 text-sm font-medium rounded-xl hover:-translate-y-1 duration-150 ease-in flex justify-center items-center gap-2 disabled:opacity-50"
           >
             {isSubmitting ? (
               <>
