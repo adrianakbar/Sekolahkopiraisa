@@ -439,17 +439,17 @@ export default function OrderDetailPage() {
                     Metode Pembayaran
                   </h3>
                 </div>
-                <div
-                  className={`inline-flex items-center px-4 py-2 rounded-full text-sm font-medium ${
-                    order.metodePembayaran === "BANK_TRANSFER"
-                      ? "bg-blue-100 text-blue-800"
-                      : order.metodePembayaran === "QRIS"
-                      ? "bg-green-100 text-green-800"
-                      : "bg-gray-100 text-gray-800"
-                  }`}
-                >
-                  {order.metodePembayaran.replace("_", " ")}
-                </div>
+                  <div
+                    className={`inline-flex items-center px-4 py-2 rounded-full text-sm font-medium ${
+                      order.metodePembayaran === "BANK_TRANSFER"
+                        ? "bg-blue-100 text-blue-800"
+                        : order.metodePembayaran === "QRIS"
+                        ? "bg-green-100 text-green-800"
+                        : "bg-gray-100 text-gray-800"
+                    }`}
+                  >
+                    {order.metodePembayaran.replace("_", " ")}
+                  </div>
               </div>
             </div>
           </div>
@@ -485,11 +485,20 @@ export default function OrderDetailPage() {
                         </div>
                         <div className="flex-1">
                           <h4 className="font-medium text-gray-800 mb-1">
-                            {item.name}
+                            {item.namaProduk}
                           </h4>
-                          <p className="text-gray-500 text-sm">
-                            Qty: {item.quantity}
-                          </p>
+                          <div className="flex item-center justify-between">
+                            <span className="text-gray-500 text-sm">
+                              Qty: {item.quantity}
+                            </span>
+                            <span>
+                              {item.catatan && (
+                                <p className="text-sm text-gray-400">
+                                  Catatan: {item.catatan}
+                                </p>
+                              )}
+                            </span>
+                          </div>
                           <div className="flex items-center justify-between mt-2">
                             <span className="text-primary font-medium">
                               Rp {item.harga.toLocaleString("id-ID")}
@@ -501,11 +510,6 @@ export default function OrderDetailPage() {
                               )}
                             </span>
                           </div>
-                          {item.catatan && (
-                            <p className="text-xs text-gray-400 mt-2">
-                              Catatan: {item.catatan}
-                            </p>
-                          )}
                         </div>
                       </div>
                     </div>
