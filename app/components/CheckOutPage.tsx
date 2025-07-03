@@ -247,7 +247,6 @@ const PaymentMethods: React.FC<PaymentMethodsProps> = ({
 }) => {
   const options = [
     { value: "COD", label: "Bayar di Tempat", icon: "💵" },
-    { value: "QRIS", label: "QRIS", icon: "📱" },
     { value: "BANK_TRANSFER", label: "Transfer Bank", icon: "🏦" },
   ];
 
@@ -257,7 +256,7 @@ const PaymentMethods: React.FC<PaymentMethodsProps> = ({
         <CreditCard size={18} className="text-green-500" />
         Metode Pembayaran
       </h2>
-      <div className="grid grid-cols-1 sm:grid-cols-3 gap-3 md:gap-4">
+      <div className="grid grid-cols-1 md:grid-cols-2 gap-3 md:gap-4">
         {options.map((method) => (
           <button
             key={method.value}

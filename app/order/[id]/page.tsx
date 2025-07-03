@@ -74,6 +74,7 @@ export default function OrderDetailPage() {
       try {
         setLoading(true);
         const orderData = await fetchOrderById(id);
+        console.log("Fetched order data:", orderData);
 
         if (!orderData) {
           throw new Error("Pesanan tidak ditemukan");
@@ -429,7 +430,7 @@ export default function OrderDetailPage() {
               </div>
             </div>
 
-            <div className="space-y-6"> 
+            <div className="space-y-6">
               {/* Payment Method */}
               <div className="bg-white rounded-2xl p-6 shadow-sm border border-gray-100 h-full ">
                 <div className="flex items-center mb-4">

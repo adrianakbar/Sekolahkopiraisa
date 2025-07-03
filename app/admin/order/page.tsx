@@ -15,6 +15,7 @@ import {
 } from "lucide-react";
 import { useRouter } from "next/navigation";
 import { callPartner } from "@/app/utils/partner";
+import Popup from "@/app/components/Popup";
 
 export default function AdminOrderPage() {
   const [ordersData, setOrdersData] = useState<Order[]>([]);
@@ -32,6 +33,9 @@ export default function AdminOrderPage() {
   const router = useRouter();
   const [statusFilter, setStatusFilter] = useState<OrderStatus | "ALL">("ALL");
   const [contactedPartners, setContactedPartners] = useState<number[]>([]);
+  const [showPopup, setShowPopup] = useState(false);
+    const [message, setMessage] = useState("");
+    const [popupType, setPopupType] = useState<"success" | "error">("success");
 
   const [statusSortOrder, setStatusSortOrder] = useState<"asc" | "desc">("asc");
   const [sortOption, setSortOption] = useState<"newest" | "oldest" | "az">(
@@ -245,7 +249,7 @@ export default function AdminOrderPage() {
 
     try {
       setIsSubmitting(true);
-      await updateStatusOrder(pendingStatus.orderId, pendingStatus.newStatus);
+     const response = await updateStatusOrder(pendingStatus.orderId, pendingStatus.newStatus);
 
       setOrdersData((prev) =>
         prev.map((order) =>
@@ -254,6 +258,9 @@ export default function AdminOrderPage() {
             : order
         )
       );
+      setMessage(response.message);
+        setPopupType("success");
+        setShowPopup(true);
     } catch (error: any) {
       console.error("Gagal update status:", error);
       alert(error.message || "Gagal mengubah status pesanan.");
@@ -431,6 +438,13 @@ export default function AdminOrderPage() {
 
   return (
     <div className="">
+      {showPopup && (
+              <Popup
+                message={message}
+                type={popupType}
+                onClose={() => setShowPopup(false)}
+              />
+            )}
       <ConfirmModal
         isOpen={isConfirmOpen}
         onClose={() => {
