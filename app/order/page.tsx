@@ -33,6 +33,8 @@ interface Order {
     method: string;
     statusPembayaran: string;
     amount: number;
+    Snap?: string;
+    snapRedirectUrl?: string;
   };
 }
 
@@ -51,14 +53,6 @@ export default function OrderPage() {
       try {
         const result = await fetchMyOrder();
         setOrders(result.orders || []);
-        
-        // Bersihkan payment URL untuk pesanan yang sudah dibayar atau kadaluarsa
-        result.orders?.forEach((order: Order) => {
-          if (order.payment.statusPembayaran === "SUCCESS" || 
-              order.payment.statusPembayaran === "EXPIRE") {
-            localStorage.removeItem(`paymentUrl_${order.orderId}`);
-          }
-        });
       } catch (err) {
         console.error("Gagal memuat pesanan", err);
       } finally {

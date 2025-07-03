@@ -15,7 +15,6 @@ import {
   Store,
   ExternalLink
 } from "lucide-react";
-import { useEffect, useState } from "react";
 
 export interface OrderItem {
   productId: number;
@@ -41,6 +40,8 @@ interface Order {
     method: string;
     statusPembayaran: string;
     amount: number;
+    Snap?: string;
+    snapRedirectUrl?: string;
   };
 }
 
@@ -92,24 +93,16 @@ const getStatusBadge = (status: string) => {
 export default function OrderCard({ order }: Props) {
   const badge = getStatusBadge(order.statusOrder);
   const StatusIcon = badge.icon;
-  const [paymentUrl, setPaymentUrl] = useState<string | null>(null);
 
-  useEffect(() => {
-    // Cek apakah ada payment URL yang tersimpan
-    const savedPaymentUrl = localStorage.getItem(`paymentUrl_${order.orderId}`);
-    if (savedPaymentUrl && order.payment.statusPembayaran === "PENDING") {
-      setPaymentUrl(savedPaymentUrl);
-    }
-  }, [order.orderId, order.payment.statusPembayaran]);
-
-  const handlePaymentClick = () => {
-    if (paymentUrl) {
-      window.open(paymentUrl, '_blank');
+  const handlePaymentClick = (e: React.MouseEvent) => {
+    e.stopPropagation(); // Prevent card click event
+    if (order.payment.snapRedirectUrl) {
+      window.open(order.payment.snapRedirectUrl, '_blank');
     }
   };
 
   return (
-    <div className="bg-white rounded-xl shadow-lg p-6 hover:shadow-xl transition-shadow">
+    <div className="bg-white rounded-2xl shadow-sm hover:shadow-md transition-all duration-300 border border-gray-100 overflow-hidden group">
       {/* Header with gradient background */}
       <div className="bg-gradient-to-r from-gray-50 to-gray-100 p-6 border-b border-gray-200">
         <div className="flex justify-between items-start">
@@ -223,47 +216,25 @@ export default function OrderCard({ order }: Props) {
           </div>
           
           <div className="text-right">
-            <p className="text-sm text-gray-500 mb-1">Total Pembayaran</p>
-            <p className="text-lg font-medium text-primary">
-              {formatCurrency(order.payment.amount)}
-            </p>
-          </div>
-        </div>
-      </div>
-
-      {/* Payment Information */}
-      <div className="mt-4 pt-4 border-t border-gray-200">
-        <div className="flex justify-between items-center">
-          <div>
-            <p className="text-sm text-gray-600">Metode Pembayaran</p>
-            <p className="font-medium">{order.payment.method}</p>
-            <p className={`text-sm ${
-              order.payment.statusPembayaran === "SUCCESS" 
-                ? "text-green-600" 
-                : order.payment.statusPembayaran === "PENDING"
-                ? "text-yellow-600"
-                : order.payment.statusPembayaran === "EXPIRE"
-                ? "text-red-600"
-                : "text-gray-600"
-            }`}>
-              Status: {order.payment.statusPembayaran === "SUCCESS" ? "Berhasil" : 
-                      order.payment.statusPembayaran === "PENDING" ? "Menunggu" :
-                      order.payment.statusPembayaran === "EXPIRE" ? "Kadaluarsa" : 
-                      order.payment.statusPembayaran}
-            </p>
-          </div>
-          
-          {/* Tombol Bayar jika pembayaran pending dan ada URL */}
-          {order.payment.statusPembayaran === "PENDING" && paymentUrl && (
-            <button
-              onClick={handlePaymentClick}
-              className="flex items-center space-x-2 bg-primary text-white px-4 py-2 rounded-lg hover:bg-primary-dark transition-colors"
-            >
-              <CreditCard size={16} />
-              <span>Bayar Sekarang</span>
-              <ExternalLink size={14} />
-            </button>
-          )}
+  <p className="text-sm text-gray-500 mb-1">Total Pembayaran</p>
+  <p className="text-lg font-medium text-primary">
+    {formatCurrency(order.payment.amount)}
+  </p>
+  
+  {/* Tombol Bayar jika pembayaran pending dan ada snapRedirectUrl */}
+  {order.payment.statusPembayaran === "PENDING" && order.payment.snapRedirectUrl && (
+    <div className="flex justify-end mt-2">
+      <button
+        onClick={handlePaymentClick}
+        className="flex items-center space-x-2 bg-primary text-white px-4 py-2 rounded-xl hover:bg-primary/90 transition-colors"
+      >
+        <CreditCard size={16} />
+        <span>Bayar Sekarang</span>
+        <ExternalLink size={14} />
+      </button>
+    </div>
+  )}
+</div>
         </div>
       </div>
 
